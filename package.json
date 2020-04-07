@@ -1,6 +1,23 @@
 {
-  "private": true,
-  "name": "@jianghe/slate-packages",
+  "name": "jianghe-slate",
+  "version": "1.0.0",
+  "description": "fork slate",
+  "author": "jianghe",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/372623460jh/jianghe-slate.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "bugs": {
+    "url": "https://github.com/372623460jh/jianghe-slate/issues"
+  },
+  "homepage": "https://github.com/372623460jh/jianghe-slate#readme",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "workspaces": [
     "packages/*"
   ],
@@ -77,7 +94,15 @@
     "to-snake-case": "^1.0.0",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "^3.11.0",
-    "webpack-dev-server": "^2.11.1"
+    "webpack-dev-server": "^2.11.1",
+    "@jianghe/slate": "*",
+    "@jianghe/slate-dev-benchmark": "*",
+    "@jianghe/slate-dev-environment": "*",
+    "@jianghe/slate-dev-test-utils": "*",
+    "@jianghe/slate-html-serializer": "*",
+    "@jianghe/slate-plain-serializer": "*",
+    "@jianghe/slate-react": "*",
+    "@jianghe/slate-react-placeholder": "*"
   },
   "peerDependencies": {
     "@jianghe/slate": "*",

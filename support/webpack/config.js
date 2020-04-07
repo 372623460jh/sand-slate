@@ -73,7 +73,7 @@ const config = {
     }),
     new ExtractTextPlugin('[name]-[contenthash].css'),
     new HtmlWebpackPlugin({
-      title: '@jianghe/slate',
+      title: 'jianghe-slate',
       template: HtmlWebpackTemplate,
       inject: false,
       // Note: this is not the correct format meta for HtmlWebpackPlugin, which

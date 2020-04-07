@@ -2,10 +2,18 @@
   "name": "@jianghe/slate-dev-benchmark",
   "packageName": "slate-dev-benchmark",
   "description": "INTERNAL: A development-only benchmark tool for Slate's core.",
-  "version": "0.0.6-1",
+  "version": "0.0.6-2",
   "license": "MIT",
-  "repository": "https://github.com/372623460jh/jianghe-slate.git",
   "main": "src/index.js",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/372623460jh/jianghe-slate.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "devDependencies": {
     "mocha": "^2.5.3"
   },

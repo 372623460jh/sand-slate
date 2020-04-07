@@ -2,9 +2,8 @@
   "name": "@jianghe/slate",
   "packageName": "slate",
   "description": "A completely customizable framework for building rich text editors.",
-  "version": "0.47.9-1",
+  "version": "0.47.9-2",
   "license": "MIT",
-  "repository": "https://github.com/372623460jh/jianghe-slate.git",
   "main": "lib/slate.js",
   "module": "lib/slate.es.js",
   "umd": "dist/slate.js",
@@ -13,6 +12,15 @@
     "dist/",
     "lib/"
   ],
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/372623460jh/jianghe-slate.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "dependencies": {
     "debug": "^3.1.0",
     "direction": "^0.1.5",
@@ -27,8 +35,8 @@
     "immutable": ">=3.8.1 || >4.0.0-rc"
   },
   "devDependencies": {
-    "@jianghe/slate-dev-test-utils": "^0.0.2-1",
-    "@jianghe/slate-hyperscript": "^0.13.9-1"
+    "@jianghe/slate-dev-test-utils": "^0.0.2-2",
+    "@jianghe/slate-hyperscript": "^0.13.9-2"
   },
   "scripts": {
     "clean": "rm -rf ./dist ./lib ./node_modules"

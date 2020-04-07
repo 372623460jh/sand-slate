@@ -2,19 +2,27 @@
   "name": "@jianghe/slate-hotkeys",
   "packageName": "slate-hotkeys",
   "description": "A set of function to detect common keypresses in a platform-agnostic way",
-  "version": "0.2.10-1",
+  "version": "0.2.10-2",
   "license": "MIT",
-  "repository": "https://github.com/372623460jh/jianghe-slate.git",
   "main": "lib/slate-hotkeys.js",
   "module": "lib/slate-hotkeys.es.js",
   "umd": "dist/slate-hotkeys.js",
   "umdMin": "dist/slate-hotkeys.min.js",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/372623460jh/jianghe-slate.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "files": [
     "dist/",
     "lib/"
   ],
   "dependencies": {
-    "@jianghe/slate-dev-environment": "^0.2.3-1",
+    "@jianghe/slate-dev-environment": "^0.2.3-2",
     "is-hotkey": "0.1.4"
   },
   "scripts": {

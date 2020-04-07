@@ -2,13 +2,21 @@
   "name": "@jianghe/slate-react-placeholder",
   "packageName": "slate-react-placeholder",
   "description": "A Slate plugin to render a placeholder with React.",
-  "version": "0.2.9-1",
+  "version": "0.2.9-2",
   "license": "MIT",
-  "repository": "https://github.com/372623460jh/jianghe-slate.git",
   "main": "lib/slate-react-placeholder.js",
   "module": "lib/slate-react-placeholder.es.js",
   "umd": "dist/slate-react-placeholder.js",
   "umdMin": "dist/slate-react-placeholder.min.js",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/372623460jh/jianghe-slate.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "files": [
     "dist/",
     "lib/"
@@ -19,7 +27,7 @@
     "react": ">=16.0.0"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.9-1",
+    "@jianghe/slate": "^0.47.9-2",
     "mocha": "^2.5.3",
     "tiny-invariant": "^1.0.1"
   },

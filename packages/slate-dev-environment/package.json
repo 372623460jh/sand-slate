@@ -2,13 +2,21 @@
   "name": "@jianghe/slate-dev-environment",
   "packageName": "slate-dev-environment",
   "description": "INTERNAL: A set of environment-related constants for Slate's core.",
-  "version": "0.2.3-1",
+  "version": "0.2.3-2",
   "license": "MIT",
-  "repository": "https://github.com/372623460jh/jianghe-slate.git",
   "main": "lib/slate-dev-environment.js",
   "module": "lib/slate-dev-environment.es.js",
   "umd": "dist/slate-dev-environment.js",
   "umdMin": "dist/slate-dev-environment.min.js",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/372623460jh/jianghe-slate.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
   "files": [
     "dist/",
     "lib/"

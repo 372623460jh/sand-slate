@@ -2,7 +2,7 @@
   "name": "@jianghe/slate-dev-benchmark",
   "packageName": "slate-dev-benchmark",
   "description": "INTERNAL: A development-only benchmark tool for Slate's core.",
-  "version": "0.0.6-0",
+  "version": "0.0.6-1",
   "license": "MIT",
   "repository": "https://github.com/372623460jh/jianghe-slate.git",
   "main": "src/index.js",

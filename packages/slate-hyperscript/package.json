@@ -2,7 +2,7 @@
   "name": "@jianghe/slate-hyperscript",
   "packageName": "slate-hyperscript",
   "description": "A hyperscript helper for creating Slate documents.",
-  "version": "0.13.9-0",
+  "version": "0.13.9-1",
   "license": "MIT",
   "repository": "https://github.com/372623460jh/jianghe-slate.git",
   "main": "lib/slate-hyperscript.js",
@@ -20,7 +20,7 @@
     "@jianghe/slate": ">=0.47.0"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.9-0",
+    "@jianghe/slate": "^0.47.9-1",
     "mocha": "^2.5.3"
   },
   "scripts": {

@@ -2,7 +2,7 @@
   "name": "@jianghe/slate-plain-serializer",
   "packageName": "slate-plain-serializer",
   "description": "A plain text serializer for Slate editors.",
-  "version": "0.7.11-0",
+  "version": "0.7.11-1",
   "license": "MIT",
   "repository": "https://github.com/372623460jh/jianghe-slate.git",
   "main": "lib/slate-plain-serializer.js",
@@ -18,8 +18,8 @@
     "immutable": ">=3.8.1"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.9-0",
-    "@jianghe/slate-hyperscript": "^0.13.9-0",
+    "@jianghe/slate": "^0.47.9-1",
+    "@jianghe/slate-hyperscript": "^0.13.9-1",
     "mocha": "^2.5.3"
   },
   "scripts": {
@@ -42,6 +42,6 @@
     "xml"
   ],
   "dependencies": {
-    "@jianghe/slate-react-placeholder": "^0.2.9-0"
+    "@jianghe/slate-react-placeholder": "^0.2.9-1"
   }
 }

@@ -2,7 +2,7 @@
   "name": "@jianghe/slate-prop-types",
   "packageName": "slate-prop-types",
   "description": "A set of React prop type checkers for Slate editors.",
-  "version": "0.5.42-0",
+  "version": "0.5.42-1",
   "license": "MIT",
   "repository": "https://github.com/372623460jh/jianghe-slate.git",
   "main": "lib/slate-prop-types.js",
@@ -18,7 +18,7 @@
     "immutable": ">=3.8.1"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.9-0",
+    "@jianghe/slate": "^0.47.9-1",
     "mocha": "^2.5.3"
   },
   "scripts": {

@@ -1,0 +1,24 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "command": {
+    "version": {
+      "conventionalCommits": true
+    },
+    "publish": {
+      "npmClient": "npm",
+      "registry": "https://npm.pkg.github.com",
+      "verifyRegistry": false,
+      "verifyAccess": false,
+      "allowBranch": [
+        "master",
+        "dev-release"
+      ]
+    }
+  },
+  "version": "independent",
+  "npmClient": "npm",
+  "lerna": "2.11.0",
+  "useWorkspaces": true
+}

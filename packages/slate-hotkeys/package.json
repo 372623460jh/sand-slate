@@ -1,0 +1,31 @@
+{
+  "name": "@jianghe/slate-hotkeys",
+  "packageName": "slate-hotkeys",
+  "description": "A set of function to detect common keypresses in a platform-agnostic way",
+  "version": "0.2.9",
+  "license": "MIT",
+  "repository": "https://github.com/372623460jh/jianghe-slate.git",
+  "main": "lib/slate-hotkeys.js",
+  "module": "lib/slate-hotkeys.es.js",
+  "umd": "dist/slate-hotkeys.js",
+  "umdMin": "dist/slate-hotkeys.min.js",
+  "files": [
+    "dist/",
+    "lib/"
+  ],
+  "dependencies": {
+    "is-hotkey": "0.1.4",
+    "@jianghe/slate-dev-environment": "^0.2.2"
+  },
+  "scripts": {
+    "clean": "rm -rf ./dist ./lib ./node_modules"
+  },
+  "keywords": [
+    "contenteditable",
+    "editor",
+    "keybinding",
+    "keypress",
+    "slate",
+    "text"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "gitbook": "3.2.2",
+  "root": "./docs",
+  "structure": {
+    "readme": "Introduction.md",
+    "summary": "Summary.md"
+  },
+  "plugins": ["-highlight", "prism", "github"],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/ianstormtaylor/slate"
+    }
+  }
+}

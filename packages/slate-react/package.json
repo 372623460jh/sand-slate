@@ -1,0 +1,77 @@
+{
+  "name": "@jianghe/slate-react",
+  "packageName": "slate-react",
+  "description": "A set of React components for building completely customizable rich-text editors.",
+  "version": "0.22.9",
+  "license": "MIT",
+  "repository": "https://github.com/372623460jh/jianghe-slate.git",
+  "main": "lib/slate-react.js",
+  "module": "lib/slate-react.es.js",
+  "umd": "dist/slate-react.js",
+  "umdMin": "dist/slate-react.min.js",
+  "files": [
+    "dist/",
+    "lib/"
+  ],
+  "dependencies": {
+    "@jianghe/slate-base64-serializer": "^0.2.111",
+    "@jianghe/slate-dev-environment": "^0.2.2",
+    "@jianghe/slate-hotkeys": "^0.2.9",
+    "@jianghe/slate-plain-serializer": "^0.7.10",
+    "@jianghe/slate-prop-types": "^0.5.41",
+    "@jianghe/slate-react-placeholder": "^0.2.8",
+    "debug": "^3.1.0",
+    "get-window": "^1.1.1",
+    "is-window": "^1.0.2",
+    "lodash": "^4.1.1",
+    "memoize-one": "^4.0.0",
+    "prop-types": "^15.5.8",
+    "react-immutable-proptypes": "^2.1.0",
+    "selection-is-backward": "^1.0.0",
+    "tiny-invariant": "^1.0.1",
+    "tiny-warning": "^0.0.3"
+  },
+  "peerDependencies": {
+    "@jianghe/slate": ">=0.47.0",
+    "immutable": ">=3.8.1 || >4.0.0-rc",
+    "react": ">=16.6.0",
+    "react-dom": ">=16.6.0"
+  },
+  "devDependencies": {
+    "@jianghe/slate": "^0.47.8",
+    "@jianghe/slate-hyperscript": "^0.13.8",
+    "immutable": "^3.8.1",
+    "mocha": "^2.5.3",
+    "react-test-renderer": "^16.6.3"
+  },
+  "scripts": {
+    "clean": "rm -rf ./dist ./lib ./node_modules"
+  },
+  "umdGlobals": {
+    "immutable": "Immutable",
+    "react": "React",
+    "slate": "Slate"
+  },
+  "keywords": [
+    "canvas",
+    "contenteditable",
+    "doc",
+    "docs",
+    "document",
+    "edit",
+    "editor",
+    "html",
+    "immutable",
+    "markdown",
+    "medium",
+    "paper",
+    "react",
+    "rich",
+    "rich-text",
+    "richtext",
+    "slate",
+    "text",
+    "wysiwyg",
+    "wysiwym"
+  ]
+}

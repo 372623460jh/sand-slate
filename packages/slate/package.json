@@ -1,16 +1,17 @@
 {
   "name": "@jianghe/slate",
-  "packageName": "slate",
   "description": "A completely customizable framework for building rich text editors.",
-  "version": "0.47.9-2",
+  "version": "0.47.9-3",
   "license": "MIT",
-  "main": "lib/slate.js",
-  "module": "lib/slate.es.js",
+  "main": "esm/slate.js",
+  "esm": "esm/slate.js",
+  "cjs": "cjs/slate.js",
   "umd": "dist/slate.js",
   "umdMin": "dist/slate.min.js",
   "files": [
     "dist/",
-    "lib/"
+    "cjs/",
+    "esm/"
   ],
   "private": false,
   "repository": {
@@ -35,14 +36,8 @@
     "immutable": ">=3.8.1 || >4.0.0-rc"
   },
   "devDependencies": {
-    "@jianghe/slate-dev-test-utils": "^0.0.2-2",
-    "@jianghe/slate-hyperscript": "^0.13.9-2"
-  },
-  "scripts": {
-    "clean": "rm -rf ./dist ./lib ./node_modules"
-  },
-  "umdGlobals": {
-    "immutable": "Immutable"
+    "@jianghe/slate-dev-test-utils": "^0.0.2-3",
+    "@jianghe/slate-hyperscript": "^0.13.9-3"
   },
   "keywords": [
     "canvas",

@@ -1,10 +1,13 @@
 {
   "name": "@jianghe/slate-dev-benchmark",
-  "packageName": "slate-dev-benchmark",
   "description": "INTERNAL: A development-only benchmark tool for Slate's core.",
-  "version": "0.0.6-2",
+  "version": "0.0.6-3",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "esm/slate-dev-benchmark.js",
+  "esm": "esm/slate-dev-benchmark.js",
+  "cjs": "cjs/slate-dev-benchmark.js",
+  "umd": "dist/slate-dev-benchmark.js",
+  "umdMin": "dist/slate-dev-benchmark.min.js",
   "private": false,
   "repository": {
     "type": "git",
@@ -16,8 +19,5 @@
   },
   "devDependencies": {
     "mocha": "^2.5.3"
-  },
-  "scripts": {
-    "clean": "rm -rf ./dist ./lib ./node_modules"
   }
 }

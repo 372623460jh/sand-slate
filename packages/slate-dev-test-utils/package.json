@@ -1,10 +1,13 @@
 {
   "name": "@jianghe/slate-dev-test-utils",
-  "packageName": "slate-dev-test-utils",
   "description": "INTERNAL: A set of utils for Slate's core tests.",
-  "version": "0.0.2-2",
+  "version": "0.0.2-3",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "esm/slate-dev-test-utils.js",
+  "esm": "esm/slate-dev-test-utils.js",
+  "cjs": "cjs/slate-dev-test-utils.js",
+  "umd": "dist/slate-dev-test-utils.js",
+  "umdMin": "dist/slate-dev-test-utils.min.js",
   "private": false,
   "repository": {
     "type": "git",
@@ -16,12 +19,10 @@
   },
   "files": [
     "dist/",
-    "lib/"
+    "cjs/",
+    "esm/"
   ],
   "peerDependencies": {
     "@jianghe/slate": ">=0.35.0"
-  },
-  "scripts": {
-    "clean": "rm -rf ./dist ./lib ./node_modules"
   }
 }

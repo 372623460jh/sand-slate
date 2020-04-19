@@ -1,11 +1,11 @@
 {
   "name": "@jianghe/slate-base64-serializer",
-  "packageName": "slate-base64-serializer",
   "description": "A Base64 serializer for Slate editors.",
-  "version": "0.2.112-2",
+  "version": "0.2.112-3",
   "license": "MIT",
-  "main": "lib/slate-base64-serializer.js",
-  "module": "lib/slate-base64-serializer.es.js",
+  "main": "esm/slate-base64-serializer.js",
+  "esm": "esm/slate-base64-serializer.js",
+  "cjs": "cjs/slate-base64-serializer.js",
   "umd": "dist/slate-base64-serializer.js",
   "umdMin": "dist/slate-base64-serializer.min.js",
   "private": false,
@@ -19,23 +19,18 @@
   },
   "files": [
     "dist/",
-    "lib/"
+    "cjs/",
+    "esm/"
   ],
   "peerDependencies": {
     "@jianghe/slate": ">=0.32.0"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.9-2",
+    "@jianghe/slate": "^0.47.9-3",
     "mocha": "^2.5.3"
   },
   "dependencies": {
     "isomorphic-base64": "^1.0.2"
-  },
-  "scripts": {
-    "clean": "rm -rf ./dist ./lib ./node_modules"
-  },
-  "umdGlobals": {
-    "slate": "Slate"
   },
   "keywords": [
     "deserialize",

@@ -1,11 +1,11 @@
 {
   "name": "@jianghe/slate-dev-environment",
-  "packageName": "slate-dev-environment",
   "description": "INTERNAL: A set of environment-related constants for Slate's core.",
-  "version": "0.2.3-2",
+  "version": "0.2.3-3",
   "license": "MIT",
-  "main": "lib/slate-dev-environment.js",
-  "module": "lib/slate-dev-environment.es.js",
+  "main": "esm/slate-dev-environment.js",
+  "esm": "esm/slate-dev-environment.js",
+  "cjs": "cjs/slate-dev-environment.js",
   "umd": "dist/slate-dev-environment.js",
   "umdMin": "dist/slate-dev-environment.min.js",
   "private": false,
@@ -19,12 +19,10 @@
   },
   "files": [
     "dist/",
-    "lib/"
+    "cjs/",
+    "esm/"
   ],
   "dependencies": {
     "is-in-browser": "^1.1.3"
-  },
-  "scripts": {
-    "clean": "rm -rf ./dist ./lib ./node_modules"
   }
 }

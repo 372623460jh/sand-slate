@@ -1,11 +1,11 @@
 {
   "name": "@jianghe/slate-html-serializer",
-  "packageName": "slate-html-serializer",
   "description": "An HTML serializer for Slate editors.",
-  "version": "0.8.11-2",
+  "version": "0.8.11-3",
   "license": "MIT",
-  "main": "lib/slate-html-serializer.js",
-  "module": "lib/slate-html-serializer.es.js",
+  "main": "esm/slate-html-serializer.js",
+  "esm": "esm/slate-html-serializer.js",
+  "cjs": "cjs/slate-html-serializer.js",
   "umd": "dist/slate-html-serializer.js",
   "umdMin": "dist/slate-html-serializer.min.js",
   "private": false,
@@ -19,7 +19,8 @@
   },
   "files": [
     "dist/",
-    "lib/"
+    "cjs/",
+    "esm/"
   ],
   "dependencies": {
     "type-of": "^2.0.1"
@@ -31,19 +32,9 @@
     "react-dom": ">=0.14.0"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.9-2",
-    "@jianghe/slate-hyperscript": "^0.13.9-2",
+    "@jianghe/slate": "^0.47.9-3",
+    "@jianghe/slate-hyperscript": "^0.13.9-3",
     "mocha": "^2.5.3"
-  },
-  "scripts": {
-    "clean": "rm -rf ./dist ./lib ./node_modules"
-  },
-  "umdGlobals": {
-    "immutable": "Immutable",
-    "react": "React",
-    "react-dom": "ReactDOM",
-    "react-dom/server": "ReactDOMServer",
-    "slate": "Slate"
   },
   "keywords": [
     "deserialize",

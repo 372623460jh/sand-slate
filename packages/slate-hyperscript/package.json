@@ -1,11 +1,11 @@
 {
   "name": "@jianghe/slate-hyperscript",
-  "packageName": "slate-hyperscript",
   "description": "A hyperscript helper for creating Slate documents.",
-  "version": "0.13.9-2",
+  "version": "0.13.9-3",
   "license": "MIT",
-  "main": "lib/slate-hyperscript.js",
-  "module": "lib/slate-hyperscript.es.js",
+  "main": "esm/slate-hyperscript.js",
+  "esm": "esm/slate-hyperscript.js",
+  "cjs": "cjs/slate-hyperscript.js",
   "umd": "dist/slate-hyperscript.js",
   "umdMin": "dist/slate-hyperscript.min.js",
   "private": false,
@@ -19,7 +19,8 @@
   },
   "files": [
     "dist/",
-    "lib/"
+    "cjs/",
+    "esm/"
   ],
   "dependencies": {
     "is-plain-object": "^2.0.4"
@@ -28,14 +29,8 @@
     "@jianghe/slate": ">=0.47.0"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.9-2",
+    "@jianghe/slate": "^0.47.9-3",
     "mocha": "^2.5.3"
-  },
-  "scripts": {
-    "clean": "rm -rf ./dist ./lib ./node_modules"
-  },
-  "umdGlobals": {
-    "slate": "Slate"
   },
   "keywords": [
     "hyperscript",

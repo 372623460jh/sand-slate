@@ -1,11 +1,11 @@
 {
   "name": "@jianghe/slate-prop-types",
-  "packageName": "slate-prop-types",
   "description": "A set of React prop type checkers for Slate editors.",
-  "version": "0.5.42-2",
+  "version": "0.5.42-3",
   "license": "MIT",
-  "main": "lib/slate-prop-types.js",
-  "module": "lib/slate-prop-types.es.js",
+  "main": "esm/slate-prop-types.js",
+  "esm": "esm/slate-prop-types.js",
+  "cjs": "cjs/slate-prop-types.js",
   "umd": "dist/slate-prop-types.js",
   "umdMin": "dist/slate-prop-types.min.js",
   "private": false,
@@ -19,22 +19,16 @@
   },
   "files": [
     "dist/",
-    "lib/"
+    "cjs/",
+    "esm/"
   ],
   "peerDependencies": {
     "@jianghe/slate": ">=0.32.0",
     "immutable": ">=3.8.1"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.9-2",
+    "@jianghe/slate": "^0.47.9-3",
     "mocha": "^2.5.3"
-  },
-  "scripts": {
-    "clean": "rm -rf ./dist ./lib ./node_modules"
-  },
-  "umdGlobals": {
-    "immutable": "Immutable",
-    "slate": "Slate"
   },
   "keywords": [
     "editor",

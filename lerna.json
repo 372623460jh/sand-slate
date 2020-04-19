@@ -1,4 +1,6 @@
+  
 {
+  "lerna": "2.11.0",
   "packages": [
     "packages/*"
   ],
@@ -18,7 +20,5 @@
     }
   },
   "version": "independent",
-  "npmClient": "npm",
-  "lerna": "2.11.0",
-  "useWorkspaces": true
+  "npmClient": "npm"
 }

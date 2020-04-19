@@ -1,5 +1,5 @@
-import ElementSnapshot from './element-snapshot'
-import SELECTORS from '../../constants/selectors'
+import ElementSnapshot from './element-snapshot';
+import SELECTORS from '../../constants/selectors';
 
 /**
  * Returns the closest element that matches the selector.
@@ -13,9 +13,9 @@ import SELECTORS from '../../constants/selectors'
 
 function closest(node, selector, win = window) {
   if (node.nodeType === win.Node.TEXT_NODE) {
-    node = node.parentNode
+    node = node.parentNode;
   }
-  return node.closest(selector)
+  return node.closest(selector);
 }
 
 /**
@@ -34,23 +34,23 @@ export default class DomSnapshot {
    */
 
   constructor(window, editor, { before = false } = {}) {
-    const domSelection = window.getSelection()
-    const { anchorNode } = domSelection
-    const subrootEl = closest(anchorNode, `${SELECTORS.EDITOR} > *`)
-    const elements = [subrootEl]
+    const domSelection = window.getSelection();
+    const { anchorNode } = domSelection;
+    const subrootEl = closest(anchorNode, `${SELECTORS.EDITOR} > *`);
+    const elements = [subrootEl];
 
     // The before option is for when we need to take a snapshot of the current
     // subroot and the element before when the user hits the backspace key.
     if (before) {
-      const { previousElementSibling } = subrootEl
+      const { previousElementSibling } = subrootEl;
 
       if (previousElementSibling) {
-        elements.unshift(previousElementSibling)
+        elements.unshift(previousElementSibling);
       }
     }
 
-    this.snapshot = new ElementSnapshot(elements)
-    this.selection = editor.findSelection(domSelection)
+    this.snapshot = new ElementSnapshot(elements);
+    this.selection = editor.findSelection(domSelection);
   }
 
   /**
@@ -60,8 +60,8 @@ export default class DomSnapshot {
    */
 
   apply(editor) {
-    const { snapshot, selection } = this
-    snapshot.apply()
-    editor.moveTo(selection.anchor.path, selection.anchor.offset)
+    const { snapshot, selection } = this;
+    snapshot.apply();
+    editor.moveTo(selection.anchor.path, selection.anchor.offset);
   }
 }

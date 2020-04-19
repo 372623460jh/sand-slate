@@ -1,4 +1,4 @@
-import EVENT_HANDLERS from '../../constants/event-handlers'
+import EVENT_HANDLERS from '../../constants/event-handlers';
 
 /**
  * This plugin prevents events from going any further and is useful in dev.
@@ -21,10 +21,10 @@ function NoopPlugin() {
    * @type {Object}
    */
 
-  const plugin = {}
+  const plugin = {};
 
   for (const eventName of EVENT_HANDLERS) {
-    plugin[eventName] = function(event, editor, next) {}
+    plugin[eventName] = function (event, editor, next) {};
   }
 
   /**
@@ -33,7 +33,7 @@ function NoopPlugin() {
    * @type {Object}
    */
 
-  return plugin
+  return plugin;
 }
 
 /**
@@ -42,4 +42,4 @@ function NoopPlugin() {
  * @type {Function}
  */
 
-export default NoopPlugin
+export default NoopPlugin;

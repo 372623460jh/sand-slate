@@ -1,4 +1,4 @@
-import isBrowser from 'is-in-browser'
+import isBrowser from 'is-in-browser';
 
 /**
  * Browser matching rules.
@@ -17,15 +17,15 @@ const BROWSER_RULES = [
   ['ie', /MSIE\s(7\.0)/],
   ['android', /Android\s([0-9\.]+)/],
   ['safari', /Version\/([0-9\._]+).*Safari/],
-]
+];
 
-let browser
+let browser;
 
 if (isBrowser) {
   for (const [name, regexp] of BROWSER_RULES) {
     if (regexp.test(window.navigator.userAgent)) {
-      browser = name
-      break
+      browser = name;
+      break;
     }
   }
 }
@@ -42,15 +42,15 @@ const OS_RULES = [
   ['android', /android/i],
   ['firefoxos', /mozilla\/[a-z\.\_\d]+ \((?:mobile)|(?:tablet)/i],
   ['windows', /windows\s*(?:nt)?\s*([\.\_\d]+)/i],
-]
+];
 
-let os
+let os;
 
 if (isBrowser) {
   for (const [name, regexp] of OS_RULES) {
     if (regexp.test(window.navigator.userAgent)) {
-      os = name
-      break
+      os = name;
+      break;
     }
   }
 }
@@ -64,29 +64,29 @@ if (isBrowser) {
 const FEATURE_RULES = [
   [
     'inputeventslevel1',
-    window => {
-      const event = window.InputEvent ? new window.InputEvent('input') : {}
-      const support = 'inputType' in event
-      return support
+    (window) => {
+      const event = window.InputEvent ? new window.InputEvent('input') : {};
+      const support = 'inputType' in event;
+      return support;
     },
   ],
   [
     'inputeventslevel2',
-    window => {
-      const element = window.document.createElement('div')
-      element.contentEditable = true
-      const support = 'onbeforeinput' in element
-      return support
+    (window) => {
+      const element = window.document.createElement('div');
+      element.contentEditable = true;
+      const support = 'onbeforeinput' in element;
+      return support;
     },
   ],
-]
+];
 
-const features = []
+const features = [];
 
 if (isBrowser) {
   for (const [name, test] of FEATURE_RULES) {
     if (test(window)) {
-      features.push(name)
+      features.push(name);
     }
   }
 }
@@ -107,7 +107,7 @@ const ANDROID_API_VERSIONS = [
   [/^5[.]1/, 22],
   [/^5([.]0|)/, 21],
   [/^4[.]4/, 20],
-]
+];
 
 /**
  * get the Android API version from the userAgent
@@ -116,16 +116,16 @@ const ANDROID_API_VERSIONS = [
  */
 
 function getAndroidApiVersion() {
-  if (os !== 'android') return null
-  const { userAgent } = window.navigator
-  const matchData = userAgent.match(/Android\s([0-9\.]+)/)
-  if (matchData == null) return null
-  const versionString = matchData[1]
+  if (os !== 'android') return null;
+  const { userAgent } = window.navigator;
+  const matchData = userAgent.match(/Android\s([0-9\.]+)/);
+  if (matchData == null) return null;
+  const versionString = matchData[1];
 
   for (const [regex, version] of ANDROID_API_VERSIONS) {
-    if (versionString.match(regex)) return version
+    if (versionString.match(regex)) return version;
   }
-  return null
+  return null;
 }
 
 /**
@@ -134,21 +134,20 @@ function getAndroidApiVersion() {
  * @type {Boolean}
  */
 
-export const IS_CHROME = browser === 'chrome'
-export const IS_OPERA = browser === 'opera'
-export const IS_FIREFOX = browser === 'firefox'
-export const IS_SAFARI = browser === 'safari'
-export const IS_IE = browser === 'ie'
-export const IS_EDGE = browser === 'edge'
+export const IS_CHROME = browser === 'chrome';
+export const IS_OPERA = browser === 'opera';
+export const IS_FIREFOX = browser === 'firefox';
+export const IS_SAFARI = browser === 'safari';
+export const IS_IE = browser === 'ie';
+export const IS_EDGE = browser === 'edge';
 
-export const IS_ANDROID = os === 'android'
-export const IS_IOS = os === 'ios'
-export const IS_MAC = os === 'macos'
-export const IS_WINDOWS = os === 'windows'
+export const IS_ANDROID = os === 'android';
+export const IS_IOS = os === 'ios';
+export const IS_MAC = os === 'macos';
+export const IS_WINDOWS = os === 'windows';
 
-export const ANDROID_API_VERSION = getAndroidApiVersion()
+export const ANDROID_API_VERSION = getAndroidApiVersion();
 
-export const HAS_INPUT_EVENTS_LEVEL_1 = features.includes('inputeventslevel1')
-export const HAS_INPUT_EVENTS_LEVEL_2 =
-  features.includes('inputeventslevel2') ||
-  (IS_ANDROID && (ANDROID_API_VERSION === 28 || ANDROID_API_VERSION === null))
+export const HAS_INPUT_EVENTS_LEVEL_1 = features.includes('inputeventslevel1');
+export const HAS_INPUT_EVENTS_LEVEL_2 = features.includes('inputeventslevel2')
+  || (IS_ANDROID && (ANDROID_API_VERSION === 28 || ANDROID_API_VERSION === null));

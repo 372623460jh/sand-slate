@@ -1,10 +1,10 @@
-import isPlainObject from 'is-plain-object'
-import { List, Record } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import { List, Record } from 'immutable';
 
-import Decoration from './decoration'
-import Point from './point'
-import Selection from './selection'
-import isObject from '../utils/is-object'
+import Decoration from './decoration';
+import Point from './point';
+import Selection from './selection';
+import isObject from '../utils/is-object';
 
 /**
  * Default properties.
@@ -15,7 +15,7 @@ import isObject from '../utils/is-object'
 const DEFAULTS = {
   anchor: undefined,
   focus: undefined,
-}
+};
 
 /**
  * Range.
@@ -34,19 +34,18 @@ class Range extends Record(DEFAULTS) {
   static create(attrs = {}) {
     if (Range.isRange(attrs)) {
       if (attrs.object === 'range') {
-        return attrs
-      } else {
-        return Range.fromJSON(Range.createProperties(attrs))
+        return attrs;
       }
+      return Range.fromJSON(Range.createProperties(attrs));
     }
 
     if (isPlainObject(attrs)) {
-      return Range.fromJSON(attrs)
+      return Range.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Range.create\` only accepts objects or ranges, but you passed it: ${attrs}`
-    )
+      `\`Range.create\` only accepts objects or ranges, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -58,13 +57,13 @@ class Range extends Record(DEFAULTS) {
 
   static createList(elements = []) {
     if (List.isList(elements) || Array.isArray(elements)) {
-      const list = new List(elements.map(Range.create))
-      return list
+      const list = new List(elements.map(Range.create));
+      return list;
     }
 
     throw new Error(
-      `\`Range.createList\` only accepts arrays or lists, but you passed it: ${elements}`
-    )
+      `\`Range.createList\` only accepts arrays or lists, but you passed it: ${elements}`,
+    );
   }
 
   /**
@@ -79,19 +78,19 @@ class Range extends Record(DEFAULTS) {
       return {
         anchor: Point.createProperties(a.anchor),
         focus: Point.createProperties(a.focus),
-      }
+      };
     }
 
     if (isPlainObject(a)) {
-      const p = {}
-      if ('anchor' in a) p.anchor = Point.create(a.anchor)
-      if ('focus' in a) p.focus = Point.create(a.focus)
-      return p
+      const p = {};
+      if ('anchor' in a) p.anchor = Point.create(a.anchor);
+      if ('focus' in a) p.focus = Point.create(a.focus);
+      return p;
     }
 
     throw new Error(
-      `\`Range.createProperties\` only accepts objects, annotations, decorations, ranges or selections, but you passed it: ${a}`
-    )
+      `\`Range.createProperties\` only accepts objects, annotations, decorations, ranges or selections, but you passed it: ${a}`,
+    );
   }
 
   /**
@@ -102,13 +101,13 @@ class Range extends Record(DEFAULTS) {
    */
 
   static fromJSON(object) {
-    const { anchor, focus } = object
+    const { anchor, focus } = object;
     const range = new Range({
       anchor: Point.fromJSON(anchor || {}),
       focus: Point.fromJSON(focus || {}),
-    })
+    });
 
-    return range
+    return range;
   }
 
   /**
@@ -120,10 +119,10 @@ class Range extends Record(DEFAULTS) {
 
   static isRange(value) {
     return (
-      isObject('range', value) ||
-      Decoration.isDecoration(value) ||
-      Selection.isSelection(value)
-    )
+      isObject('range', value)
+      || Decoration.isDecoration(value)
+      || Selection.isSelection(value)
+    );
   }
 
   /**
@@ -138,9 +137,9 @@ class Range extends Record(DEFAULTS) {
       object: this.object,
       anchor: this.anchor.toJSON(options),
       focus: this.focus.toJSON(options),
-    }
+    };
 
-    return object
+    return object;
   }
 }
 
@@ -150,4 +149,4 @@ class Range extends Record(DEFAULTS) {
  * @type {Range}
  */
 
-export default Range
+export default Range;

@@ -15,10 +15,10 @@ function QueriesPlugin(queries = {}) {
 
   function onConstruct(editor, next) {
     for (const query in queries) {
-      editor.registerQuery(query)
+      editor.registerQuery(query);
     }
 
-    return next()
+    return next();
   }
 
   /**
@@ -30,11 +30,11 @@ function QueriesPlugin(queries = {}) {
    */
 
   function onQuery(query, editor, next) {
-    const { type, args } = query
-    const fn = queries[type]
-    if (!fn) return next()
-    const ret = fn(editor, ...args)
-    return ret === undefined ? next() : ret
+    const { type, args } = query;
+    const fn = queries[type];
+    if (!fn) return next();
+    const ret = fn(editor, ...args);
+    return ret === undefined ? next() : ret;
   }
 
   /**
@@ -46,7 +46,7 @@ function QueriesPlugin(queries = {}) {
   return {
     onConstruct,
     onQuery,
-  }
+  };
 }
 
 /**
@@ -55,4 +55,4 @@ function QueriesPlugin(queries = {}) {
  * @type {Object}
  */
 
-export default QueriesPlugin
+export default QueriesPlugin;

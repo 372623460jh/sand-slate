@@ -1,6 +1,6 @@
-import Block from '../models/block'
-import Inline from '../models/inline'
-import Mark from '../models/mark'
+import Block from '../models/block';
+import Inline from '../models/inline';
+import Mark from '../models/mark';
 
 /**
  * Ensure that an expanded selection is deleted first using the `editor.delete`
@@ -11,11 +11,11 @@ import Mark from '../models/mark'
  */
 
 function deleteExpanded(editor) {
-  const { value } = editor
-  const { selection } = value
+  const { value } = editor;
+  const { selection } = value;
 
   if (selection.isExpanded) {
-    editor.delete()
+    editor.delete();
   }
 }
 
@@ -25,7 +25,7 @@ function deleteExpanded(editor) {
  * @type {Object}
  */
 
-const Commands = {}
+const Commands = {};
 
 /**
  * Add a `mark` to the characters in the current selection.
@@ -35,22 +35,22 @@ const Commands = {}
  */
 
 Commands.addMark = (editor, mark) => {
-  mark = Mark.create(mark)
-  const { value } = editor
-  const { document, selection } = value
+  mark = Mark.create(mark);
+  const { value } = editor;
+  const { document, selection } = value;
 
   if (selection.isExpanded) {
-    editor.addMarkAtRange(selection, mark)
+    editor.addMarkAtRange(selection, mark);
   } else if (selection.marks) {
-    const marks = selection.marks.add(mark)
-    const sel = selection.set('marks', marks)
-    editor.select(sel)
+    const marks = selection.marks.add(mark);
+    const sel = selection.set('marks', marks);
+    editor.select(sel);
   } else {
-    const marks = document.getActiveMarksAtRange(selection).add(mark)
-    const sel = selection.set('marks', marks)
-    editor.select(sel)
+    const marks = document.getActiveMarksAtRange(selection).add(mark);
+    const sel = selection.set('marks', marks);
+    editor.select(sel);
   }
-}
+};
 
 /**
  * Add a list of `marks` to the characters in the current selection.
@@ -60,8 +60,8 @@ Commands.addMark = (editor, mark) => {
  */
 
 Commands.addMarks = (editor, marks) => {
-  marks.forEach(mark => editor.addMark(mark))
-}
+  marks.forEach((mark) => editor.addMark(mark));
+};
 
 /**
  * Delete at the current selection.
@@ -69,16 +69,16 @@ Commands.addMarks = (editor, marks) => {
  * @param {Editor} editor
  */
 
-Commands.delete = editor => {
-  const { value } = editor
-  const { selection } = value
-  editor.deleteAtRange(selection)
+Commands.delete = (editor) => {
+  const { value } = editor;
+  const { selection } = value;
+  editor.deleteAtRange(selection);
 
   // COMPAT: Ensure that the selection is collapsed, because in certain cases
   // when deleting across inline nodes, when splitting the inline node the end
   // point of the selection will end up after the split point.
-  editor.moveToFocus()
-}
+  editor.moveToFocus();
+};
 
 /**
  * Delete backward `n` characters.
@@ -88,15 +88,15 @@ Commands.delete = editor => {
  */
 
 Commands.deleteBackward = (editor, n = 1) => {
-  const { value } = editor
-  const { selection } = value
+  const { value } = editor;
+  const { selection } = value;
 
   if (selection.isExpanded) {
-    editor.delete()
+    editor.delete();
   } else {
-    editor.deleteBackwardAtRange(selection, n)
+    editor.deleteBackwardAtRange(selection, n);
   }
-}
+};
 
 /**
  * Delete backward one character.
@@ -104,16 +104,16 @@ Commands.deleteBackward = (editor, n = 1) => {
  * @param {Editor} editor
  */
 
-Commands.deleteCharBackward = editor => {
-  const { value } = editor
-  const { selection } = value
+Commands.deleteCharBackward = (editor) => {
+  const { value } = editor;
+  const { selection } = value;
 
   if (selection.isExpanded) {
-    editor.delete()
+    editor.delete();
   } else {
-    editor.deleteCharBackwardAtRange(selection)
+    editor.deleteCharBackwardAtRange(selection);
   }
-}
+};
 
 /**
  * Delete backward one line.
@@ -121,16 +121,16 @@ Commands.deleteCharBackward = editor => {
  * @param {Editor} editor
  */
 
-Commands.deleteLineBackward = editor => {
-  const { value } = editor
-  const { selection } = value
+Commands.deleteLineBackward = (editor) => {
+  const { value } = editor;
+  const { selection } = value;
 
   if (selection.isExpanded) {
-    editor.delete()
+    editor.delete();
   } else {
-    editor.deleteLineBackwardAtRange(selection)
+    editor.deleteLineBackwardAtRange(selection);
   }
-}
+};
 
 /**
  * Delete backward one word.
@@ -138,16 +138,16 @@ Commands.deleteLineBackward = editor => {
  * @param {Editor} editor
  */
 
-Commands.deleteWordBackward = editor => {
-  const { value } = editor
-  const { selection } = value
+Commands.deleteWordBackward = (editor) => {
+  const { value } = editor;
+  const { selection } = value;
 
   if (selection.isExpanded) {
-    editor.delete()
+    editor.delete();
   } else {
-    editor.deleteWordBackwardAtRange(selection)
+    editor.deleteWordBackwardAtRange(selection);
   }
-}
+};
 
 /**
  * Delete backward `n` characters.
@@ -157,15 +157,15 @@ Commands.deleteWordBackward = editor => {
  */
 
 Commands.deleteForward = (editor, n = 1) => {
-  const { value } = editor
-  const { selection } = value
+  const { value } = editor;
+  const { selection } = value;
 
   if (selection.isExpanded) {
-    editor.delete()
+    editor.delete();
   } else {
-    editor.deleteForwardAtRange(selection, n)
+    editor.deleteForwardAtRange(selection, n);
   }
-}
+};
 
 /**
  * Delete backward one character.
@@ -173,16 +173,16 @@ Commands.deleteForward = (editor, n = 1) => {
  * @param {Editor} editor
  */
 
-Commands.deleteCharForward = editor => {
-  const { value } = editor
-  const { selection } = value
+Commands.deleteCharForward = (editor) => {
+  const { value } = editor;
+  const { selection } = value;
 
   if (selection.isExpanded) {
-    editor.delete()
+    editor.delete();
   } else {
-    editor.deleteCharForwardAtRange(selection)
+    editor.deleteCharForwardAtRange(selection);
   }
-}
+};
 
 /**
  * Delete backward one line.
@@ -190,16 +190,16 @@ Commands.deleteCharForward = editor => {
  * @param {Editor} editor
  */
 
-Commands.deleteLineForward = editor => {
-  const { value } = editor
-  const { selection } = value
+Commands.deleteLineForward = (editor) => {
+  const { value } = editor;
+  const { selection } = value;
 
   if (selection.isExpanded) {
-    editor.delete()
+    editor.delete();
   } else {
-    editor.deleteLineForwardAtRange(selection)
+    editor.deleteLineForwardAtRange(selection);
   }
-}
+};
 
 /**
  * Delete backward one word.
@@ -207,16 +207,16 @@ Commands.deleteLineForward = editor => {
  * @param {Editor} editor
  */
 
-Commands.deleteWordForward = editor => {
-  const { value } = editor
-  const { selection } = value
+Commands.deleteWordForward = (editor) => {
+  const { value } = editor;
+  const { selection } = value;
 
   if (selection.isExpanded) {
-    editor.delete()
+    editor.delete();
   } else {
-    editor.deleteWordForwardAtRange(selection)
+    editor.deleteWordForwardAtRange(selection);
   }
-}
+};
 
 /**
  * Insert a `block` at the current selection.
@@ -226,17 +226,17 @@ Commands.deleteWordForward = editor => {
  */
 
 Commands.insertBlock = (editor, block) => {
-  deleteExpanded(editor)
+  deleteExpanded(editor);
 
-  block = Block.create(block)
-  const { value } = editor
-  const { selection } = value
-  editor.insertBlockAtRange(selection, block)
+  block = Block.create(block);
+  const { value } = editor;
+  const { selection } = value;
+  editor.insertBlockAtRange(selection, block);
 
   // If the node was successfully inserted, update the selection.
-  const node = editor.value.document.getNode(block.key)
-  if (node) editor.moveToEndOfNode(node)
-}
+  const node = editor.value.document.getNode(block.key);
+  if (node) editor.moveToEndOfNode(node);
+};
 
 /**
  * Insert a `fragment` at the current selection.
@@ -246,48 +246,47 @@ Commands.insertBlock = (editor, block) => {
  */
 
 Commands.insertFragment = (editor, fragment) => {
-  if (!fragment.nodes.size) return
+  if (!fragment.nodes.size) return;
 
-  deleteExpanded(editor)
+  deleteExpanded(editor);
 
-  let { value } = editor
-  let { document, selection } = value
-  const { start } = selection
-  const keys = Array.from(document.texts(), ([text]) => text.key)
+  let { value } = editor;
+  let { document, selection } = value;
+  const { start } = selection;
+  const keys = Array.from(document.texts(), ([text]) => text.key);
 
-  editor.insertFragmentAtRange(selection, fragment)
-  value = editor.value
-  document = value.document
+  editor.insertFragmentAtRange(selection, fragment);
+  value = editor.value;
+  document = value.document;
 
-  const newTexts = document.getTexts().filter(n => !keys.includes(n.key))
-  if (newTexts.size === 0) return
-  const fragmentLength = fragment.text.length
+  const newTexts = document.getTexts().filter((n) => !keys.includes(n.key));
+  if (newTexts.size === 0) return;
+  const fragmentLength = fragment.text.length;
 
   // Either startText is still here, or we want the first un-previously known text
-  const startText = document.getNode(start.key) || newTexts.first()
+  const startText = document.getNode(start.key) || newTexts.first();
   // We want the last un-previously known text
-  let endText = newTexts.last() || startText
+  let endText = newTexts.last() || startText;
 
   if (startText === endText) {
-    editor.moveTo(endText.key, fragmentLength)
-    return
+    editor.moveTo(endText.key, fragmentLength);
+    return;
   }
 
   // Everything will be calculated relative to the first common ancestor to optimize speed
-  const parent = document.getCommonAncestor(startText.key, endText.key)
+  const parent = document.getCommonAncestor(startText.key, endText.key);
 
-  const startOffset =
-    parent.getOffset(startText.key) +
-    (start.key === startText.key ? start.offset : 0)
+  const startOffset = parent.getOffset(startText.key)
+    + (start.key === startText.key ? start.offset : 0);
 
   // endText might not be the last un-previously known text node, so we precisely pick it by offset
-  endText = parent.getTextAtOffset(startOffset + fragmentLength - 1) || endText
+  endText = parent.getTextAtOffset(startOffset + fragmentLength - 1) || endText;
 
   editor.moveTo(
     endText.key,
-    startOffset + fragmentLength - parent.getOffset(endText.key)
-  )
-}
+    startOffset + fragmentLength - parent.getOffset(endText.key),
+  );
+};
 
 /**
  * Insert an `inline` at the current selection.
@@ -297,17 +296,17 @@ Commands.insertFragment = (editor, fragment) => {
  */
 
 Commands.insertInline = (editor, inline) => {
-  deleteExpanded(editor)
+  deleteExpanded(editor);
 
-  inline = Inline.create(inline)
-  const { value } = editor
-  const { selection } = value
-  editor.insertInlineAtRange(selection, inline)
+  inline = Inline.create(inline);
+  const { value } = editor;
+  const { selection } = value;
+  editor.insertInlineAtRange(selection, inline);
 
   // If the node was successfully inserted, update the selection.
-  const node = editor.value.document.getNode(inline.key)
-  if (node) editor.moveToEndOfNode(node)
-}
+  const node = editor.value.document.getNode(inline.key);
+  if (node) editor.moveToEndOfNode(node);
+};
 
 /**
  * Insert a string of `text` with optional `marks` at the current selection.
@@ -318,22 +317,22 @@ Commands.insertInline = (editor, inline) => {
  */
 
 Commands.insertText = (editor, text, marks) => {
-  deleteExpanded(editor)
+  deleteExpanded(editor);
 
-  const { value } = editor
-  const { document, selection } = value
-  marks = marks || selection.marks || document.getInsertMarksAtRange(selection)
+  const { value } = editor;
+  const { document, selection } = value;
+  marks = marks || selection.marks || document.getInsertMarksAtRange(selection);
 
   editor.withoutNormalizing(() => {
-    editor.insertTextAtRange(selection, text, marks)
+    editor.insertTextAtRange(selection, text, marks);
 
     // If the text was successfully inserted, and the selection had marks on it,
     // unset the selection's marks.
     if (selection.marks && document !== editor.value.document) {
-      editor.select({ marks: null })
+      editor.select({ marks: null });
     }
-  })
-}
+  });
+};
 
 /**
  * Remove a `mark` from the characters in the current selection.
@@ -343,22 +342,22 @@ Commands.insertText = (editor, text, marks) => {
  */
 
 Commands.removeMark = (editor, mark) => {
-  mark = Mark.create(mark)
-  const { value } = editor
-  const { document, selection } = value
+  mark = Mark.create(mark);
+  const { value } = editor;
+  const { document, selection } = value;
 
   if (selection.isExpanded) {
-    editor.removeMarkAtRange(selection, mark)
+    editor.removeMarkAtRange(selection, mark);
   } else if (selection.marks) {
-    const marks = selection.marks.remove(mark)
-    const sel = selection.set('marks', marks)
-    editor.select(sel)
+    const marks = selection.marks.remove(mark);
+    const sel = selection.set('marks', marks);
+    editor.select(sel);
   } else {
-    const marks = document.getActiveMarksAtRange(selection).remove(mark)
-    const sel = selection.set('marks', marks)
-    editor.select(sel)
+    const marks = document.getActiveMarksAtRange(selection).remove(mark);
+    const sel = selection.set('marks', marks);
+    editor.select(sel);
   }
-}
+};
 
 /**
  * Replace an `oldMark` with a `newMark` in the characters in the current selection.
@@ -369,9 +368,9 @@ Commands.removeMark = (editor, mark) => {
  */
 
 Commands.replaceMark = (editor, oldMark, newMark) => {
-  editor.removeMark(oldMark)
-  editor.addMark(newMark)
-}
+  editor.removeMark(oldMark);
+  editor.addMark(newMark);
+};
 
 /**
  * Set the `properties` of block nodes.
@@ -381,10 +380,10 @@ Commands.replaceMark = (editor, oldMark, newMark) => {
  */
 
 Commands.setBlocks = (editor, properties) => {
-  const { value } = editor
-  const { selection } = value
-  editor.setBlocksAtRange(selection, properties)
-}
+  const { value } = editor;
+  const { selection } = value;
+  editor.setBlocksAtRange(selection, properties);
+};
 
 /**
  * Set the `properties` of inline nodes.
@@ -394,10 +393,10 @@ Commands.setBlocks = (editor, properties) => {
  */
 
 Commands.setInlines = (editor, properties) => {
-  const { value } = editor
-  const { selection } = value
-  editor.setInlinesAtRange(selection, properties)
-}
+  const { value } = editor;
+  const { selection } = value;
+  editor.setInlinesAtRange(selection, properties);
+};
 
 /**
  * Split the block node at the current selection, to optional `depth`.
@@ -407,17 +406,17 @@ Commands.setInlines = (editor, properties) => {
  */
 
 Commands.splitBlock = (editor, depth = 1) => {
-  deleteExpanded(editor)
+  deleteExpanded(editor);
 
-  const { value } = editor
-  const { selection, document } = value
-  const marks = selection.marks || document.getInsertMarksAtRange(selection)
-  editor.splitBlockAtRange(selection, depth).moveToEnd()
+  const { value } = editor;
+  const { selection, document } = value;
+  const marks = selection.marks || document.getInsertMarksAtRange(selection);
+  editor.splitBlockAtRange(selection, depth).moveToEnd();
 
   if (marks && marks.size !== 0) {
-    editor.select({ marks })
+    editor.select({ marks });
   }
-}
+};
 
 /**
  * Split the inline nodes to optional `height`.
@@ -427,11 +426,11 @@ Commands.splitBlock = (editor, depth = 1) => {
  */
 
 Commands.splitInline = (editor, height) => {
-  deleteExpanded(editor)
-  const { value } = editor
-  const { selection } = value
-  editor.splitInlineAtRange(selection, height)
-}
+  deleteExpanded(editor);
+  const { value } = editor;
+  const { selection } = value;
+  editor.splitInlineAtRange(selection, height);
+};
 
 /**
  * Add or remove a `mark` from the characters in the current selection,
@@ -442,16 +441,16 @@ Commands.splitInline = (editor, height) => {
  */
 
 Commands.toggleMark = (editor, mark) => {
-  mark = Mark.create(mark)
-  const { value } = editor
-  const exists = value.activeMarks.has(mark)
+  mark = Mark.create(mark);
+  const { value } = editor;
+  const exists = value.activeMarks.has(mark);
 
   if (exists) {
-    editor.removeMark(mark)
+    editor.removeMark(mark);
   } else {
-    editor.addMark(mark)
+    editor.addMark(mark);
   }
-}
+};
 
 /**
  * Unwrap nodes from a block with `properties`.
@@ -461,10 +460,10 @@ Commands.toggleMark = (editor, mark) => {
  */
 
 Commands.unwrapBlock = (editor, properties) => {
-  const { value } = editor
-  const { selection } = value
-  editor.unwrapBlockAtRange(selection, properties)
-}
+  const { value } = editor;
+  const { selection } = value;
+  editor.unwrapBlockAtRange(selection, properties);
+};
 
 /**
  * Unwrap nodes from an inline with `properties`.
@@ -474,10 +473,10 @@ Commands.unwrapBlock = (editor, properties) => {
  */
 
 Commands.unwrapInline = (editor, properties) => {
-  const { value } = editor
-  const { selection } = value
-  editor.unwrapInlineAtRange(selection, properties)
-}
+  const { value } = editor;
+  const { selection } = value;
+  editor.unwrapInlineAtRange(selection, properties);
+};
 
 /**
  * Wrap nodes in a new `block`.
@@ -487,10 +486,10 @@ Commands.unwrapInline = (editor, properties) => {
  */
 
 Commands.wrapBlock = (editor, block) => {
-  const { value } = editor
-  const { selection } = value
-  editor.wrapBlockAtRange(selection, block)
-}
+  const { value } = editor;
+  const { selection } = value;
+  editor.wrapBlockAtRange(selection, block);
+};
 
 /**
  * Wrap nodes in a new `inline`.
@@ -500,10 +499,10 @@ Commands.wrapBlock = (editor, block) => {
  */
 
 Commands.wrapInline = (editor, inline) => {
-  const { value } = editor
-  const { selection } = value
-  editor.wrapInlineAtRange(selection, inline)
-}
+  const { value } = editor;
+  const { selection } = value;
+  editor.wrapInlineAtRange(selection, inline);
+};
 
 /**
  * Wrap the current selection with prefix/suffix.
@@ -514,25 +513,25 @@ Commands.wrapInline = (editor, inline) => {
  */
 
 Commands.wrapText = (editor, prefix, suffix = prefix) => {
-  const { value } = editor
-  const { selection } = value
-  editor.wrapTextAtRange(selection, prefix, suffix)
+  const { value } = editor;
+  const { selection } = value;
+  editor.wrapTextAtRange(selection, prefix, suffix);
 
   // If the selection was collapsed, it will have moved the start offset too.
   if (selection.isCollapsed) {
-    editor.moveStartBackward(prefix.length)
+    editor.moveStartBackward(prefix.length);
   }
 
   // Adding the suffix will have pushed the end of the selection further on, so
   // we need to move it back to account for this.
-  editor.moveEndBackward(suffix.length)
+  editor.moveEndBackward(suffix.length);
 
   // There's a chance that the selection points moved "through" each other,
   // resulting in a now-incorrect selection direction.
   if (selection.isForward !== editor.value.selection.isForward) {
-    editor.flip()
+    editor.flip();
   }
-}
+};
 
 /**
  * Export.
@@ -540,4 +539,4 @@ Commands.wrapText = (editor, prefix, suffix = prefix) => {
  * @type {Object}
  */
 
-export default Commands
+export default Commands;

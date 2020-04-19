@@ -1,8 +1,8 @@
-import React from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
-import typeOf from 'type-of'
-import { Node, Value } from '@jianghe/slate'
-import { Record } from 'immutable'
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import typeOf from 'type-of';
+import { Node, Value } from '@jianghe/slate';
+import { Record } from 'immutable';
 
 /**
  * String.
@@ -13,7 +13,7 @@ import { Record } from 'immutable'
 const String = new Record({
   object: 'string',
   text: '',
-})
+});
 
 /**
  * A rule to (de)serialize text nodes. This is automatically added to the HTML
@@ -29,30 +29,30 @@ const TEXT_RULE = {
         object: 'text',
         text: '\n',
         marks: [],
-      }
+      };
     }
 
     if (el.nodeName === '#text') {
-      if (el.nodeValue && el.nodeValue.match(/<!--.*?-->/)) return
+      if (el.nodeValue && el.nodeValue.match(/<!--.*?-->/)) return;
 
       return {
         object: 'text',
         text: el.nodeValue,
         marks: [],
-      }
+      };
     }
   },
 
   serialize(obj, children) {
     if (obj.object === 'string') {
       return children.split('\n').reduce((array, text, i) => {
-        if (i !== 0) array.push(<br key={i} />)
-        array.push(text)
-        return array
-      }, [])
+        if (i !== 0) array.push(<br key={i} />);
+        array.push(text);
+        return array;
+      }, []);
     }
   },
-}
+};
 
 /**
  * A default `parseHtml` function that returns the `<body>` using `DOMParser`.
@@ -62,16 +62,16 @@ const TEXT_RULE = {
  */
 
 function defaultParseHtml(html) {
-  if (typeof DOMParser == 'undefined') {
+  if (typeof DOMParser === 'undefined') {
     throw new Error(
-      'The native `DOMParser` global which the `Html` serializer uses by default is not present in this environment. You must supply the `options.parseHtml` function instead.'
-    )
+      'The native `DOMParser` global which the `Html` serializer uses by default is not present in this environment. You must supply the `options.parseHtml` function instead.',
+    );
   }
 
-  const parsed = new DOMParser().parseFromString(html, 'text/html')
-  const { body } = parsed
+  const parsed = new DOMParser().parseFromString(html, 'text/html');
+  const { body } = parsed;
   // COMPAT: in IE 11 body is null if html is an empty string
-  return body || window.document.createElement('body')
+  return body || window.document.createElement('body');
 }
 
 /**
@@ -95,13 +95,13 @@ class Html {
       defaultBlock = 'paragraph',
       parseHtml = defaultParseHtml,
       rules = [],
-    } = options
+    } = options;
 
-    defaultBlock = Node.createProperties(defaultBlock)
+    defaultBlock = Node.createProperties(defaultBlock);
 
-    this.rules = [...rules, TEXT_RULE]
-    this.defaultBlock = defaultBlock
-    this.parseHtml = parseHtml
+    this.rules = [...rules, TEXT_RULE];
+    this.defaultBlock = defaultBlock;
+    this.parseHtml = parseHtml;
   }
 
   /**
@@ -114,23 +114,23 @@ class Html {
    */
 
   deserialize = (html, options = {}) => {
-    const { toJSON = false } = options
-    const { defaultBlock, parseHtml } = this
-    const fragment = parseHtml(html)
-    const children = Array.from(fragment.childNodes)
-    let nodes = this.deserializeElements(children)
+    const { toJSON = false } = options;
+    const { defaultBlock, parseHtml } = this;
+    const fragment = parseHtml(html);
+    const children = Array.from(fragment.childNodes);
+    let nodes = this.deserializeElements(children);
 
     // COMPAT: ensure that all top-level inline nodes are wrapped into a block.
     nodes = nodes.reduce((memo, node, i, original) => {
       if (node.object === 'block') {
-        memo.push(node)
-        return memo
+        memo.push(node);
+        return memo;
       }
 
       if (i > 0 && original[i - 1].object !== 'block') {
-        const block = memo[memo.length - 1]
-        block.nodes.push(node)
-        return memo
+        const block = memo[memo.length - 1];
+        block.nodes.push(node);
+        return memo;
       }
 
       const block = {
@@ -138,11 +138,11 @@ class Html {
         data: {},
         ...defaultBlock,
         nodes: [node],
-      }
+      };
 
-      memo.push(block)
-      return memo
-    }, [])
+      memo.push(block);
+      return memo;
+    }, []);
 
     // TODO: pretty sure this is no longer needed.
     if (nodes.length === 0) {
@@ -159,7 +159,7 @@ class Html {
             },
           ],
         },
-      ]
+      ];
     }
 
     const json = {
@@ -169,10 +169,10 @@ class Html {
         data: {},
         nodes,
       },
-    }
+    };
 
-    const ret = toJSON ? json : Value.fromJSON(json)
-    return ret
+    const ret = toJSON ? json : Value.fromJSON(json);
+    return ret;
   }
 
   /**
@@ -183,22 +183,22 @@ class Html {
    */
 
   deserializeElements = (elements = []) => {
-    let nodes = []
+    let nodes = [];
 
-    elements.filter(this.cruftNewline).forEach(element => {
-      const node = this.deserializeElement(element)
+    elements.filter(this.cruftNewline).forEach((element) => {
+      const node = this.deserializeElement(element);
 
       switch (typeOf(node)) {
         case 'array':
-          nodes = nodes.concat(node)
-          break
+          nodes = nodes.concat(node);
+          break;
         case 'object':
-          nodes.push(node)
-          break
+          nodes.push(node);
+          break;
       }
-    })
+    });
 
-    return nodes
+    return nodes;
   }
 
   /**
@@ -208,71 +208,71 @@ class Html {
    * @return {Any}
    */
 
-  deserializeElement = element => {
-    let node
+  deserializeElement = (element) => {
+    let node;
 
     if (!element.tagName) {
-      element.tagName = ''
+      element.tagName = '';
     }
 
-    const next = elements => {
+    const next = (elements) => {
       if (Object.prototype.toString.call(elements) === '[object NodeList]') {
-        elements = Array.from(elements)
+        elements = Array.from(elements);
       }
 
       switch (typeOf(elements)) {
         case 'array':
-          return this.deserializeElements(elements)
+          return this.deserializeElements(elements);
         case 'object':
-          return this.deserializeElement(elements)
+          return this.deserializeElement(elements);
         case 'null':
         case 'undefined':
-          return
+          return;
         default:
           throw new Error(
-            `The \`next\` argument was called with invalid children: "${elements}".`
-          )
+            `The \`next\` argument was called with invalid children: "${elements}".`,
+          );
       }
-    }
+    };
 
     for (const rule of this.rules) {
-      if (!rule.deserialize) continue
-      const ret = rule.deserialize(element, next)
-      const type = typeOf(ret)
+      if (!rule.deserialize) continue;
+      const ret = rule.deserialize(element, next);
+      const type = typeOf(ret);
 
       if (
-        type !== 'array' &&
-        type !== 'object' &&
-        type !== 'null' &&
-        type !== 'undefined'
+        type !== 'array'
+        && type !== 'object'
+        && type !== 'null'
+        && type !== 'undefined'
       ) {
         throw new Error(
-          `A rule returned an invalid deserialized representation: "${node}".`
-        )
+          `A rule returned an invalid deserialized representation: "${node}".`,
+        );
       }
 
       if (ret === undefined) {
-        continue
+        continue;
       } else if (ret === null) {
-        return null
+        return null;
       } else if (ret.object === 'mark') {
-        node = this.deserializeMark(ret)
+        node = this.deserializeMark(ret);
       } else {
-        node = ret
+        node = ret;
       }
 
       if (node.object === 'block' || node.object === 'inline') {
-        node.data = node.data || {}
-        node.nodes = node.nodes || []
+        node.data = node.data || {};
+        node.nodes = node.nodes || [];
       } else if (node.object === 'text') {
-        node.marks = node.marks || []
-        node.text = node.text || ''
+        node.marks = node.marks || [];
+        node.text = node.text || '';
       }
 
-      break
+      break;
     }
 
-    return node || next(element.childNodes)
+    return node || next(element.childNodes);
   }
 
   /**
@@ -282,29 +282,29 @@ class Html {
    * @return {Array}
    */
 
-  deserializeMark = mark => {
-    const { type, data } = mark
+  deserializeMark = (mark) => {
+    const { type, data } = mark;
 
-    const applyMark = node => {
+    const applyMark = (node) => {
       if (node.object === 'mark') {
-        const ret = this.deserializeMark(node)
-        return ret
-      } else if (node.object === 'text') {
-        node.marks = node.marks || []
-        node.marks.push({ type, data })
+        const ret = this.deserializeMark(node);
+        return ret;
+      } if (node.object === 'text') {
+        node.marks = node.marks || [];
+        node.marks.push({ type, data });
       } else if (node.nodes) {
-        node.nodes = node.nodes.map(applyMark)
+        node.nodes = node.nodes.map(applyMark);
       }
 
-      return node
-    }
+      return node;
+    };
 
     return mark.nodes.reduce((nodes, node) => {
-      const ret = applyMark(node)
-      if (Array.isArray(ret)) return nodes.concat(ret)
-      nodes.push(ret)
-      return nodes
-    }, [])
+      const ret = applyMark(node);
+      if (Array.isArray(ret)) return nodes.concat(ret);
+      nodes.push(ret);
+      return nodes;
+    }, []);
   }
 
   /**
@@ -317,13 +317,13 @@ class Html {
    */
 
   serialize = (value, options = {}) => {
-    const { document } = value
-    const elements = document.nodes.map(this.serializeNode).filter(el => el)
-    if (options.render === false) return elements
+    const { document } = value;
+    const elements = document.nodes.map(this.serializeNode).filter((el) => el);
+    if (options.render === false) return elements;
 
-    const html = renderToStaticMarkup(<body>{elements}</body>)
-    const inner = html.slice(6, -7)
-    return inner
+    const html = renderToStaticMarkup(<body>{elements}</body>);
+    const inner = html.slice(6, -7);
+    return inner;
   }
 
   /**
@@ -333,35 +333,35 @@ class Html {
    * @return {String}
    */
 
-  serializeNode = node => {
+  serializeNode = (node) => {
     if (node.object === 'text') {
-      const string = new String({ text: node.text })
-      const text = this.serializeString(string)
+      const string = new String({ text: node.text });
+      const text = this.serializeString(string);
 
       return node.marks.reduce((children, mark) => {
         for (const rule of this.rules) {
-          if (!rule.serialize) continue
-          const ret = rule.serialize(mark, children)
-          if (ret === null) return
-          if (ret) return addKey(ret)
+          if (!rule.serialize) continue;
+          const ret = rule.serialize(mark, children);
+          if (ret === null) return;
+          if (ret) return addKey(ret);
         }
 
         throw new Error(
-          `No serializer defined for mark of type "${mark.type}".`
-        )
-      }, text)
+          `No serializer defined for mark of type "${mark.type}".`,
+        );
+      }, text);
     }
 
-    const children = node.nodes.map(this.serializeNode)
+    const children = node.nodes.map(this.serializeNode);
 
     for (const rule of this.rules) {
-      if (!rule.serialize) continue
-      const ret = rule.serialize(node, children)
-      if (ret === null) return
-      if (ret) return addKey(ret)
+      if (!rule.serialize) continue;
+      const ret = rule.serialize(node, children);
+      if (ret === null) return;
+      if (ret) return addKey(ret);
     }
 
-    throw new Error(`No serializer defined for node of type "${node.type}".`)
+    throw new Error(`No serializer defined for node of type "${node.type}".`);
   }
 
   /**
@@ -371,11 +371,11 @@ class Html {
    * @return {String}
    */
 
-  serializeString = string => {
+  serializeString = (string) => {
     for (const rule of this.rules) {
-      if (!rule.serialize) continue
-      const ret = rule.serialize(string, string.text)
-      if (ret) return ret
+      if (!rule.serialize) continue;
+      const ret = rule.serialize(string, string.text);
+      if (ret) return ret;
     }
   }
 
@@ -386,9 +386,7 @@ class Html {
    * @return {Boolean}
    */
 
-  cruftNewline = element => {
-    return !(element.nodeName === '#text' && element.nodeValue === '\n')
-  }
+  cruftNewline = (element) => !(element.nodeName === '#text' && element.nodeValue === '\n')
 }
 
 /**
@@ -398,10 +396,10 @@ class Html {
  * @return {Element}
  */
 
-let key = 0
+let key = 0;
 
 function addKey(element) {
-  return React.cloneElement(element, { key: key++ })
+  return React.cloneElement(element, { key: key++ });
 }
 
 /**
@@ -410,4 +408,4 @@ function addKey(element) {
  * @type {Html}
  */
 
-export default Html
+export default Html;

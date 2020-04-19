@@ -1,14 +1,14 @@
-import isPlainObject from 'is-plain-object'
-import { List, Record, Map } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import { List, Record, Map } from 'immutable';
 
-import Annotation from './annotation'
-import Mark from './mark'
-import Node from './node'
-import PathUtils from '../utils/path-utils'
-import Selection from './selection'
-import Value from './value'
-import apply from '../operations/apply'
-import invert from '../operations/invert'
+import Annotation from './annotation';
+import Mark from './mark';
+import Node from './node';
+import PathUtils from '../utils/path-utils';
+import Selection from './selection';
+import Value from './value';
+import apply from '../operations/apply';
+import invert from '../operations/invert';
 
 /**
  * Operation attributes.
@@ -33,7 +33,7 @@ const OPERATION_ATTRIBUTES = {
   set_selection: ['properties', 'newProperties', 'data'],
   set_value: ['properties', 'newProperties', 'data'],
   split_node: ['path', 'position', 'properties', 'target', 'data'],
-}
+};
 
 /**
  * Default properties.
@@ -57,7 +57,7 @@ const DEFAULTS = {
   target: undefined,
   text: undefined,
   type: undefined,
-}
+};
 
 /**
  * Operation.
@@ -75,16 +75,16 @@ class Operation extends Record(DEFAULTS) {
 
   static create(attrs = {}) {
     if (Operation.isOperation(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (isPlainObject(attrs)) {
-      return Operation.fromJSON(attrs)
+      return Operation.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Operation.create\` only accepts objects or operations, but you passed it: ${attrs}`
-    )
+      `\`Operation.create\` only accepts objects or operations, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -96,13 +96,13 @@ class Operation extends Record(DEFAULTS) {
 
   static createList(elements = []) {
     if (List.isList(elements) || Array.isArray(elements)) {
-      const list = new List(elements.map(Operation.create))
-      return list
+      const list = new List(elements.map(Operation.create));
+      return list;
     }
 
     throw new Error(
-      `\`Operation.createList\` only accepts arrays or lists, but you passed it: ${elements}`
-    )
+      `\`Operation.createList\` only accepts arrays or lists, but you passed it: ${elements}`,
+    );
   }
 
   /**
@@ -114,93 +114,93 @@ class Operation extends Record(DEFAULTS) {
 
   static fromJSON(object) {
     if (Operation.isOperation(object)) {
-      return object
+      return object;
     }
 
-    const { type } = object
-    const ATTRIBUTES = OPERATION_ATTRIBUTES[type]
-    const attrs = { type }
+    const { type } = object;
+    const ATTRIBUTES = OPERATION_ATTRIBUTES[type];
+    const attrs = { type };
 
     if (!ATTRIBUTES) {
       throw new Error(
-        `\`Operation.fromJSON\` was passed an unrecognized operation type: "${type}"`
-      )
+        `\`Operation.fromJSON\` was passed an unrecognized operation type: "${type}"`,
+      );
     }
 
     for (const key of ATTRIBUTES) {
-      let v = object[key]
+      let v = object[key];
 
       // Default `data` to an empty object.
       if (key === 'data' && v === undefined) {
-        v = {}
+        v = {};
       }
 
       if (v === undefined) {
         throw new Error(
-          `\`Operation.fromJSON\` was passed a "${type}" operation without the required "${key}" attribute.`
-        )
+          `\`Operation.fromJSON\` was passed a "${type}" operation without the required "${key}" attribute.`,
+        );
       }
 
       if (key === 'annotation') {
-        v = Annotation.create(v)
+        v = Annotation.create(v);
       }
 
       if (key === 'path' || key === 'newPath') {
-        v = PathUtils.create(v)
+        v = PathUtils.create(v);
       }
 
       if (key === 'mark') {
-        v = Mark.create(v)
+        v = Mark.create(v);
       }
 
       if (key === 'node') {
-        v = Node.create(v)
+        v = Node.create(v);
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        type === 'set_annotation'
+        (key === 'properties' || key === 'newProperties')
+        && type === 'set_annotation'
       ) {
-        v = Annotation.createProperties(v)
+        v = Annotation.createProperties(v);
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        type === 'set_mark'
+        (key === 'properties' || key === 'newProperties')
+        && type === 'set_mark'
       ) {
-        v = Mark.createProperties(v)
+        v = Mark.createProperties(v);
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        (type === 'set_node' || type === 'merge_node' || type === 'split_node')
+        (key === 'properties' || key === 'newProperties')
+        && (type === 'set_node' || type === 'merge_node' || type === 'split_node')
       ) {
-        v = Node.createProperties(v)
+        v = Node.createProperties(v);
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        type === 'set_selection'
+        (key === 'properties' || key === 'newProperties')
+        && type === 'set_selection'
       ) {
-        v = Selection.createProperties(v)
+        v = Selection.createProperties(v);
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        type === 'set_value'
+        (key === 'properties' || key === 'newProperties')
+        && type === 'set_value'
       ) {
-        v = Value.createProperties(v)
+        v = Value.createProperties(v);
       }
 
       if (key === 'data') {
-        v = Map(v)
+        v = Map(v);
       }
 
-      attrs[key] = v
+      attrs[key] = v;
     }
 
-    const op = new Operation(attrs)
-    return op
+    const op = new Operation(attrs);
+    return op;
   }
 
   /**
@@ -211,7 +211,7 @@ class Operation extends Record(DEFAULTS) {
    */
 
   static isOperationList(any) {
-    return List.isList(any) && any.every(item => Operation.isOperation(item))
+    return List.isList(any) && any.every((item) => Operation.isOperation(item));
   }
 
   /**
@@ -222,8 +222,8 @@ class Operation extends Record(DEFAULTS) {
    */
 
   apply(value) {
-    const next = apply(value, this)
-    return next
+    const next = apply(value, this);
+    return next;
   }
 
   /**
@@ -233,8 +233,8 @@ class Operation extends Record(DEFAULTS) {
    */
 
   invert() {
-    const inverted = invert(this)
-    return inverted
+    const inverted = invert(this);
+    return inverted;
   }
 
   /**
@@ -245,99 +245,99 @@ class Operation extends Record(DEFAULTS) {
    */
 
   toJSON(options = {}) {
-    const { object, type } = this
-    const json = { object, type }
-    const ATTRIBUTES = OPERATION_ATTRIBUTES[type]
+    const { object, type } = this;
+    const json = { object, type };
+    const ATTRIBUTES = OPERATION_ATTRIBUTES[type];
 
     for (const key of ATTRIBUTES) {
-      let value = this[key]
+      let value = this[key];
 
       if (
-        key === 'annotation' ||
-        key === 'mark' ||
-        key === 'marks' ||
-        key === 'node' ||
-        key === 'path' ||
-        key === 'newPath'
+        key === 'annotation'
+        || key === 'mark'
+        || key === 'marks'
+        || key === 'node'
+        || key === 'path'
+        || key === 'newPath'
       ) {
-        value = value.toJSON()
+        value = value.toJSON();
       }
 
       if (key === 'properties' && type === 'merge_node') {
-        const v = {}
-        if ('data' in value) v.data = value.data.toJS()
-        if ('type' in value) v.type = value.type
-        value = v
+        const v = {};
+        if ('data' in value) v.data = value.data.toJS();
+        if ('type' in value) v.type = value.type;
+        value = v;
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        type === 'set_annotation'
+        (key === 'properties' || key === 'newProperties')
+        && type === 'set_annotation'
       ) {
-        const v = {}
-        if ('anchor' in value) v.anchor = value.anchor.toJS()
-        if ('focus' in value) v.focus = value.focus.toJS()
-        if ('key' in value) v.key = value.key
-        if ('mark' in value) v.mark = value.mark.toJS()
-        value = v
+        const v = {};
+        if ('anchor' in value) v.anchor = value.anchor.toJS();
+        if ('focus' in value) v.focus = value.focus.toJS();
+        if ('key' in value) v.key = value.key;
+        if ('mark' in value) v.mark = value.mark.toJS();
+        value = v;
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        type === 'set_mark'
+        (key === 'properties' || key === 'newProperties')
+        && type === 'set_mark'
       ) {
-        const v = {}
-        if ('data' in value) v.data = value.data.toJS()
-        if ('type' in value) v.type = value.type
-        value = v
+        const v = {};
+        if ('data' in value) v.data = value.data.toJS();
+        if ('type' in value) v.type = value.type;
+        value = v;
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        type === 'set_node'
+        (key === 'properties' || key === 'newProperties')
+        && type === 'set_node'
       ) {
-        const v = {}
-        if ('data' in value) v.data = value.data.toJS()
-        if ('type' in value) v.type = value.type
-        value = v
+        const v = {};
+        if ('data' in value) v.data = value.data.toJS();
+        if ('type' in value) v.type = value.type;
+        value = v;
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        type === 'set_selection'
+        (key === 'properties' || key === 'newProperties')
+        && type === 'set_selection'
       ) {
-        const v = {}
-        if ('anchor' in value) v.anchor = value.anchor.toJSON()
-        if ('focus' in value) v.focus = value.focus.toJSON()
-        if ('isFocused' in value) v.isFocused = value.isFocused
-        if ('marks' in value) v.marks = value.marks && value.marks.toJSON()
-        value = v
+        const v = {};
+        if ('anchor' in value) v.anchor = value.anchor.toJSON();
+        if ('focus' in value) v.focus = value.focus.toJSON();
+        if ('isFocused' in value) v.isFocused = value.isFocused;
+        if ('marks' in value) v.marks = value.marks && value.marks.toJSON();
+        value = v;
       }
 
       if (
-        (key === 'properties' || key === 'newProperties') &&
-        type === 'set_value'
+        (key === 'properties' || key === 'newProperties')
+        && type === 'set_value'
       ) {
-        const v = {}
-        if ('data' in value) v.data = value.data.toJS()
-        value = v
+        const v = {};
+        if ('data' in value) v.data = value.data.toJS();
+        value = v;
       }
 
       if (key === 'properties' && type === 'split_node') {
-        const v = {}
-        if ('data' in value) v.data = value.data.toJS()
-        if ('type' in value) v.type = value.type
-        value = v
+        const v = {};
+        if ('data' in value) v.data = value.data.toJS();
+        if ('type' in value) v.type = value.type;
+        value = v;
       }
 
       if (key === 'data') {
-        value = value.toJSON()
+        value = value.toJSON();
       }
 
-      json[key] = value
+      json[key] = value;
     }
 
-    return json
+    return json;
   }
 }
 
@@ -347,4 +347,4 @@ class Operation extends Record(DEFAULTS) {
  * @type {Operation}
  */
 
-export default Operation
+export default Operation;

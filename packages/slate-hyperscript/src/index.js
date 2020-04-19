@@ -1,4 +1,4 @@
-import isPlainObject from 'is-plain-object'
+import isPlainObject from 'is-plain-object';
 
 import {
   createAnchor,
@@ -13,7 +13,7 @@ import {
   createSelection,
   createText,
   createValue,
-} from './creators'
+} from './creators';
 
 /**
  * Create a Slate hyperscript function with `options`.
@@ -23,7 +23,9 @@ import {
  */
 
 function createHyperscript(options = {}) {
-  const { blocks = {}, inlines = {}, marks = {}, annotations = {} } = options
+  const {
+    blocks = {}, inlines = {}, marks = {}, annotations = {},
+  } = options;
 
   const creators = {
     anchor: createAnchor,
@@ -39,49 +41,49 @@ function createHyperscript(options = {}) {
     text: createText,
     value: createValue,
     ...(options.creators || {}),
-  }
+  };
 
   for (const key in blocks) {
-    creators[key] = normalizeCreator(blocks[key], createBlock)
+    creators[key] = normalizeCreator(blocks[key], createBlock);
   }
 
   for (const key in inlines) {
-    creators[key] = normalizeCreator(inlines[key], createInline)
+    creators[key] = normalizeCreator(inlines[key], createInline);
   }
 
   for (const key in marks) {
-    creators[key] = normalizeCreator(marks[key], createMark)
+    creators[key] = normalizeCreator(marks[key], createMark);
   }
 
   for (const key in annotations) {
-    creators[key] = normalizeCreator(annotations[key], createAnnotation)
+    creators[key] = normalizeCreator(annotations[key], createAnnotation);
   }
 
   function create(tagName, attributes, ...children) {
-    const creator = creators[tagName]
+    const creator = creators[tagName];
 
     if (!creator) {
-      throw new Error(`No hyperscript creator found for tag: "${tagName}"`)
+      throw new Error(`No hyperscript creator found for tag: "${tagName}"`);
     }
 
     if (attributes == null) {
-      attributes = {}
+      attributes = {};
     }
 
     if (!isPlainObject(attributes)) {
-      children = [attributes].concat(children)
-      attributes = {}
+      children = [attributes].concat(children);
+      attributes = {};
     }
 
     children = children
-      .filter(child => Boolean(child))
-      .reduce((memo, child) => memo.concat(child), [])
+      .filter((child) => Boolean(child))
+      .reduce((memo, child) => memo.concat(child), []);
 
-    const ret = creator(tagName, attributes, children)
-    return ret
+    const ret = creator(tagName, attributes, children);
+    return ret;
   }
 
-  return create
+  return create;
 }
 
 /**
@@ -94,16 +96,16 @@ function createHyperscript(options = {}) {
 
 function normalizeCreator(value, creator) {
   if (typeof value === 'function') {
-    return value
+    return value;
   }
 
   if (typeof value === 'string') {
-    value = { type: value }
+    value = { type: value };
   }
 
   if (isPlainObject(value)) {
     return (tagName, attributes, children) => {
-      const { key, ...rest } = attributes
+      const { key, ...rest } = attributes;
       const attrs = {
         ...value,
         key,
@@ -111,15 +113,15 @@ function normalizeCreator(value, creator) {
           ...(value.data || {}),
           ...rest,
         },
-      }
+      };
 
-      return creator(tagName, attrs, children)
-    }
+      return creator(tagName, attrs, children);
+    };
   }
 
   throw new Error(
-    `Slate hyperscript creators can be either functions, objects or strings, but you passed: ${value}`
-  )
+    `Slate hyperscript creators can be either functions, objects or strings, but you passed: ${value}`,
+  );
 }
 
 /**
@@ -128,5 +130,5 @@ function normalizeCreator(value, creator) {
  * @type {Function}
  */
 
-export default createHyperscript()
-export { createHyperscript }
+export default createHyperscript();
+export { createHyperscript };

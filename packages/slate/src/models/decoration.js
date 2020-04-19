@@ -1,11 +1,11 @@
-import isPlainObject from 'is-plain-object'
-import warning from 'tiny-warning'
-import { List, Record } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import warning from 'tiny-warning';
+import { List, Record } from 'immutable';
 
-import Mark from './mark'
-import Point from './point'
-import Data from './data'
-import Range from './range'
+import Mark from './mark';
+import Point from './point';
+import Data from './data';
+import Range from './range';
 
 /**
  * Default properties.
@@ -18,7 +18,7 @@ const DEFAULTS = {
   data: undefined,
   anchor: undefined,
   focus: undefined,
-}
+};
 
 /**
  * Decoration.
@@ -36,20 +36,20 @@ class Decoration extends Record(DEFAULTS) {
 
   static create(attrs = {}) {
     if (Decoration.isDecoration(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (Range.isRange(attrs)) {
-      return Decoration.fromJSON(Range.createProperties(attrs))
+      return Decoration.fromJSON(Range.createProperties(attrs));
     }
 
     if (isPlainObject(attrs)) {
-      return Decoration.fromJSON(attrs)
+      return Decoration.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Decoration.create\` only accepts objects or decorations, but you passed it: ${attrs}`
-    )
+      `\`Decoration.create\` only accepts objects or decorations, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -61,13 +61,13 @@ class Decoration extends Record(DEFAULTS) {
 
   static createList(elements = []) {
     if (List.isList(elements) || Array.isArray(elements)) {
-      const list = new List(elements.map(Decoration.create))
-      return list
+      const list = new List(elements.map(Decoration.create));
+      return list;
     }
 
     throw new Error(
-      `\`Decoration.createList\` only accepts arrays or lists, but you passed it: ${elements}`
-    )
+      `\`Decoration.createList\` only accepts arrays or lists, but you passed it: ${elements}`,
+    );
   }
 
   /**
@@ -85,21 +85,21 @@ class Decoration extends Record(DEFAULTS) {
         anchor: Point.createProperties(a.anchor),
         focus: Point.createProperties(a.focus),
         mark: Mark.create(a.mark),
-      }
+      };
     }
 
     if (isPlainObject(a)) {
-      const p = {}
-      if ('type' in a) p.type = a.type
-      if ('data' in a) p.data = Data.create(a.data)
-      if ('anchor' in a) p.anchor = Point.create(a.anchor)
-      if ('focus' in a) p.focus = Point.create(a.focus)
-      return p
+      const p = {};
+      if ('type' in a) p.type = a.type;
+      if ('data' in a) p.data = Data.create(a.data);
+      if ('anchor' in a) p.anchor = Point.create(a.anchor);
+      if ('focus' in a) p.focus = Point.create(a.focus);
+      return p;
     }
 
     throw new Error(
-      `\`Decoration.createProperties\` only accepts objects or decorations, but you passed it: ${a}`
-    )
+      `\`Decoration.createProperties\` only accepts objects or decorations, but you passed it: ${a}`,
+    );
   }
 
   /**
@@ -110,25 +110,25 @@ class Decoration extends Record(DEFAULTS) {
    */
 
   static fromJSON(object) {
-    const { anchor, focus } = object
-    let { type, data } = object
+    const { anchor, focus } = object;
+    let { type, data } = object;
 
     if (object.mark && !type) {
       warning(
         false,
-        'As of slate@0.47 the `decoration.mark` property has been changed to `decoration.type` and `decoration.data` directly.'
-      )
+        'As of slate@0.47 the `decoration.mark` property has been changed to `decoration.type` and `decoration.data` directly.',
+      );
 
-      type = object.mark.type
-      data = object.mark.data
+      type = object.mark.type;
+      data = object.mark.data;
     }
 
     if (!type) {
       throw new Error(
         `Decorations must be created with a \`type\`, but you passed: ${JSON.stringify(
-          object
-        )}`
-      )
+          object,
+        )}`,
+      );
     }
 
     const decoration = new Decoration({
@@ -136,9 +136,9 @@ class Decoration extends Record(DEFAULTS) {
       data: Data.create(data || {}),
       anchor: Point.fromJSON(anchor || {}),
       focus: Point.fromJSON(focus || {}),
-    })
+    });
 
-    return decoration
+    return decoration;
   }
 
   /**
@@ -149,9 +149,9 @@ class Decoration extends Record(DEFAULTS) {
    */
 
   setProperties(properties) {
-    properties = Decoration.createProperties(properties)
-    const decoration = this.merge(properties)
-    return decoration
+    properties = Decoration.createProperties(properties);
+    const decoration = this.merge(properties);
+    return decoration;
   }
 
   /**
@@ -168,9 +168,9 @@ class Decoration extends Record(DEFAULTS) {
       data: this.data.toJSON(),
       anchor: this.anchor.toJSON(options),
       focus: this.focus.toJSON(options),
-    }
+    };
 
-    return object
+    return object;
   }
 }
 
@@ -180,4 +180,4 @@ class Decoration extends Record(DEFAULTS) {
  * @type {Decoration}
  */
 
-export default Decoration
+export default Decoration;

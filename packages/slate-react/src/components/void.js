@@ -1,10 +1,10 @@
-import Debug from 'debug'
-import React from 'react'
-import SlateTypes from '@jianghe/slate-prop-types'
-import Types from 'prop-types'
+import Debug from 'debug';
+import React from 'react';
+import SlateTypes from '@jianghe/slate-prop-types';
+import Types from 'prop-types';
 
-import Text from './text'
-import DATA_ATTRS from '../constants/data-attributes'
+import Text from './text';
+import DATA_ATTRS from '../constants/data-attributes';
 
 /**
  * Debug.
@@ -12,7 +12,7 @@ import DATA_ATTRS from '../constants/data-attributes'
  * @type {Function}
  */
 
-const debug = Debug('@jianghe/slate:void')
+const debug = Debug('@jianghe/slate:void');
 
 /**
  * Void.
@@ -44,10 +44,10 @@ class Void extends React.Component {
    */
 
   debug = (message, ...args) => {
-    const { node } = this.props
-    const { key, type } = node
-    const id = `${key} (${type})`
-    debug(message, `${id}`, ...args)
+    const { node } = this.props;
+    const { key, type } = node;
+    const id = `${key} (${type})`;
+    debug(message, `${id}`, ...args);
   }
 
   /**
@@ -57,36 +57,36 @@ class Void extends React.Component {
    */
 
   render() {
-    const { props } = this
-    const { children, node, readOnly } = props
-    const Tag = node.object === 'block' ? 'div' : 'span'
+    const { props } = this;
+    const { children, node, readOnly } = props;
+    const Tag = node.object === 'block' ? 'div' : 'span';
     const style = {
       height: '0',
       color: 'transparent',
       outline: 'none',
       position: 'absolute',
-    }
+    };
 
     const spacerAttrs = {
       [DATA_ATTRS.SPACER]: true,
-    }
+    };
 
     const spacer = (
       <Tag style={style} {...spacerAttrs}>
         {this.renderText()}
       </Tag>
-    )
+    );
 
     const content = (
       <Tag contentEditable={readOnly ? null : false}>{children}</Tag>
-    )
+    );
 
-    this.debug('render', { props })
+    this.debug('render', { props });
 
     const attrs = {
       [DATA_ATTRS.VOID]: true,
       [DATA_ATTRS.KEY]: node.key,
-    }
+    };
 
     return (
       <Tag
@@ -96,7 +96,7 @@ class Void extends React.Component {
         {readOnly ? null : spacer}
         {content}
       </Tag>
-    )
+    );
   }
 
   /**
@@ -119,8 +119,8 @@ class Void extends React.Component {
       readOnly,
       editor,
       textRef,
-    } = this.props
-    const child = node.getFirstText()
+    } = this.props;
+    const child = node.getFirstText();
     return (
       <Text
         ref={textRef}
@@ -133,7 +133,7 @@ class Void extends React.Component {
         parent={node}
         readOnly={readOnly}
       />
-    )
+    );
   }
 }
 
@@ -143,4 +143,4 @@ class Void extends React.Component {
  * @type {Component}
  */
 
-export default Void
+export default Void;

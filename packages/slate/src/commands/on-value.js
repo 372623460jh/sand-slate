@@ -1,6 +1,6 @@
-import pick from 'lodash/pick'
-import Annotation from '../models/annotation'
-import Value from '../models/value'
+import pick from 'lodash/pick';
+import Annotation from '../models/annotation';
+import Value from '../models/value';
 
 /**
  * Commands.
@@ -8,7 +8,7 @@ import Value from '../models/value'
  * @type {Object}
  */
 
-const Commands = {}
+const Commands = {};
 
 /**
  * Set `properties` on the value.
@@ -18,57 +18,57 @@ const Commands = {}
  */
 
 Commands.setData = (editor, data = {}) => {
-  const { value } = editor
-  const newProperties = Value.createProperties({ data })
-  const prevProperties = pick(value, Object.keys(newProperties))
+  const { value } = editor;
+  const newProperties = Value.createProperties({ data });
+  const prevProperties = pick(value, Object.keys(newProperties));
 
   editor.applyOperation({
     type: 'set_value',
     properties: prevProperties,
     newProperties,
-  })
-}
+  });
+};
 
 Commands.addAnnotation = (editor, annotation) => {
-  annotation = Annotation.create(annotation)
+  annotation = Annotation.create(annotation);
 
   editor.applyOperation({
     type: 'add_annotation',
     annotation,
-  })
-}
+  });
+};
 
 Commands.removeAnnotation = (editor, annotation) => {
-  annotation = Annotation.create(annotation)
+  annotation = Annotation.create(annotation);
 
   editor.applyOperation({
     type: 'remove_annotation',
     annotation,
-  })
-}
+  });
+};
 
 Commands.setAnnotation = (editor, annotation, newProperties) => {
-  annotation = Annotation.create(annotation)
-  newProperties = Annotation.createProperties(newProperties)
+  annotation = Annotation.create(annotation);
+  newProperties = Annotation.createProperties(newProperties);
 
   editor.applyOperation({
     type: 'set_annotation',
     properties: annotation,
     newProperties,
-  })
-}
+  });
+};
 
 Commands.setAnnotations = (editor, annotations = []) => {
-  const { value } = editor
-  const newProperties = Value.createProperties({ annotations })
-  const prevProperties = pick(value, Object.keys(newProperties))
+  const { value } = editor;
+  const newProperties = Value.createProperties({ annotations });
+  const prevProperties = pick(value, Object.keys(newProperties));
 
   editor.applyOperation({
     type: 'set_value',
     properties: prevProperties,
     newProperties,
-  })
-}
+  });
+};
 
 /**
  * Export.
@@ -76,4 +76,4 @@ Commands.setAnnotations = (editor, annotations = []) => {
  * @type {Object}
  */
 
-export default Commands
+export default Commands;

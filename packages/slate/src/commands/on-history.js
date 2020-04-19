@@ -1,5 +1,5 @@
-import omit from 'lodash/omit'
-import { List } from 'immutable'
+import omit from 'lodash/omit';
+import { List } from 'immutable';
 
 /**
  * Commands.
@@ -7,7 +7,7 @@ import { List } from 'immutable'
  * @type {Object}
  */
 
-const Commands = {}
+const Commands = {};
 
 /**
  * Save an `operation` into the history.
@@ -17,48 +17,48 @@ const Commands = {}
  */
 
 Commands.save = (editor, operation) => {
-  const { operations, value } = editor
-  const { data } = value
-  let { save, merge } = editor.tmp
-  if (save === false || !isValidOperation(operation)) return
+  const { operations, value } = editor;
+  const { data } = value;
+  let { save, merge } = editor.tmp;
+  if (save === false || !isValidOperation(operation)) return;
 
-  let undos = data.get('undos') || List()
-  const lastBatch = undos.last()
-  const lastOperation = lastBatch && lastBatch.last()
+  let undos = data.get('undos') || List();
+  const lastBatch = undos.last();
+  const lastOperation = lastBatch && lastBatch.last();
 
   // If `merge` is non-commital, and this is not the first operation in a new
   // editor, then merge, otherwise merge based on the last operation.
   if (merge == null) {
     if (operations.size !== 0) {
-      merge = true
+      merge = true;
     } else {
-      merge = shouldMerge(operation, lastOperation)
+      merge = shouldMerge(operation, lastOperation);
     }
   }
 
   // If the `merge` flag is true, add the operation to the last batch.
   if (merge && lastBatch) {
-    const batch = lastBatch.push(operation)
-    undos = undos.pop()
-    undos = undos.push(batch)
+    const batch = lastBatch.push(operation);
+    undos = undos.pop();
+    undos = undos.push(batch);
   } else {
     // Otherwise, create a new batch with the operation.
-    const batch = List([operation])
-    undos = undos.push(batch)
+    const batch = List([operation]);
+    undos = undos.push(batch);
   }
 
   // Constrain the history to 100 entries for memory's sake.
   if (undos.size > 100) {
-    undos = undos.takeLast(100)
+    undos = undos.takeLast(100);
   }
 
   // Clear the redos and update the history.
   editor.withoutSaving(() => {
-    const redos = List()
-    const newData = data.set('undos', undos).set('redos', redos)
-    editor.setData(newData)
-  })
-}
+    const redos = List();
+    const newData = data.set('undos', undos).set('redos', redos);
+    editor.setData(newData);
+  });
+};
 
 /**
  * Redo to the next value in the history.
@@ -66,37 +66,37 @@ Commands.save = (editor, operation) => {
  * @param {Editor} editor
  */
 
-Commands.redo = editor => {
-  const { value } = editor
-  const { data } = value
-  let redos = data.get('redos') || List()
-  let undos = data.get('undos') || List()
-  const batch = redos.last()
-  if (!batch) return
+Commands.redo = (editor) => {
+  const { value } = editor;
+  const { data } = value;
+  let redos = data.get('redos') || List();
+  let undos = data.get('undos') || List();
+  const batch = redos.last();
+  if (!batch) return;
 
   editor.withoutSaving(() => {
     editor.withoutNormalizing(() => {
       // Replay the batch of operations.
-      batch.forEach(op => {
-        const { type, newProperties } = op
+      batch.forEach((op) => {
+        const { type, newProperties } = op;
 
         // When the operation mutates the selection, omit its `isFocused` value to
         // prevent the editor focus from changing during redoing.
         if (type === 'set_selection') {
-          op = op.set('newProperties', omit(newProperties, 'isFocused'))
+          op = op.set('newProperties', omit(newProperties, 'isFocused'));
         }
 
-        editor.applyOperation(op)
-      })
+        editor.applyOperation(op);
+      });
 
       // Shift the next value into the undo stack.
-      redos = redos.pop()
-      undos = undos.push(batch)
-      const newData = data.set('undos', undos).set('redos', redos)
-      editor.setData(newData)
-    })
-  })
-}
+      redos = redos.pop();
+      undos = undos.push(batch);
+      const newData = data.set('undos', undos).set('redos', redos);
+      editor.setData(newData);
+    });
+  });
+};
 
 /**
  * Undo the previous operations in the history.
@@ -104,13 +104,13 @@ Commands.redo = editor => {
  * @param {Editor} editor
  */
 
-Commands.undo = editor => {
-  const { value } = editor
-  const { data } = value
-  let redos = data.get('redos') || List()
-  let undos = data.get('undos') || List()
-  const batch = undos.last()
-  if (!batch) return
+Commands.undo = (editor) => {
+  const { value } = editor;
+  const { data } = value;
+  let redos = data.get('redos') || List();
+  let undos = data.get('undos') || List();
+  const batch = undos.last();
+  if (!batch) return;
 
   editor.withoutSaving(() => {
     editor.withoutNormalizing(() => {
@@ -118,30 +118,30 @@ Commands.undo = editor => {
       batch
         .slice()
         .reverse()
-        .map(op => op.invert())
-        .forEach(inverse => {
-          const { type, newProperties } = inverse
+        .map((op) => op.invert())
+        .forEach((inverse) => {
+          const { type, newProperties } = inverse;
 
           // When the operation mutates the selection, omit its `isFocused` value to
           // prevent the editor focus from changing during undoing.
           if (type === 'set_selection') {
             inverse = inverse.set(
               'newProperties',
-              omit(newProperties, 'isFocused')
-            )
+              omit(newProperties, 'isFocused'),
+            );
           }
 
-          editor.applyOperation(inverse)
-        })
+          editor.applyOperation(inverse);
+        });
 
       // Shift the previous operations into the redo stack.
-      redos = redos.push(batch)
-      undos = undos.pop()
-      const newData = data.set('undos', undos).set('redos', redos)
-      editor.setData(newData)
-    })
-  })
-}
+      redos = redos.push(batch);
+      undos = undos.pop();
+      const newData = data.set('undos', undos).set('redos', redos);
+      editor.setData(newData);
+    });
+  });
+};
 
 /**
  * Apply a series of changes inside a synchronous `fn`, without merging any of
@@ -152,11 +152,11 @@ Commands.undo = editor => {
  */
 
 Commands.withoutMerging = (editor, fn) => {
-  const value = editor.tmp.merge
-  editor.tmp.merge = false
-  fn(editor)
-  editor.tmp.merge = value
-}
+  const value = editor.tmp.merge;
+  editor.tmp.merge = false;
+  fn(editor);
+  editor.tmp.merge = value;
+};
 
 /**
  * Apply a series of changes inside a synchronous `fn`, without saving any of
@@ -167,11 +167,11 @@ Commands.withoutMerging = (editor, fn) => {
  */
 
 Commands.withoutSaving = (editor, fn) => {
-  const value = editor.tmp.save
-  editor.tmp.save = false
-  fn(editor)
-  editor.tmp.save = value
-}
+  const value = editor.tmp.save;
+  editor.tmp.save = false;
+  fn(editor);
+  editor.tmp.save = value;
+};
 
 /**
  * Check whether to merge a new operation `o` into the previous operation `p`.
@@ -182,20 +182,19 @@ Commands.withoutSaving = (editor, fn) => {
  */
 
 function shouldMerge(o, p) {
-  if (!p) return false
+  if (!p) return false;
 
-  const merge =
-    (o.type === 'set_selection' && p.type === 'set_selection') ||
-    (o.type === 'insert_text' &&
-      p.type === 'insert_text' &&
-      o.offset === p.offset + p.text.length &&
-      o.path.equals(p.path)) ||
-    (o.type === 'remove_text' &&
-      p.type === 'remove_text' &&
-      o.offset + o.text.length === p.offset &&
-      o.path.equals(p.path))
+  const merge = (o.type === 'set_selection' && p.type === 'set_selection')
+    || (o.type === 'insert_text'
+      && p.type === 'insert_text'
+      && o.offset === p.offset + p.text.length
+      && o.path.equals(p.path))
+    || (o.type === 'remove_text'
+      && p.type === 'remove_text'
+      && o.offset + o.text.length === p.offset
+      && o.path.equals(p.path));
 
-  return merge
+  return merge;
 }
 
 /**
@@ -206,14 +205,14 @@ function shouldMerge(o, p) {
 
 function isValidOperation(o) {
   if (o.type === 'set_selection') {
-    const { isFocused, anchor, focus } = o.newProperties
+    const { isFocused, anchor, focus } = o.newProperties;
 
     // this is blur/focus operation, dont need to store it into the history
     if (isFocused !== undefined && !anchor && !focus) {
-      return false
+      return false;
     }
   }
-  return true
+  return true;
 }
 
 /**
@@ -222,4 +221,4 @@ function isValidOperation(o) {
  * @type {Object}
  */
 
-export default Commands
+export default Commands;

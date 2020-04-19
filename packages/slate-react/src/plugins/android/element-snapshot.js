@@ -1,6 +1,6 @@
-import getWindow from 'get-window'
+import getWindow from 'get-window';
 
-import DATA_ATTRS from '../../constants/data-attributes'
+import DATA_ATTRS from '../../constants/data-attributes';
 
 /**
  * Is the given node a text node?
@@ -11,7 +11,7 @@ import DATA_ATTRS from '../../constants/data-attributes'
  */
 
 function isTextNode(node, window) {
-  return node.nodeType === window.Node.TEXT_NODE
+  return node.nodeType === window.Node.TEXT_NODE;
 }
 
 /**
@@ -23,17 +23,15 @@ function isTextNode(node, window) {
  */
 
 function getElementSnapshot(node, window) {
-  const snapshot = {}
-  snapshot.node = node
+  const snapshot = {};
+  snapshot.node = node;
 
   if (isTextNode(node, window)) {
-    snapshot.text = node.textContent
+    snapshot.text = node.textContent;
   }
 
-  snapshot.children = Array.from(node.childNodes).map(childNode =>
-    getElementSnapshot(childNode, window)
-  )
-  return snapshot
+  snapshot.children = Array.from(node.childNodes).map((childNode) => getElementSnapshot(childNode, window));
+  return snapshot;
 }
 
 /**
@@ -45,15 +43,15 @@ function getElementSnapshot(node, window) {
  */
 
 function getSnapshot(elements, window) {
-  if (!elements.length) throw new Error(`elements must be an Array`)
+  if (!elements.length) throw new Error('elements must be an Array');
 
-  const lastElement = elements[elements.length - 1]
+  const lastElement = elements[elements.length - 1];
   const snapshot = {
-    elements: elements.map(element => getElementSnapshot(element, window)),
+    elements: elements.map((element) => getElementSnapshot(element, window)),
     parent: lastElement.parentElement,
     next: lastElement.nextElementSibling,
-  }
-  return snapshot
+  };
+  return snapshot;
 }
 
 /**
@@ -66,37 +64,37 @@ function getSnapshot(elements, window) {
  */
 
 function applyElementSnapshot(snapshot, window) {
-  const el = snapshot.node
+  const el = snapshot.node;
 
   if (isTextNode(el, window)) {
     // Update text if it is different
     if (el.textContent !== snapshot.text) {
-      el.textContent = snapshot.text
+      el.textContent = snapshot.text;
     }
   }
 
-  snapshot.children.forEach(childSnapshot => {
-    applyElementSnapshot(childSnapshot, window)
-    el.appendChild(childSnapshot.node)
-  })
+  snapshot.children.forEach((childSnapshot) => {
+    applyElementSnapshot(childSnapshot, window);
+    el.appendChild(childSnapshot.node);
+  });
 
   // remove children that shouldn't be there
-  const snapLength = snapshot.children.length
+  const snapLength = snapshot.children.length;
 
   while (el.childNodes.length > snapLength) {
-    el.removeChild(el.childNodes[0])
+    el.removeChild(el.childNodes[0]);
   }
 
   // remove any clones from the DOM. This can happen when a block is split.
-  const { dataset } = el
-  if (!dataset) return // if there's no dataset, don't remove it
-  const key = dataset.key
-  if (!key) return // if there's no `data-key`, don't remove it
+  const { dataset } = el;
+  if (!dataset) return; // if there's no dataset, don't remove it
+  const { key } = dataset;
+  if (!key) return; // if there's no `data-key`, don't remove it
   const dups = new window.Set(
-    Array.from(window.document.querySelectorAll(`[${DATA_ATTRS.KEY}="${key}"]`))
-  )
-  dups.delete(el)
-  dups.forEach(dup => dup.parentElement.removeChild(dup))
+    Array.from(window.document.querySelectorAll(`[${DATA_ATTRS.KEY}="${key}"]`)),
+  );
+  dups.delete(el);
+  dups.forEach((dup) => dup.parentElement.removeChild(dup));
 }
 
 /**
@@ -110,22 +108,22 @@ function applyElementSnapshot(snapshot, window) {
  */
 
 function applySnapshot(snapshot, window) {
-  const { elements, next, parent } = snapshot
-  elements.forEach(element => applyElementSnapshot(element, window))
-  const lastElement = elements[elements.length - 1].node
+  const { elements, next, parent } = snapshot;
+  elements.forEach((element) => applyElementSnapshot(element, window));
+  const lastElement = elements[elements.length - 1].node;
 
   if (snapshot.next) {
-    parent.insertBefore(lastElement, next)
+    parent.insertBefore(lastElement, next);
   } else {
-    parent.appendChild(lastElement)
+    parent.appendChild(lastElement);
   }
 
-  let prevElement = lastElement
+  let prevElement = lastElement;
 
   for (let i = elements.length - 2; i >= 0; i--) {
-    const element = elements[i].node
-    parent.insertBefore(element, prevElement)
-    prevElement = element
+    const element = elements[i].node;
+    parent.insertBefore(element, prevElement);
+    prevElement = element;
   }
 }
 
@@ -141,9 +139,9 @@ export default class ElementSnapshot {
    */
 
   constructor(elements, data) {
-    this.window = getWindow(elements[0])
-    this.snapshot = getSnapshot(elements, this.window)
-    this.data = data
+    this.window = getWindow(elements[0]);
+    this.snapshot = getSnapshot(elements, this.window);
+    this.data = data;
   }
 
   /**
@@ -151,7 +149,7 @@ export default class ElementSnapshot {
    */
 
   apply() {
-    applySnapshot(this.snapshot, this.window)
+    applySnapshot(this.snapshot, this.window);
   }
 
   /**
@@ -161,6 +159,6 @@ export default class ElementSnapshot {
    */
 
   getData() {
-    return this.data
+    return this.data;
   }
 }

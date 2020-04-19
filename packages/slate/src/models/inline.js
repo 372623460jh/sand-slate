@@ -1,8 +1,8 @@
-import isPlainObject from 'is-plain-object'
-import { List, Map, Record } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import { List, Map, Record } from 'immutable';
 
-import KeyUtils from '../utils/key-utils'
-import Node from './node'
+import KeyUtils from '../utils/key-utils';
+import Node from './node';
 
 /**
  * Default properties.
@@ -15,7 +15,7 @@ const DEFAULTS = {
   key: undefined,
   nodes: undefined,
   type: undefined,
-}
+};
 
 /**
  * Inline.
@@ -33,20 +33,20 @@ class Inline extends Record(DEFAULTS) {
 
   static create(attrs = {}) {
     if (Inline.isInline(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (typeof attrs === 'string') {
-      attrs = { type: attrs }
+      attrs = { type: attrs };
     }
 
     if (isPlainObject(attrs)) {
-      return Inline.fromJSON(attrs)
+      return Inline.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Inline.create\` only accepts objects, strings or inlines, but you passed it: ${attrs}`
-    )
+      `\`Inline.create\` only accepts objects, strings or inlines, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -58,13 +58,13 @@ class Inline extends Record(DEFAULTS) {
 
   static createList(elements = []) {
     if (List.isList(elements) || Array.isArray(elements)) {
-      const list = new List(elements.map(Inline.create))
-      return list
+      const list = new List(elements.map(Inline.create));
+      return list;
     }
 
     throw new Error(
-      `\`Inline.createList\` only accepts arrays or lists, but you passed it: ${elements}`
-    )
+      `\`Inline.createList\` only accepts arrays or lists, but you passed it: ${elements}`,
+    );
   }
 
   /**
@@ -76,13 +76,15 @@ class Inline extends Record(DEFAULTS) {
 
   static fromJSON(object) {
     if (Inline.isInline(object)) {
-      return object
+      return object;
     }
 
-    const { data = {}, key = KeyUtils.create(), nodes = [], type } = object
+    const {
+      data = {}, key = KeyUtils.create(), nodes = [], type,
+    } = object;
 
     if (typeof type !== 'string') {
-      throw new Error('`Inline.fromJS` requires a `type` string.')
+      throw new Error('`Inline.fromJS` requires a `type` string.');
     }
 
     const inline = new Inline({
@@ -90,9 +92,9 @@ class Inline extends Record(DEFAULTS) {
       type,
       data: new Map(data),
       nodes: Node.createList(nodes),
-    })
+    });
 
-    return inline
+    return inline;
   }
 
   /**
@@ -103,7 +105,7 @@ class Inline extends Record(DEFAULTS) {
    */
 
   static isInlineList(any) {
-    return List.isList(any) && any.every(item => Inline.isInline(item))
+    return List.isList(any) && any.every((item) => Inline.isInline(item));
   }
 
   /**
@@ -118,14 +120,14 @@ class Inline extends Record(DEFAULTS) {
       object: this.object,
       type: this.type,
       data: this.data.toJSON(),
-      nodes: this.nodes.toArray().map(n => n.toJSON(options)),
-    }
+      nodes: this.nodes.toArray().map((n) => n.toJSON(options)),
+    };
 
     if (options.preserveKeys) {
-      object.key = this.key
+      object.key = this.key;
     }
 
-    return object
+    return object;
   }
 }
 
@@ -135,4 +137,4 @@ class Inline extends Record(DEFAULTS) {
  * @type {Inline}
  */
 
-export default Inline
+export default Inline;

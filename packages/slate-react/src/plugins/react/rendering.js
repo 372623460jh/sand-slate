@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 /**
  * The default rendering behavior for the React plugin.
@@ -9,11 +9,11 @@ import React from 'react'
 function Rendering() {
   return {
     decorateNode() {
-      return []
+      return [];
     },
 
     renderAnnotation({ attributes, children }) {
-      return <span {...attributes}>{children}</span>
+      return <span {...attributes}>{children}</span>;
     },
 
     renderBlock({ attributes, children }) {
@@ -21,19 +21,19 @@ function Rendering() {
         <div {...attributes} style={{ position: 'relative' }}>
           {children}
         </div>
-      )
+      );
     },
 
     renderDecoration({ attributes, children }) {
-      return <span {...attributes}>{children}</span>
+      return <span {...attributes}>{children}</span>;
     },
 
     renderDocument({ children }) {
-      return children
+      return children;
     },
 
     renderEditor({ children }) {
-      return children
+      return children;
     },
 
     renderInline({ attributes, children }) {
@@ -41,13 +41,13 @@ function Rendering() {
         <span {...attributes} style={{ position: 'relative' }}>
           {children}
         </span>
-      )
+      );
     },
 
     renderMark({ attributes, children }) {
-      return <span {...attributes}>{children}</span>
+      return <span {...attributes}>{children}</span>;
     },
-  }
+  };
 }
 
 /**
@@ -56,4 +56,4 @@ function Rendering() {
  * @type {Function}
  */
 
-export default Rendering
+export default Rendering;

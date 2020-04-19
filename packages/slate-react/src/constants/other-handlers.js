@@ -13,7 +13,7 @@ const OTHER_HANDLERS = [
   'renderEditor',
   'renderInline',
   'renderMark',
-]
+];
 
 /**
  * Export.
@@ -21,4 +21,4 @@ const OTHER_HANDLERS = [
  * @type {Array}
  */
 
-export default OTHER_HANDLERS
+export default OTHER_HANDLERS;

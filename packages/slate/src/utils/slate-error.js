@@ -6,17 +6,17 @@
 
 class SlateError extends Error {
   constructor(code, attrs = {}) {
-    super(code)
-    this.code = code
+    super(code);
+    this.code = code;
 
     for (const key in attrs) {
-      this[key] = attrs[key]
+      this[key] = attrs[key];
     }
 
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor)
+      Error.captureStackTrace(this, this.constructor);
     } else {
-      this.stack = new Error().stack
+      this.stack = new Error().stack;
     }
   }
 }
@@ -27,4 +27,4 @@ class SlateError extends Error {
  * @type {SlateError}
  */
 
-export default SlateError
+export default SlateError;

@@ -1,4 +1,4 @@
-import TRANSFER_TYPES from '../constants/transfer-types'
+import TRANSFER_TYPES from '../constants/transfer-types';
 
 /**
  * The default plain text transfer type.
@@ -6,7 +6,7 @@ import TRANSFER_TYPES from '../constants/transfer-types'
  * @type {String}
  */
 
-const { TEXT } = TRANSFER_TYPES
+const { TEXT } = TRANSFER_TYPES;
 
 /**
  * Set data with `type` and `content` on an `event`.
@@ -20,45 +20,45 @@ const { TEXT } = TRANSFER_TYPES
  */
 
 function setEventTransfer(event, type, content) {
-  const mime = TRANSFER_TYPES[type.toUpperCase()]
+  const mime = TRANSFER_TYPES[type.toUpperCase()];
 
   if (!mime) {
-    throw new Error(`Cannot set unknown transfer type "${mime}".`)
+    throw new Error(`Cannot set unknown transfer type "${mime}".`);
   }
 
   if (event.nativeEvent) {
-    event = event.nativeEvent
+    event = event.nativeEvent;
   }
 
-  const transfer = event.dataTransfer || event.clipboardData
+  const transfer = event.dataTransfer || event.clipboardData;
 
   try {
-    transfer.setData(mime, content)
+    transfer.setData(mime, content);
     // COMPAT: Safari needs to have the 'text' (and not 'text/plain') value in dataTransfer
     // to display the cursor while dragging internally.
-    transfer.setData('text', transfer.getData('text'))
+    transfer.setData('text', transfer.getData('text'));
   } catch (err) {
-    const prefix = '@jianghe/slate-DATA-EMBED::'
-    const text = transfer.getData(TEXT)
-    let obj = {}
+    const prefix = '@jianghe/slate-DATA-EMBED::';
+    const text = transfer.getData(TEXT);
+    let obj = {};
 
     // If the existing plain text data is prefixed, it's Slate JSON data.
     if (text.substring(0, prefix.length) === prefix) {
       try {
-        obj = JSON.parse(text.substring(prefix.length))
+        obj = JSON.parse(text.substring(prefix.length));
       } catch (e) {
         throw new Error(
-          'Failed to parse Slate data from `DataTransfer` object.'
-        )
+          'Failed to parse Slate data from `DataTransfer` object.',
+        );
       }
     } else {
       // Otherwise, it's just set it as is.
-      obj[TEXT] = text
+      obj[TEXT] = text;
     }
 
-    obj[mime] = content
-    const string = `${prefix}${JSON.stringify(obj)}`
-    transfer.setData(TEXT, string)
+    obj[mime] = content;
+    const string = `${prefix}${JSON.stringify(obj)}`;
+    transfer.setData(TEXT, string);
   }
 }
 
@@ -68,4 +68,4 @@ function setEventTransfer(event, type, content) {
  * @type {Function}
  */
 
-export default setEventTransfer
+export default setEventTransfer;

@@ -6,7 +6,7 @@
  * @type {Boolean}
  */
 
-let ENABLED = true
+let ENABLED = true;
 
 /**
  * The leaf node of a cache tree. Used to support variable argument length. A
@@ -15,7 +15,7 @@ let ENABLED = true
  * @type {Symbol}
  */
 
-const LEAF = Symbol('LEAF')
+const LEAF = Symbol('LEAF');
 
 /**
  * The node of a cache tree for a WeakMap to store cache visited by objects
@@ -23,7 +23,7 @@ const LEAF = Symbol('LEAF')
  * @type {Symbol}
  */
 
-const STORE_KEY = Symbol('STORE_KEY')
+const STORE_KEY = Symbol('STORE_KEY');
 
 /**
  * Values to represent a memoized undefined and null value. Allows efficient value
@@ -32,8 +32,8 @@ const STORE_KEY = Symbol('STORE_KEY')
  * @type {Symbol}
  */
 
-const UNDEFINED = Symbol('undefined')
-const NULL = Symbol('null')
+const UNDEFINED = Symbol('undefined');
+const NULL = Symbol('null');
 
 /**
  * Default value for unset keys in native Maps
@@ -41,7 +41,7 @@ const NULL = Symbol('null')
  * @type {Undefined}
  */
 
-const UNSET = undefined
+const UNSET = undefined;
 
 /**
  * Global Store for all cached values
@@ -49,7 +49,7 @@ const UNSET = undefined
  * @type {WeakMap}
  */
 
-let memoizeStore = new WeakMap()
+let memoizeStore = new WeakMap();
 
 /**
  * Memoize all of the `properties` on a `object`.
@@ -61,54 +61,54 @@ let memoizeStore = new WeakMap()
 
 function memoize(object, properties) {
   for (const property of properties) {
-    const original = object[property]
+    const original = object[property];
 
     if (!original) {
-      throw new Error(`Object does not have a property named "${property}".`)
+      throw new Error(`Object does not have a property named "${property}".`);
     }
 
-    object[property] = function(...args) {
+    object[property] = function (...args) {
       // If memoization is disabled, call into the original method.
-      if (!ENABLED) return original.apply(this, args)
+      if (!ENABLED) return original.apply(this, args);
 
       if (!memoizeStore.has(this)) {
         memoizeStore.set(this, {
           noArgs: {},
           hasArgs: {},
-        })
+        });
       }
 
-      const { noArgs, hasArgs } = memoizeStore.get(this)
+      const { noArgs, hasArgs } = memoizeStore.get(this);
 
-      const takesArguments = args.length !== 0
+      const takesArguments = args.length !== 0;
 
-      let cachedValue
-      let keys
+      let cachedValue;
+      let keys;
 
       if (takesArguments) {
-        keys = [property, ...args]
-        cachedValue = getIn(hasArgs, keys)
+        keys = [property, ...args];
+        cachedValue = getIn(hasArgs, keys);
       } else {
-        cachedValue = noArgs[property]
+        cachedValue = noArgs[property];
       }
 
       // If we've got a result already, return it.
       if (cachedValue !== UNSET) {
-        return cachedValue === UNDEFINED ? undefined : cachedValue
+        return cachedValue === UNDEFINED ? undefined : cachedValue;
       }
 
       // Otherwise calculate what it should be once and cache it.
-      const value = original.apply(this, args)
-      const v = value === undefined ? UNDEFINED : value
+      const value = original.apply(this, args);
+      const v = value === undefined ? UNDEFINED : value;
 
       if (takesArguments) {
-        setIn(hasArgs, keys, v)
+        setIn(hasArgs, keys, v);
       } else {
-        noArgs[property] = v
+        noArgs[property] = v;
       }
 
-      return value
-    }
+      return value;
+    };
   }
 }
 
@@ -126,21 +126,21 @@ function memoize(object, properties) {
 function getIn(map, keys) {
   for (let key of keys) {
     if (key === undefined) {
-      key = UNDEFINED
+      key = UNDEFINED;
     } else if (key == null) {
-      key = NULL
+      key = NULL;
     }
 
     if (typeof key === 'object') {
-      map = map[STORE_KEY] && map[STORE_KEY].get(key)
+      map = map[STORE_KEY] && map[STORE_KEY].get(key);
     } else {
-      map = map[key]
+      map = map[key];
     }
 
-    if (map === UNSET) return UNSET
+    if (map === UNSET) return UNSET;
   }
 
-  return map[LEAF]
+  return map[LEAF];
 }
 
 /**
@@ -153,41 +153,41 @@ function getIn(map, keys) {
  */
 
 function setIn(map, keys, value) {
-  let child = map
+  let child = map;
 
   for (let key of keys) {
     if (key === undefined) {
-      key = UNDEFINED
+      key = UNDEFINED;
     } else if (key == null) {
-      key = NULL
+      key = NULL;
     }
 
     if (typeof key !== 'object') {
       if (!child[key]) {
-        child[key] = {}
+        child[key] = {};
       }
 
-      child = child[key]
-      continue
+      child = child[key];
+      continue;
     }
 
     if (!child[STORE_KEY]) {
-      child[STORE_KEY] = new WeakMap()
+      child[STORE_KEY] = new WeakMap();
     }
 
     if (!child[STORE_KEY].has(key)) {
-      const newChild = {}
-      child[STORE_KEY].set(key, newChild)
-      child = newChild
-      continue
+      const newChild = {};
+      child[STORE_KEY].set(key, newChild);
+      child = newChild;
+      continue;
     }
 
-    child = child[STORE_KEY].get(key)
+    child = child[STORE_KEY].get(key);
   }
 
   // The whole path has been created, so set the value to the bottom most map.
-  child[LEAF] = value
-  return map
+  child[LEAF] = value;
+  return map;
 }
 
 /**
@@ -197,7 +197,7 @@ function setIn(map, keys, value) {
  */
 
 function resetMemoization() {
-  memoizeStore = new WeakMap()
+  memoizeStore = new WeakMap();
 }
 
 /**
@@ -208,7 +208,7 @@ function resetMemoization() {
  */
 
 function useMemoization(enabled) {
-  ENABLED = enabled
+  ENABLED = enabled;
 }
 
 /**
@@ -217,5 +217,5 @@ function useMemoization(enabled) {
  * @type {Object}
  */
 
-export default memoize
-export { resetMemoization, useMemoization }
+export default memoize;
+export { resetMemoization, useMemoization };

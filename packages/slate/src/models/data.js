@@ -1,5 +1,5 @@
-import isPlainObject from 'is-plain-object'
-import { Map } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import { Map } from 'immutable';
 
 /**
  * Data.
@@ -20,16 +20,16 @@ class Data {
 
   static create(attrs = {}) {
     if (Map.isMap(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (isPlainObject(attrs)) {
-      return Data.fromJSON(attrs)
+      return Data.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Data.create\` only accepts objects or maps, but you passed it: ${attrs}`
-    )
+      `\`Data.create\` only accepts objects or maps, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -40,7 +40,7 @@ class Data {
    */
 
   static fromJSON(object) {
-    return new Map(object)
+    return new Map(object);
   }
 
   /**
@@ -56,4 +56,4 @@ class Data {
  * @type {Object}
  */
 
-export default Data
+export default Data;

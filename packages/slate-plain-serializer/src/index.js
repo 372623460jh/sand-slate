@@ -1,5 +1,7 @@
-import { Block, Mark, Node, Value } from '@jianghe/slate'
-import { Set } from 'immutable'
+import {
+  Block, Mark, Node, Value,
+} from '@jianghe/slate';
+import { Set } from 'immutable';
 
 /**
  * Deserialize a plain text `string` to a Slate value.
@@ -18,39 +20,37 @@ function deserialize(string, options = {}) {
     defaultMarks = [],
     delimiter = '\n',
     toJSON = false,
-  } = options
+  } = options;
 
   if (Set.isSet(defaultMarks)) {
-    defaultMarks = defaultMarks.toArray()
+    defaultMarks = defaultMarks.toArray();
   }
 
-  defaultBlock = Node.createProperties(defaultBlock)
-  defaultMarks = defaultMarks.map(Mark.createProperties)
+  defaultBlock = Node.createProperties(defaultBlock);
+  defaultMarks = defaultMarks.map(Mark.createProperties);
 
   const json = {
     object: 'value',
     document: {
       object: 'document',
       data: {},
-      nodes: string.split(delimiter).map(line => {
-        return {
-          ...defaultBlock,
-          object: 'block',
-          data: {},
-          nodes: [
-            {
-              object: 'text',
-              text: line,
-              marks: defaultMarks,
-            },
-          ],
-        }
-      }),
+      nodes: string.split(delimiter).map((line) => ({
+        ...defaultBlock,
+        object: 'block',
+        data: {},
+        nodes: [
+          {
+            object: 'text',
+            text: line,
+            marks: defaultMarks,
+          },
+        ],
+      })),
     },
-  }
+  };
 
-  const ret = toJSON ? json : Value.fromJSON(json)
-  return ret
+  const ret = toJSON ? json : Value.fromJSON(json);
+  return ret;
 }
 
 /**
@@ -61,7 +61,7 @@ function deserialize(string, options = {}) {
  */
 
 function serialize(value, options = {}) {
-  return serializeNode(value.document, options)
+  return serializeNode(value.document, options);
 }
 
 /**
@@ -72,16 +72,15 @@ function serialize(value, options = {}) {
  */
 
 function serializeNode(node, options = {}) {
-  const { delimiter = '\n' } = options
+  const { delimiter = '\n' } = options;
 
   if (
-    node.object === 'document' ||
-    (node.object === 'block' && Block.isBlockList(node.nodes))
+    node.object === 'document'
+    || (node.object === 'block' && Block.isBlockList(node.nodes))
   ) {
-    return node.nodes.map(serializeNode).join(delimiter)
-  } else {
-    return node.text
+    return node.nodes.map(serializeNode).join(delimiter);
   }
+  return node.text;
 }
 
 /**
@@ -93,4 +92,4 @@ function serializeNode(node, options = {}) {
 export default {
   deserialize,
   serialize,
-}
+};

@@ -1,6 +1,6 @@
-import Debug from 'debug'
-import EVENT_HANDLERS from '../../constants/event-handlers'
-import stringifyEvent from './stringify-event'
+import Debug from 'debug';
+import EVENT_HANDLERS from '../../constants/event-handlers';
+import stringifyEvent from './stringify-event';
 
 /**
  * Debug events function.
@@ -8,7 +8,7 @@ import stringifyEvent from './stringify-event'
  * @type {Function}
  */
 
-const debug = Debug('@jianghe/slate:events')
+const debug = Debug('@jianghe/slate:events');
 
 /**
  * A plugin that sends short easy to digest debug info about each event to
@@ -24,14 +24,14 @@ function DebugEventsPlugin() {
    * @type {Object}
    */
 
-  const plugin = {}
+  const plugin = {};
 
   for (const eventName of EVENT_HANDLERS) {
-    plugin[eventName] = function(event, editor, next) {
-      const s = stringifyEvent(event)
-      debug(s)
-      next()
-    }
+    plugin[eventName] = function (event, editor, next) {
+      const s = stringifyEvent(event);
+      debug(s);
+      next();
+    };
   }
 
   /**
@@ -40,7 +40,7 @@ function DebugEventsPlugin() {
    * @type {Object}
    */
 
-  return plugin
+  return plugin;
 }
 
 /**
@@ -49,4 +49,4 @@ function DebugEventsPlugin() {
  * @type {Function}
  */
 
-export default DebugEventsPlugin
+export default DebugEventsPlugin;

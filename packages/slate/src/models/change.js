@@ -1,8 +1,8 @@
-import isPlainObject from 'is-plain-object'
-import { Record } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import { Record } from 'immutable';
 
-import Operation from './operation'
-import Value from './value'
+import Operation from './operation';
+import Value from './value';
 
 /**
  * Default properties.
@@ -13,7 +13,7 @@ import Value from './value'
 const DEFAULTS = {
   operations: undefined,
   value: undefined,
-}
+};
 
 /**
  * Change.
@@ -31,16 +31,16 @@ class Change extends Record(DEFAULTS) {
 
   static create(attrs = {}) {
     if (Change.isChange(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (isPlainObject(attrs)) {
-      return Change.fromJSON(attrs)
+      return Change.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Change.create\` only accepts objects or changes, but you passed it: ${attrs}`
-    )
+      `\`Change.create\` only accepts objects or changes, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -51,14 +51,14 @@ class Change extends Record(DEFAULTS) {
    */
 
   static fromJSON(object) {
-    const { value, operations = [] } = object
+    const { value, operations = [] } = object;
 
     const change = new Change({
       value: Value.create(value),
       operations: Operation.createList(operations),
-    })
+    });
 
-    return change
+    return change;
   }
 
   /**
@@ -72,10 +72,10 @@ class Change extends Record(DEFAULTS) {
     const object = {
       object: this.object,
       value: this.value.toJSON(options),
-      operations: this.operations.toArray().map(o => o.toJSON(options)),
-    }
+      operations: this.operations.toArray().map((o) => o.toJSON(options)),
+    };
 
-    return object
+    return object;
   }
 }
 
@@ -85,4 +85,4 @@ class Change extends Record(DEFAULTS) {
  * @type {Change}
  */
 
-export default Change
+export default Change;

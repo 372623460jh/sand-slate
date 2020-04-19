@@ -23,17 +23,17 @@ export default class Executor {
    */
 
   constructor(window, fn, options = {}) {
-    this.fn = fn
-    this.window = window
-    this.resume()
-    this.onCancel = options.onCancel
-    this.__setTimeout__(options.timeout)
+    this.fn = fn;
+    this.window = window;
+    this.resume();
+    this.onCancel = options.onCancel;
+    this.__setTimeout__(options.timeout);
   }
 
   __call__ = () => {
     // I don't clear the timeout since it will be noop'ed anyways. Less code.
-    this.fn()
-    this.preventFurtherCalls() // Ensure you can only call the function once
+    this.fn();
+    this.preventFurtherCalls(); // Ensure you can only call the function once
   }
 
   /**
@@ -42,7 +42,7 @@ export default class Executor {
    */
 
   preventFurtherCalls = () => {
-    this.fn = noop
+    this.fn = noop;
   }
 
   /**
@@ -51,17 +51,17 @@ export default class Executor {
    * @param {Number} [ms] - how long to wait by default it is until next frame
    */
 
-  resume = ms => {
+  resume = (ms) => {
     // in case resume is called more than once, we don't want old timers
     // from executing because the `timeoutId` or `callbackId` is overwritten.
-    this.cancel()
+    this.cancel();
 
     if (ms) {
-      this.mode = 'timeout'
-      this.timeoutId = this.window.setTimeout(this.__call__, ms)
+      this.mode = 'timeout';
+      this.timeoutId = this.window.setTimeout(this.__call__, ms);
     } else {
-      this.mode = 'animationFrame'
-      this.callbackId = this.window.requestAnimationFrame(this.__call__)
+      this.mode = 'animationFrame';
+      this.callbackId = this.window.requestAnimationFrame(this.__call__);
     }
   }
 
@@ -72,12 +72,12 @@ export default class Executor {
 
   cancel = () => {
     if (this.mode === 'timeout') {
-      this.window.clearTimeout(this.timeoutId)
+      this.window.clearTimeout(this.timeoutId);
     } else {
-      this.window.cancelAnimationFrame(this.callbackId)
+      this.window.cancelAnimationFrame(this.callbackId);
     }
 
-    if (this.onCancel) this.onCancel()
+    if (this.onCancel) this.onCancel();
   }
 
   /**
@@ -85,12 +85,12 @@ export default class Executor {
    * @param {Number} ms
    */
 
-  __setTimeout__ = timeout => {
-    if (timeout == null) return
+  __setTimeout__ = (timeout) => {
+    if (timeout == null) return;
 
     this.window.setTimeout(() => {
-      this.cancel()
-      this.preventFurtherCalls()
-    }, timeout)
+      this.cancel();
+      this.preventFurtherCalls();
+    }, timeout);
   }
 }

@@ -1,9 +1,9 @@
-import isPlainObject from 'is-plain-object'
-import invariant from 'tiny-invariant'
-import { List, Record } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import invariant from 'tiny-invariant';
+import { List, Record } from 'immutable';
 
-import Mark from './mark'
-import KeyUtils from '../utils/key-utils'
+import Mark from './mark';
+import KeyUtils from '../utils/key-utils';
 
 /**
  * Default properties.
@@ -15,14 +15,14 @@ const DEFAULTS = {
   key: undefined,
   marks: undefined,
   text: undefined,
-}
+};
 
 const Leaf = Record({
   text: undefined,
   marks: undefined,
   annotations: undefined,
   decorations: undefined,
-})
+});
 
 /**
  * Text.
@@ -40,20 +40,20 @@ class Text extends Record(DEFAULTS) {
 
   static create(attrs = '') {
     if (Text.isText(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (typeof attrs === 'string') {
-      attrs = { text: attrs }
+      attrs = { text: attrs };
     }
 
     if (isPlainObject(attrs)) {
-      return Text.fromJSON(attrs)
+      return Text.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Text.create\` only accepts objects, arrays, strings or texts, but you passed it: ${attrs}`
-    )
+      `\`Text.create\` only accepts objects, arrays, strings or texts, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -65,13 +65,13 @@ class Text extends Record(DEFAULTS) {
 
   static createList(elements = []) {
     if (List.isList(elements) || Array.isArray(elements)) {
-      const list = new List(elements.map(Text.create))
-      return list
+      const list = new List(elements.map(Text.create));
+      return list;
     }
 
     throw new Error(
-      `\`Text.createList\` only accepts arrays or lists, but you passed it: ${elements}`
-    )
+      `\`Text.createList\` only accepts arrays or lists, but you passed it: ${elements}`,
+    );
   }
 
   /**
@@ -83,22 +83,22 @@ class Text extends Record(DEFAULTS) {
 
   static fromJSON(object) {
     if (Text.isText(object)) {
-      return object
+      return object;
     }
 
     invariant(
       object.leaves == null,
-      'As of slate@0.46, the `leaves` property of text nodes has been removed! Each individual leaf should be created as a text node instead.'
-    )
+      'As of slate@0.46, the `leaves` property of text nodes has been removed! Each individual leaf should be created as a text node instead.',
+    );
 
-    const { text = '', marks = [], key = KeyUtils.create() } = object
+    const { text = '', marks = [], key = KeyUtils.create() } = object;
     const node = new Text({
       key,
       text,
       marks: Mark.createSet(marks),
-    })
+    });
 
-    return node
+    return node;
   }
 
   /**
@@ -109,7 +109,7 @@ class Text extends Record(DEFAULTS) {
    */
 
   static isTextList(any) {
-    return List.isList(any) && any.every(item => Text.isText(item))
+    return List.isList(any) && any.every((item) => Text.isText(item));
   }
 
   /**
@@ -120,11 +120,11 @@ class Text extends Record(DEFAULTS) {
    */
 
   addMark(mark) {
-    mark = Mark.create(mark)
-    const { marks } = this
-    const next = marks.add(mark)
-    const node = this.set('marks', next)
-    return node
+    mark = Mark.create(mark);
+    const { marks } = this;
+    const next = marks.add(mark);
+    const node = this.set('marks', next);
+    return node;
   }
 
   /**
@@ -135,9 +135,9 @@ class Text extends Record(DEFAULTS) {
    */
 
   addMarks(marks) {
-    marks = Mark.createSet(marks)
-    const node = this.set('marks', this.marks.union(marks))
-    return node
+    marks = Mark.createSet(marks);
+    const node = this.set('marks', this.marks.union(marks));
+    return node;
   }
 
   /**
@@ -150,104 +150,101 @@ class Text extends Record(DEFAULTS) {
    */
 
   getLeaves(annotations, decorations) {
-    const { text, marks } = this
-    let leaves = [{ text, marks, annotations: [], decorations: [] }]
+    const { text, marks } = this;
+    let leaves = [{
+      text, marks, annotations: [], decorations: [],
+    }];
 
     // Helper to split a leaf into two `at` an offset.
-    const split = (leaf, at) => {
-      return [
-        {
-          text: leaf.text.slice(0, at),
-          marks: leaf.marks,
-          annotations: [...leaf.annotations],
-          decorations: [...leaf.decorations],
-        },
-        {
-          text: leaf.text.slice(at),
-          marks: leaf.marks,
-          annotations: [...leaf.annotations],
-          decorations: [...leaf.decorations],
-        },
-      ]
-    }
+    const split = (leaf, at) => [
+      {
+        text: leaf.text.slice(0, at),
+        marks: leaf.marks,
+        annotations: [...leaf.annotations],
+        decorations: [...leaf.decorations],
+      },
+      {
+        text: leaf.text.slice(at),
+        marks: leaf.marks,
+        annotations: [...leaf.annotations],
+        decorations: [...leaf.decorations],
+      },
+    ];
 
     // Helper to compile the leaves for a `kind` of format.
-    const compile = kind => {
-      const formats =
-        kind === 'annotations' ? annotations.values() : decorations
+    const compile = (kind) => {
+      const formats = kind === 'annotations' ? annotations.values() : decorations;
 
       for (const format of formats) {
-        const { start, end } = format
-        const next = []
-        let o = 0
+        const { start, end } = format;
+        const next = [];
+        let o = 0;
 
         for (const leaf of leaves) {
-          const { length } = leaf.text
-          const offset = o
-          o += length
+          const { length } = leaf.text;
+          const offset = o;
+          o += length;
 
           // If the range encompases the entire leaf, add the format.
           if (start.offset <= offset && end.offset >= offset + length) {
-            leaf[kind].push(format)
-            next.push(leaf)
-            continue
+            leaf[kind].push(format);
+            next.push(leaf);
+            continue;
           }
 
           // If the range starts after the leaf, or ends before it, continue.
           if (
-            start.offset > offset + length ||
-            end.offset < offset ||
-            (end.offset === offset && offset !== 0)
+            start.offset > offset + length
+            || end.offset < offset
+            || (end.offset === offset && offset !== 0)
           ) {
-            next.push(leaf)
-            continue
+            next.push(leaf);
+            continue;
           }
 
           // Otherwise we need to split the leaf, at the start, end, or both,
           // and add the format to the middle intersecting section. Do the end
           // split first since we don't need to update the offset that way.
-          let middle = leaf
-          let before
-          let after
+          let middle = leaf;
+          let before;
+          let after;
 
           if (end.offset < offset + length) {
-            ;[middle, after] = split(middle, end.offset - offset)
+            [middle, after] = split(middle, end.offset - offset);
           }
 
           if (start.offset > offset) {
-            ;[before, middle] = split(middle, start.offset - offset)
+            [before, middle] = split(middle, start.offset - offset);
           }
 
-          middle[kind].push(format)
+          middle[kind].push(format);
 
           if (before) {
-            next.push(before)
+            next.push(before);
           }
 
-          next.push(middle)
+          next.push(middle);
 
           if (after) {
-            next.push(after)
+            next.push(after);
           }
         }
 
-        leaves = next
+        leaves = next;
       }
-    }
+    };
 
-    compile('annotations')
-    compile('decorations')
+    compile('annotations');
+    compile('decorations');
 
-    leaves = leaves.map(leaf => {
-      return new Leaf({
-        ...leaf,
-        annotations: List(leaf.annotations),
-        decorations: List(leaf.decorations),
-      })
-    })
+    leaves = leaves.map((leaf) => new Leaf({
+      ...leaf,
+      annotations: List(leaf.annotations),
+      decorations: List(leaf.decorations),
+    }));
 
-    const list = List(leaves)
-    return list
+    const list = List(leaves);
+    return list;
   }
 
   /**
@@ -259,10 +256,10 @@ class Text extends Record(DEFAULTS) {
    */
 
   insertText(index, string) {
-    const { text } = this
-    const next = text.slice(0, index) + string + text.slice(index)
-    const node = this.set('text', next)
-    return node
+    const { text } = this;
+    const next = text.slice(0, index) + string + text.slice(index);
+    const node = this.set('text', next);
+    return node;
   }
 
   /**
@@ -273,11 +270,11 @@ class Text extends Record(DEFAULTS) {
    */
 
   removeMark(mark) {
-    mark = Mark.create(mark)
-    const { marks } = this
-    const next = marks.remove(mark)
-    const node = this.set('marks', next)
-    return node
+    mark = Mark.create(mark);
+    const { marks } = this;
+    const next = marks.remove(mark);
+    const node = this.set('marks', next);
+    return node;
   }
 
   /**
@@ -289,10 +286,10 @@ class Text extends Record(DEFAULTS) {
    */
 
   removeText(index, length) {
-    const { text } = this
-    const next = text.slice(0, index) + text.slice(index + length)
-    const node = this.set('text', next)
-    return node
+    const { text } = this;
+    const next = text.slice(0, index) + text.slice(index + length);
+    const node = this.set('text', next);
+    return node;
   }
 
   /**
@@ -306,14 +303,14 @@ class Text extends Record(DEFAULTS) {
     const object = {
       object: this.object,
       text: this.text,
-      marks: this.marks.toArray().map(m => m.toJSON()),
-    }
+      marks: this.marks.toArray().map((m) => m.toJSON()),
+    };
 
     if (options.preserveKeys) {
-      object.key = this.key
+      object.key = this.key;
     }
 
-    return object
+    return object;
   }
 
   /**
@@ -325,12 +322,12 @@ class Text extends Record(DEFAULTS) {
    */
 
   setMark(properties, newProperties) {
-    const { marks } = this
-    const mark = Mark.create(properties)
-    const newMark = mark.merge(newProperties)
-    const next = marks.remove(mark).add(newMark)
-    const node = this.set('marks', next)
-    return node
+    const { marks } = this;
+    const mark = Mark.create(properties);
+    const newMark = mark.merge(newProperties);
+    const next = marks.remove(mark).add(newMark);
+    const node = this.set('marks', next);
+    return node;
   }
 
   /**
@@ -341,10 +338,10 @@ class Text extends Record(DEFAULTS) {
    */
 
   splitText(index) {
-    const { text } = this
-    const one = this.set('text', text.slice(0, index))
-    const two = this.set('text', text.slice(index)).regenerateKey()
-    return [one, two]
+    const { text } = this;
+    const one = this.set('text', text.slice(0, index));
+    const two = this.set('text', text.slice(index)).regenerateKey();
+    return [one, two];
   }
 
   /**
@@ -355,9 +352,9 @@ class Text extends Record(DEFAULTS) {
    */
 
   mergeText(other) {
-    const next = this.text + other.text
-    const node = this.set('text', next)
-    return node
+    const next = this.text + other.text;
+    const node = this.set('text', next);
+    return node;
   }
 }
 
@@ -367,4 +364,4 @@ class Text extends Record(DEFAULTS) {
  * @type {Text}
  */
 
-export default Text
+export default Text;

@@ -1,15 +1,15 @@
 /* global Promise */
-const { BenchType } = require('./types')
-const { makeOptions } = require('./makeOptions')
-const { Timer } = require('./Timer')
-const { logger } = require('./logger')
+const { BenchType } = require('./types');
+const { makeOptions } = require('./makeOptions');
+const { Timer } = require('./Timer');
+const { logger } = require('./logger');
 
 const errorReport = {
   cycles: NaN,
   user: NaN,
   system: NaN,
   all: NaN,
-}
+};
 
 /**
  * Run a task and calculate the time consuming of tasks
@@ -24,13 +24,13 @@ class Bench {
    */
 
   constructor(suite, name, options = {}) {
-    this.name = name
-    this.options = makeOptions({ ...suite.options, ...options })
-    this.isFinished = false
-    this.inputter = () => undefined
-    this.runner = () => {}
-    this.report = { ...errorReport }
-    suite.addBench(this)
+    this.name = name;
+    this.options = makeOptions({ ...suite.options, ...options });
+    this.isFinished = false;
+    this.inputter = () => undefined;
+    this.runner = () => {};
+    this.report = { ...errorReport };
+    suite.addBench(this);
   }
 
   /**
@@ -40,7 +40,7 @@ class Bench {
    */
 
   isBench(obj) {
-    return obj && obj[BenchType]
+    return obj && obj[BenchType];
   }
 
   /**
@@ -51,16 +51,16 @@ class Bench {
 
   input(inputter) {
     if (Array.isArray(inputter)) {
-      this.inputter = index => inputter[index % inputter.length]
-      return
+      this.inputter = (index) => inputter[index % inputter.length];
+      return;
     }
 
     if (typeof inputter === 'function') {
-      this.inputter = inputter
-      return
+      this.inputter = inputter;
+      return;
     }
 
-    this.inputter = () => inputter
+    this.inputter = () => inputter;
   }
 
   /**
@@ -70,7 +70,7 @@ class Bench {
    */
 
   run(runner) {
-    this.runner = runner
+    this.runner = runner;
   }
 
   /**
@@ -82,38 +82,40 @@ class Bench {
    */
 
   async compose(times, initial) {
-    times = Math.floor(times)
-    const isAsync = this.options.async
-    const { runner, inputter } = this
+    times = Math.floor(times);
+    const isAsync = this.options.async;
+    const { runner, inputter } = this;
 
-    const { maxTime } = this.options
-    let seq = Number.isFinite(this.options.maxTries) ? 1 : NaN
-    let nextCheckIndex = seq
-    const hrStart = process.hrtime()
+    const { maxTime } = this.options;
+    let seq = Number.isFinite(this.options.maxTries) ? 1 : NaN;
+    let nextCheckIndex = seq;
+    const hrStart = process.hrtime();
 
     if (global.gc) {
-      global.gc()
+      global.gc();
     }
 
-    const report = { user: 0, system: 0, all: 0, hr: 0, cycles: 0 }
+    const report = {
+      user: 0, system: 0, all: 0, hr: 0, cycles: 0,
+    };
 
     for (
       let initialIndex = initial;
       initialIndex < times;
       initialIndex += this.options.allocationTries
     ) {
-      const tries = Math.min(times - initialIndex, this.options.allocationTries)
-      const thisTryReport = await runBundleTasks.call(this, tries, initialIndex)
+      const tries = Math.min(times - initialIndex, this.options.allocationTries);
+      const thisTryReport = await runBundleTasks.call(this, tries, initialIndex);
 
       if (global.gc) {
-        global.gc()
+        global.gc();
       }
 
       for (const key in report) {
-        report[key] += thisTryReport[key]
+        report[key] += thisTryReport[key];
       }
     }
-    return report
+    return report;
 
     /**
      * Run a bundle of tasks;
@@ -124,16 +126,14 @@ class Bench {
      */
 
     function runBundleTasks(tries, initialIndex) {
-      const inputs = Array.from({ length: tries }).map(index =>
-        inputter(index + initialIndex)
-      )
-      const timer = new Timer()
-      timer.start()
-      return runFrom(0).then(cycles => {
-        timer.end()
-        const { elapsed } = timer
-        return { ...elapsed, cycles }
-      })
+      const inputs = Array.from({ length: tries }).map((index) => inputter(index + initialIndex));
+      const timer = new Timer();
+      timer.start();
+      return runFrom(0).then((cycles) => {
+        timer.end();
+        const { elapsed } = timer;
+        return { ...elapsed, cycles };
+      });
 
       /**
        *  Run a single task run; If the task is end, return a Promise with the index when the task ends
@@ -142,32 +142,28 @@ class Bench {
        */
 
       function runFrom(index) {
-        if (index === tries) return Promise.resolve(tries)
+        if (index === tries) return Promise.resolve(tries);
 
         if (index === nextCheckIndex) {
-          const hrEnd = process.hrtime(hrStart)
-          const elapsed = hrEnd[0] * 1e3 + hrEnd[1] / 1e6
+          const hrEnd = process.hrtime(hrStart);
+          const elapsed = hrEnd[0] * 1e3 + hrEnd[1] / 1e6;
 
           if (elapsed > maxTime) {
-            return Promise.resolve(index)
-          } else {
-            if (elapsed < maxTime / 20) {
-              seq *= 2
-            }
-
-            nextCheckIndex = seq + nextCheckIndex
+            return Promise.resolve(index);
           }
+          if (elapsed < maxTime / 20) {
+            seq *= 2;
+          }
+
+          nextCheckIndex = seq + nextCheckIndex;
         }
 
         if (!isAsync) {
-          const inputVar = inputs[index]
-          runner(inputVar)
-          return runFrom(index + 1)
-        } else {
-          return Promise.resolve(runner(inputs[index])).then(() =>
-            runFrom(index + 1)
-          )
+          const inputVar = inputs[index];
+          runner(inputVar);
+          return runFrom(index + 1);
         }
+        return Promise.resolve(runner(inputs[index])).then(() => runFrom(index + 1));
       }
     }
   }
@@ -178,36 +174,34 @@ class Bench {
   */
 
   makeRun() {
-    if (this.isFinished) return true
-    logger(this)
-    const { options } = this
-    const { minTries, maxTime, maxTries } = options
+    if (this.isFinished) return true;
+    logger(this);
+    const { options } = this;
+    const { minTries, maxTime, maxTries } = options;
 
-    let { minTime } = options
-    if (minTime > maxTime) minTime = maxTime
+    let { minTime } = options;
+    if (minTime > maxTime) minTime = maxTime;
 
     return this.compose(minTries, 0)
-      .then(report => {
-        if (this.options.mode === 'static') return report
-        const { all } = report
-        if (all > minTime) return report
-        const times = (minTime / all - 1) * minTries
+      .then((report) => {
+        if (this.options.mode === 'static') return report;
+        const { all } = report;
+        if (all > minTime) return report;
+        const times = (minTime / all - 1) * minTries;
         return this.compose(Math.min(times, maxTries), minTries).then(
-          newReport => {
-            return mergeResults(report, newReport)
-          }
-        )
+          (newReport) => mergeResults(report, newReport),
+        );
       })
-      .then(report => {
-        this.report = report
-        this.isFinished = true
-        logger(this)
-        return true
-      })
+      .then((report) => {
+        this.report = report;
+        this.isFinished = true;
+        logger(this);
+        return true;
+      });
   }
 }
 
-Bench.prototype[BenchType] = true
+Bench.prototype[BenchType] = true;
 
 /*
  * Merge two different report
@@ -216,12 +210,12 @@ Bench.prototype[BenchType] = true
  */
 
 function mergeResults(res1, res2) {
-  const result = {}
+  const result = {};
 
   for (const key in res1) {
-    result[key] = res1[key] + res2[key]
+    result[key] = res1[key] + res2[key];
   }
-  return result
+  return result;
 }
 
-module.exports = { Bench }
+module.exports = { Bench };

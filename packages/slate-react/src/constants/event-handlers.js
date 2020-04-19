@@ -28,7 +28,7 @@ const EVENT_HANDLERS = [
   'onMouseUp',
   'onPaste',
   'onSelect',
-]
+];
 
 /**
  * Export.
@@ -36,4 +36,4 @@ const EVENT_HANDLERS = [
  * @type {Array}
  */
 
-export default EVENT_HANDLERS
+export default EVENT_HANDLERS;

@@ -15,10 +15,10 @@ function CommandsPlugin(commands = {}) {
    */
 
   function onCommand(command, editor, next) {
-    const { type, args } = command
-    const fn = commands[type]
-    if (!fn) return next()
-    editor.command(fn, ...args)
+    const { type, args } = command;
+    const fn = commands[type];
+    if (!fn) return next();
+    editor.command(fn, ...args);
   }
 
   /**
@@ -30,10 +30,10 @@ function CommandsPlugin(commands = {}) {
 
   function onConstruct(editor, next) {
     for (const command in commands) {
-      editor.registerCommand(command)
+      editor.registerCommand(command);
     }
 
-    return next()
+    return next();
   }
 
   /**
@@ -45,7 +45,7 @@ function CommandsPlugin(commands = {}) {
   return {
     onCommand,
     onConstruct,
-  }
+  };
 }
 
 /**
@@ -54,4 +54,4 @@ function CommandsPlugin(commands = {}) {
  * @type {Object}
  */
 
-export default CommandsPlugin
+export default CommandsPlugin;

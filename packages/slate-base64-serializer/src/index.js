@@ -1,5 +1,5 @@
-import { Node, Value } from '@jianghe/slate'
-import { atob, btoa } from 'isomorphic-base64'
+import { Node, Value } from '@jianghe/slate';
+import { atob, btoa } from 'isomorphic-base64';
 
 /**
  * Encode a JSON `object` as base-64 `string`.
@@ -9,9 +9,9 @@ import { atob, btoa } from 'isomorphic-base64'
  */
 
 function encode(object) {
-  const string = JSON.stringify(object)
-  const encoded = btoa(encodeURIComponent(string))
-  return encoded
+  const string = JSON.stringify(object);
+  const encoded = btoa(encodeURIComponent(string));
+  return encoded;
 }
 
 /**
@@ -22,9 +22,9 @@ function encode(object) {
  */
 
 function decode(string) {
-  const decoded = decodeURIComponent(atob(string))
-  const object = JSON.parse(decoded)
-  return object
+  const decoded = decodeURIComponent(atob(string));
+  const object = JSON.parse(decoded);
+  return object;
 }
 
 /**
@@ -35,9 +35,9 @@ function decode(string) {
  */
 
 function deserialize(string, options) {
-  const raw = decode(string)
-  const value = Value.fromJSON(raw, options)
-  return value
+  const raw = decode(string);
+  const value = Value.fromJSON(raw, options);
+  return value;
 }
 
 /**
@@ -48,9 +48,9 @@ function deserialize(string, options) {
  */
 
 function deserializeNode(string, options) {
-  const raw = decode(string)
-  const node = Node.fromJSON(raw, options)
-  return node
+  const raw = decode(string);
+  const node = Node.fromJSON(raw, options);
+  return node;
 }
 
 /**
@@ -61,9 +61,9 @@ function deserializeNode(string, options) {
  */
 
 function serialize(value, options) {
-  const raw = value.toJSON(options)
-  const encoded = encode(raw)
-  return encoded
+  const raw = value.toJSON(options);
+  const encoded = encode(raw);
+  return encoded;
 }
 
 /**
@@ -74,9 +74,9 @@ function serialize(value, options) {
  */
 
 function serializeNode(node, options) {
-  const raw = node.toJSON(options)
-  const encoded = encode(raw)
-  return encoded
+  const raw = node.toJSON(options);
+  const encoded = encode(raw);
+  return encoded;
 }
 
 /**
@@ -90,4 +90,4 @@ export default {
   deserializeNode,
   serialize,
   serializeNode,
-}
+};

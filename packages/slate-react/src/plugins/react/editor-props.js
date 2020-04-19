@@ -1,4 +1,4 @@
-import EVENT_HANDLERS from '../../constants/event-handlers'
+import EVENT_HANDLERS from '../../constants/event-handlers';
 
 /**
  * Props that can be defined by plugins.
@@ -19,7 +19,7 @@ const PROPS = [
   'renderInline',
   'renderMark',
   'schema',
-]
+];
 
 /**
  * The top-level editor props in a plugin.
@@ -30,11 +30,11 @@ const PROPS = [
 
 function EditorPropsPlugin(options = {}) {
   const plugin = PROPS.reduce((memo, prop) => {
-    if (prop in options) memo[prop] = options[prop]
-    return memo
-  }, {})
+    if (prop in options) memo[prop] = options[prop];
+    return memo;
+  }, {});
 
-  return plugin
+  return plugin;
 }
 
 /**
@@ -43,4 +43,4 @@ function EditorPropsPlugin(options = {}) {
  * @type {Function}
  */
 
-export default EditorPropsPlugin
+export default EditorPropsPlugin;

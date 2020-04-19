@@ -1,12 +1,12 @@
-import isPlainObject from 'is-plain-object'
-import invariant from 'tiny-invariant'
-import { Record, Set, List } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import invariant from 'tiny-invariant';
+import { Record, Set, List } from 'immutable';
 
-import Annotation from './annotation'
-import Data from './data'
-import Document from './document'
-import Mark from './mark'
-import PathUtils from '../utils/path-utils'
+import Annotation from './annotation';
+import Data from './data';
+import Document from './document';
+import Mark from './mark';
+import PathUtils from '../utils/path-utils';
 
 /**
  * Default properties.
@@ -19,7 +19,7 @@ const DEFAULTS = {
   data: undefined,
   document: undefined,
   selection: undefined,
-}
+};
 
 /**
  * Value.
@@ -38,16 +38,16 @@ class Value extends Record(DEFAULTS) {
 
   static create(attrs = {}, options = {}) {
     if (Value.isValue(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (isPlainObject(attrs)) {
-      return Value.fromJSON(attrs, options)
+      return Value.fromJSON(attrs, options);
     }
 
     throw new Error(
-      `\`Value.create\` only accepts objects or values, but you passed it: ${attrs}`
-    )
+      `\`Value.create\` only accepts objects or values, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -62,20 +62,19 @@ class Value extends Record(DEFAULTS) {
       return {
         annotations: a.annotations,
         data: a.data,
-      }
+      };
     }
 
     if (isPlainObject(a)) {
-      const p = {}
-      if ('annotations' in a)
-        p.annotations = Annotation.createMap(a.annotations)
-      if ('data' in a) p.data = Data.create(a.data)
-      return p
+      const p = {};
+      if ('annotations' in a) { p.annotations = Annotation.createMap(a.annotations); }
+      if ('data' in a) p.data = Data.create(a.data);
+      return p;
     }
 
     throw new Error(
-      `\`Value.createProperties\` only accepts objects or values, but you passed it: ${a}`
-    )
+      `\`Value.createProperties\` only accepts objects or values, but you passed it: ${a}`,
+    );
   }
 
   /**
@@ -89,16 +88,18 @@ class Value extends Record(DEFAULTS) {
    */
 
   static fromJSON(object, options = {}) {
-    let { data = {}, annotations = {}, document = {}, selection = {} } = object
-    data = Data.fromJSON(data)
-    document = Document.fromJSON(document)
-    selection = document.createSelection(selection)
-    annotations = Annotation.createMap(annotations)
+    let {
+      data = {}, annotations = {}, document = {}, selection = {},
+    } = object;
+    data = Data.fromJSON(data);
+    document = Document.fromJSON(document);
+    selection = document.createSelection(selection);
+    annotations = Annotation.createMap(annotations);
 
     if (selection.isUnset) {
-      const text = document.getFirstText()
-      if (text) selection = selection.moveToStartOfNode(text)
-      selection = document.createSelection(selection)
+      const text = document.getFirstText();
+      if (text) selection = selection.moveToStartOfNode(text);
+      selection = document.createSelection(selection);
     }
 
     const value = new Value({
@@ -106,9 +107,9 @@ class Value extends Record(DEFAULTS) {
       data,
       document,
       selection,
-    })
+    });
 
-    return value
+    return value;
   }
 
   /**
@@ -119,9 +120,9 @@ class Value extends Record(DEFAULTS) {
 
   get startBlock() {
     return (
-      this.selection.start.key &&
-      this.document.getClosestBlock(this.selection.start.key)
-    )
+      this.selection.start.key
+      && this.document.getClosestBlock(this.selection.start.key)
+    );
   }
 
   /**
@@ -132,9 +133,9 @@ class Value extends Record(DEFAULTS) {
 
   get endBlock() {
     return (
-      this.selection.end.key &&
-      this.document.getClosestBlock(this.selection.end.key)
-    )
+      this.selection.end.key
+      && this.document.getClosestBlock(this.selection.end.key)
+    );
   }
 
   /**
@@ -145,9 +146,9 @@ class Value extends Record(DEFAULTS) {
 
   get anchorBlock() {
     return (
-      this.selection.anchor.key &&
-      this.document.getClosestBlock(this.selection.anchor.key)
-    )
+      this.selection.anchor.key
+      && this.document.getClosestBlock(this.selection.anchor.key)
+    );
   }
 
   /**
@@ -158,9 +159,9 @@ class Value extends Record(DEFAULTS) {
 
   get focusBlock() {
     return (
-      this.selection.focus.key &&
-      this.document.getClosestBlock(this.selection.focus.key)
-    )
+      this.selection.focus.key
+      && this.document.getClosestBlock(this.selection.focus.key)
+    );
   }
 
   /**
@@ -171,9 +172,9 @@ class Value extends Record(DEFAULTS) {
 
   get startInline() {
     return (
-      this.selection.start.key &&
-      this.document.getClosestInline(this.selection.start.key)
-    )
+      this.selection.start.key
+      && this.document.getClosestInline(this.selection.start.key)
+    );
   }
 
   /**
@@ -184,9 +185,9 @@ class Value extends Record(DEFAULTS) {
 
   get endInline() {
     return (
-      this.selection.end.key &&
-      this.document.getClosestInline(this.selection.end.key)
-    )
+      this.selection.end.key
+      && this.document.getClosestInline(this.selection.end.key)
+    );
   }
 
   /**
@@ -197,9 +198,9 @@ class Value extends Record(DEFAULTS) {
 
   get anchorInline() {
     return (
-      this.selection.anchor.key &&
-      this.document.getClosestInline(this.selection.anchor.key)
-    )
+      this.selection.anchor.key
+      && this.document.getClosestInline(this.selection.anchor.key)
+    );
   }
 
   /**
@@ -210,9 +211,9 @@ class Value extends Record(DEFAULTS) {
 
   get focusInline() {
     return (
-      this.selection.focus.key &&
-      this.document.getClosestInline(this.selection.focus.key)
-    )
+      this.selection.focus.key
+      && this.document.getClosestInline(this.selection.focus.key)
+    );
   }
 
   /**
@@ -223,9 +224,9 @@ class Value extends Record(DEFAULTS) {
 
   get startText() {
     return (
-      this.selection.start.key &&
-      this.document.getDescendant(this.selection.start.key)
-    )
+      this.selection.start.key
+      && this.document.getDescendant(this.selection.start.key)
+    );
   }
 
   /**
@@ -236,9 +237,9 @@ class Value extends Record(DEFAULTS) {
 
   get endText() {
     return (
-      this.selection.end.key &&
-      this.document.getDescendant(this.selection.end.key)
-    )
+      this.selection.end.key
+      && this.document.getDescendant(this.selection.end.key)
+    );
   }
 
   /**
@@ -249,9 +250,9 @@ class Value extends Record(DEFAULTS) {
 
   get anchorText() {
     return (
-      this.selection.anchor.key &&
-      this.document.getDescendant(this.selection.anchor.key)
-    )
+      this.selection.anchor.key
+      && this.document.getDescendant(this.selection.anchor.key)
+    );
   }
 
   /**
@@ -262,9 +263,9 @@ class Value extends Record(DEFAULTS) {
 
   get focusText() {
     return (
-      this.selection.focus.key &&
-      this.document.getDescendant(this.selection.focus.key)
-    )
+      this.selection.focus.key
+      && this.document.getDescendant(this.selection.focus.key)
+    );
   }
 
   /**
@@ -275,9 +276,9 @@ class Value extends Record(DEFAULTS) {
 
   get nextBlock() {
     return (
-      this.selection.end.key &&
-      this.document.getNextBlock(this.selection.end.key)
-    )
+      this.selection.end.key
+      && this.document.getNextBlock(this.selection.end.key)
+    );
   }
 
   /**
@@ -288,9 +289,9 @@ class Value extends Record(DEFAULTS) {
 
   get previousBlock() {
     return (
-      this.selection.start.key &&
-      this.document.getPreviousBlock(this.selection.start.key)
-    )
+      this.selection.start.key
+      && this.document.getPreviousBlock(this.selection.start.key)
+    );
   }
 
   /**
@@ -301,9 +302,9 @@ class Value extends Record(DEFAULTS) {
 
   get nextInline() {
     return (
-      this.selection.end.key &&
-      this.document.getNextInline(this.selection.end.key)
-    )
+      this.selection.end.key
+      && this.document.getNextInline(this.selection.end.key)
+    );
   }
 
   /**
@@ -314,9 +315,9 @@ class Value extends Record(DEFAULTS) {
 
   get previousInline() {
     return (
-      this.selection.start.key &&
-      this.document.getPreviousInline(this.selection.start.key)
-    )
+      this.selection.start.key
+      && this.document.getPreviousInline(this.selection.start.key)
+    );
   }
 
   /**
@@ -327,9 +328,9 @@ class Value extends Record(DEFAULTS) {
 
   get nextText() {
     return (
-      this.selection.end.key &&
-      this.document.getNextText(this.selection.end.key)
-    )
+      this.selection.end.key
+      && this.document.getNextText(this.selection.end.key)
+    );
   }
 
   /**
@@ -340,9 +341,9 @@ class Value extends Record(DEFAULTS) {
 
   get previousText() {
     return (
-      this.selection.start.key &&
-      this.document.getPreviousText(this.selection.start.key)
-    )
+      this.selection.start.key
+      && this.document.getPreviousText(this.selection.start.key)
+    );
   }
 
   /**
@@ -354,7 +355,7 @@ class Value extends Record(DEFAULTS) {
   get marks() {
     return this.selection.isUnset
       ? new Set()
-      : this.selection.marks || this.document.getMarksAtRange(this.selection)
+      : this.selection.marks || this.document.getMarksAtRange(this.selection);
   }
 
   /**
@@ -366,8 +367,8 @@ class Value extends Record(DEFAULTS) {
   get activeMarks() {
     return this.selection.isUnset
       ? new Set()
-      : this.selection.marks ||
-          this.document.getActiveMarksAtRange(this.selection)
+      : this.selection.marks
+          || this.document.getActiveMarksAtRange(this.selection);
   }
 
   /**
@@ -379,7 +380,7 @@ class Value extends Record(DEFAULTS) {
   get blocks() {
     return this.selection.isUnset
       ? new List()
-      : this.document.getLeafBlocksAtRange(this.selection)
+      : this.document.getLeafBlocksAtRange(this.selection);
   }
 
   /**
@@ -391,7 +392,7 @@ class Value extends Record(DEFAULTS) {
   get fragment() {
     return this.selection.isUnset
       ? Document.create()
-      : this.document.getFragmentAtRange(this.selection)
+      : this.document.getFragmentAtRange(this.selection);
   }
 
   /**
@@ -403,7 +404,7 @@ class Value extends Record(DEFAULTS) {
   get inlines() {
     return this.selection.isUnset
       ? new List()
-      : this.document.getLeafInlinesAtRange(this.selection)
+      : this.document.getLeafInlinesAtRange(this.selection);
   }
 
   /**
@@ -415,7 +416,7 @@ class Value extends Record(DEFAULTS) {
   get texts() {
     return this.selection.isUnset
       ? new List()
-      : this.document.getTextsAtRange(this.selection)
+      : this.document.getTextsAtRange(this.selection);
   }
 
   /**
@@ -427,14 +428,14 @@ class Value extends Record(DEFAULTS) {
    */
 
   addAnnotation(annotation) {
-    annotation = Annotation.create(annotation)
-    let value = this
-    let { annotations, document } = value
-    const { key } = annotation
-    annotation = annotation.updatePoints(point => point.normalize(document))
-    annotations = annotations.set(key, annotation)
-    value = value.set('annotations', annotations)
-    return value
+    annotation = Annotation.create(annotation);
+    let value = this;
+    let { annotations, document } = value;
+    const { key } = annotation;
+    annotation = annotation.updatePoints((point) => point.normalize(document));
+    annotations = annotations.set(key, annotation);
+    value = value.set('annotations', annotations);
+    return value;
   }
 
   /**
@@ -446,12 +447,12 @@ class Value extends Record(DEFAULTS) {
    */
 
   addMark(path, mark) {
-    mark = Mark.create(mark)
-    let value = this
-    let { document } = value
-    document = document.addMark(path, mark)
-    value = value.set('document', document)
-    return value
+    mark = Mark.create(mark);
+    let value = this;
+    let { document } = value;
+    document = document.addMark(path, mark);
+    value = value.set('document', document);
+    return value;
   }
 
   /**
@@ -463,16 +464,14 @@ class Value extends Record(DEFAULTS) {
    */
 
   insertNode(path, node) {
-    let value = this
-    let { document } = value
-    document = document.insertNode(path, node)
-    value = value.set('document', document)
+    let value = this;
+    let { document } = value;
+    document = document.insertNode(path, node);
+    value = value.set('document', document);
 
-    value = value.mapRanges(range =>
-      range.updatePoints(point => point.setPath(null))
-    )
+    value = value.mapRanges((range) => range.updatePoints((point) => point.setPath(null)));
 
-    return value
+    return value;
   }
 
   /**
@@ -485,22 +484,21 @@ class Value extends Record(DEFAULTS) {
    */
 
   insertText(path, offset, text) {
-    let value = this
-    let { document } = value
-    let node = document.assertNode(path)
-    document = document.insertText(path, offset, text)
-    node = document.assertNode(path)
-    value = value.set('document', document)
+    let value = this;
+    let { document } = value;
+    let node = document.assertNode(path);
+    document = document.insertText(path, offset, text);
+    node = document.assertNode(path);
+    value = value.set('document', document);
 
-    value = value.mapPoints(point => {
+    value = value.mapPoints((point) => {
       if (point.key === node.key && point.offset >= offset) {
-        return point.setOffset(point.offset + text.length)
-      } else {
-        return point
+        return point.setOffset(point.offset + text.length);
       }
-    })
+      return point;
+    });
 
-    return value
+    return value;
   }
 
   /**
@@ -511,34 +509,34 @@ class Value extends Record(DEFAULTS) {
    */
 
   mergeNode(path) {
-    let value = this
-    const { document } = value
-    const newDocument = document.mergeNode(path)
-    path = document.resolvePath(path)
-    const withPath = PathUtils.decrement(path)
-    const one = document.getNode(withPath)
-    const two = document.getNode(path)
-    value = value.set('document', newDocument)
+    let value = this;
+    const { document } = value;
+    const newDocument = document.mergeNode(path);
+    path = document.resolvePath(path);
+    const withPath = PathUtils.decrement(path);
+    const one = document.getNode(withPath);
+    const two = document.getNode(path);
+    value = value.set('document', newDocument);
 
-    value = value.mapRanges(range => {
+    value = value.mapRanges((range) => {
       if (two.object === 'text') {
-        const max = one.text.length
+        const max = one.text.length;
 
         if (range.anchor.key === two.key) {
-          range = range.moveAnchorTo(one.key, max + range.anchor.offset)
+          range = range.moveAnchorTo(one.key, max + range.anchor.offset);
         }
 
         if (range.focus.key === two.key) {
-          range = range.moveFocusTo(one.key, max + range.focus.offset)
+          range = range.moveFocusTo(one.key, max + range.focus.offset);
         }
       }
 
-      range = range.updatePoints(point => point.setPath(null))
+      range = range.updatePoints((point) => point.setPath(null));
 
-      return range
-    })
+      return range;
+    });
 
-    return value
+    return value;
   }
 
   /**
@@ -554,17 +552,17 @@ class Value extends Record(DEFAULTS) {
    */
 
   moveNode(path, newPath, newIndex = 0) {
-    let value = this
-    let { document } = value
+    let value = this;
+    let { document } = value;
 
     if (PathUtils.isEqual(path, newPath)) {
-      return value
+      return value;
     }
 
-    document = document.moveNode(path, newPath, newIndex)
-    value = value.set('document', document)
-    value = value.mapPoints(point => point.setPath(null))
-    return value
+    document = document.moveNode(path, newPath, newIndex);
+    value = value.set('document', document);
+    value = value.mapPoints((point) => point.setPath(null));
+    return value;
   }
 
   /**
@@ -576,13 +574,13 @@ class Value extends Record(DEFAULTS) {
    */
 
   removeAnnotation(annotation) {
-    annotation = Annotation.create(annotation)
-    let value = this
-    let { annotations } = value
-    const { key } = annotation
-    annotations = annotations.delete(key)
-    value = value.set('annotations', annotations)
-    return value
+    annotation = Annotation.create(annotation);
+    let value = this;
+    let { annotations } = value;
+    const { key } = annotation;
+    annotations = annotations.delete(key);
+    value = value.set('annotations', annotations);
+    return value;
   }
 
   /**
@@ -594,12 +592,12 @@ class Value extends Record(DEFAULTS) {
    */
 
   removeMark(path, mark) {
-    mark = Mark.create(mark)
-    let value = this
-    let { document } = value
-    document = document.removeMark(path, mark)
-    value = value.set('document', document)
-    return value
+    mark = Mark.create(mark);
+    let value = this;
+    let { document } = value;
+    document = document.removeMark(path, mark);
+    value = value.set('document', document);
+    return value;
   }
 
   /**
@@ -610,38 +608,38 @@ class Value extends Record(DEFAULTS) {
    */
 
   removeNode(path) {
-    let value = this
-    let { document } = value
-    const node = document.assertNode(path)
-    const first = node.object === 'text' ? node : node.getFirstText() || node
-    const last = node.object === 'text' ? node : node.getLastText() || node
-    const prev = document.getPreviousText(first.key)
-    const next = document.getNextText(last.key)
+    let value = this;
+    let { document } = value;
+    const node = document.assertNode(path);
+    const first = node.object === 'text' ? node : node.getFirstText() || node;
+    const last = node.object === 'text' ? node : node.getLastText() || node;
+    const prev = document.getPreviousText(first.key);
+    const next = document.getNextText(last.key);
 
-    document = document.removeNode(path)
-    value = value.set('document', document)
+    document = document.removeNode(path);
+    value = value.set('document', document);
 
-    value = value.mapRanges(range => {
-      const { anchor, focus } = range
+    value = value.mapRanges((range) => {
+      const { anchor, focus } = range;
 
       if (node.hasNode(anchor.key)) {
         range = prev
           ? range.moveAnchorTo(prev.key, prev.text.length)
-          : next ? range.moveAnchorTo(next.key, 0) : range.unset()
+          : next ? range.moveAnchorTo(next.key, 0) : range.unset();
       }
 
       if (node.hasNode(focus.key)) {
         range = prev
           ? range.moveFocusTo(prev.key, prev.text.length)
-          : next ? range.moveFocusTo(next.key, 0) : range.unset()
+          : next ? range.moveFocusTo(next.key, 0) : range.unset();
       }
 
-      range = range.updatePoints(point => point.setPath(null))
+      range = range.updatePoints((point) => point.setPath(null));
 
-      return range
-    })
+      return range;
+    });
 
-    return value
+    return value;
   }
 
   /**
@@ -654,33 +652,33 @@ class Value extends Record(DEFAULTS) {
    */
 
   removeText(path, offset, text) {
-    let value = this
-    let { document } = value
-    const node = document.assertNode(path)
-    document = document.removeText(path, offset, text)
-    value = value.set('document', document)
+    let value = this;
+    let { document } = value;
+    const node = document.assertNode(path);
+    document = document.removeText(path, offset, text);
+    value = value.set('document', document);
 
-    const { length } = text
-    const start = offset
-    const end = offset + length
+    const { length } = text;
+    const start = offset;
+    const end = offset + length;
 
-    value = value.mapPoints(point => {
+    value = value.mapPoints((point) => {
       if (point.key !== node.key) {
-        return point
+        return point;
       }
 
       if (point.offset >= end) {
-        return point.setOffset(point.offset - length)
+        return point.setOffset(point.offset - length);
       }
 
       if (point.offset > start) {
-        return point.setOffset(start)
+        return point.setOffset(start);
       }
 
-      return point
-    })
+      return point;
+    });
 
-    return value
+    return value;
   }
 
   /**
@@ -692,15 +690,15 @@ class Value extends Record(DEFAULTS) {
    */
 
   setAnnotation(properties, newProperties) {
-    newProperties = Annotation.createProperties(newProperties)
-    const annotation = Annotation.create(properties)
-    const next = annotation.merge(newProperties)
-    let value = this
-    let { annotations } = value
-    const { key } = annotation
-    annotations = annotations.set(key, next)
-    value = value.set('annotations', annotations)
-    return value
+    newProperties = Annotation.createProperties(newProperties);
+    const annotation = Annotation.create(properties);
+    const next = annotation.merge(newProperties);
+    let value = this;
+    let { annotations } = value;
+    const { key } = annotation;
+    annotations = annotations.set(key, next);
+    value = value.set('annotations', annotations);
+    return value;
   }
 
   /**
@@ -712,11 +710,11 @@ class Value extends Record(DEFAULTS) {
    */
 
   setNode(path, properties) {
-    let value = this
-    let { document } = value
-    document = document.setNode(path, properties)
-    value = value.set('document', document)
-    return value
+    let value = this;
+    let { document } = value;
+    document = document.setNode(path, properties);
+    value = value.set('document', document);
+    return value;
   }
 
   /**
@@ -729,11 +727,11 @@ class Value extends Record(DEFAULTS) {
    */
 
   setMark(path, mark, properties) {
-    let value = this
-    let { document } = value
-    document = document.setMark(path, mark, properties)
-    value = value.set('document', document)
-    return value
+    let value = this;
+    let { document } = value;
+    document = document.setMark(path, mark, properties);
+    value = value.set('document', document);
+    return value;
   }
 
   /**
@@ -744,23 +742,21 @@ class Value extends Record(DEFAULTS) {
    */
 
   setProperties(properties) {
-    let value = this
-    const { document } = value
-    const { data, annotations } = properties
-    const props = {}
+    let value = this;
+    const { document } = value;
+    const { data, annotations } = properties;
+    const props = {};
 
     if (data) {
-      props.data = data
+      props.data = data;
     }
 
     if (annotations) {
-      props.annotations = annotations.map(a => {
-        return a.isSet ? a : document.resolveAnnotation(a)
-      })
+      props.annotations = annotations.map((a) => (a.isSet ? a : document.resolveAnnotation(a)));
     }
 
-    value = value.merge(props)
-    return value
+    value = value.merge(props);
+    return value;
   }
 
   /**
@@ -772,12 +768,12 @@ class Value extends Record(DEFAULTS) {
    */
 
   setSelection(properties) {
-    let value = this
-    let { document, selection } = value
-    const next = selection.setProperties(properties)
-    selection = document.resolveSelection(next)
-    value = value.set('selection', selection)
-    return value
+    let value = this;
+    let { document, selection } = value;
+    const next = selection.setProperties(properties);
+    selection = document.resolveSelection(next);
+    value = value.set('selection', selection);
+    return value;
   }
 
   /**
@@ -791,32 +787,32 @@ class Value extends Record(DEFAULTS) {
    */
 
   splitNode(path, position, properties) {
-    let value = this
-    const { document } = value
-    const newDocument = document.splitNode(path, position, properties)
-    const node = document.assertNode(path)
-    value = value.set('document', newDocument)
+    let value = this;
+    const { document } = value;
+    const newDocument = document.splitNode(path, position, properties);
+    const node = document.assertNode(path);
+    value = value.set('document', newDocument);
 
-    value = value.mapRanges(range => {
-      const next = newDocument.getNextText(node.key)
-      const { anchor, focus } = range
+    value = value.mapRanges((range) => {
+      const next = newDocument.getNextText(node.key);
+      const { anchor, focus } = range;
 
       // If the anchor was after the split, move it to the next node.
       if (node.key === anchor.key && position <= anchor.offset) {
-        range = range.moveAnchorTo(next.key, anchor.offset - position)
+        range = range.moveAnchorTo(next.key, anchor.offset - position);
       }
 
       // If the focus was after the split, move it to the next node.
       if (node.key === focus.key && position <= focus.offset) {
-        range = range.moveFocusTo(next.key, focus.offset - position)
+        range = range.moveFocusTo(next.key, focus.offset - position);
       }
 
-      range = range.updatePoints(point => point.setPath(null))
+      range = range.updatePoints((point) => point.setPath(null));
 
-      return range
-    })
+      return range;
+    });
 
-    return value
+    return value;
   }
 
   /**
@@ -827,27 +823,27 @@ class Value extends Record(DEFAULTS) {
    */
 
   mapRanges(iterator) {
-    let value = this
-    const { document, selection, annotations } = value
+    let value = this;
+    const { document, selection, annotations } = value;
 
-    let sel = selection.isSet ? iterator(selection) : selection
-    if (!sel) sel = selection.unset()
-    if (sel !== selection) sel = document.createSelection(sel)
-    value = value.set('selection', sel)
+    let sel = selection.isSet ? iterator(selection) : selection;
+    if (!sel) sel = selection.unset();
+    if (sel !== selection) sel = document.createSelection(sel);
+    value = value.set('selection', sel);
 
-    let anns = annotations.map(annotation => {
-      let n = annotation.isSet ? iterator(annotation) : annotation
-      if (n && n !== annotation) n = document.createAnnotation(n)
-      return n
-    })
+    let anns = annotations.map((annotation) => {
+      let n = annotation.isSet ? iterator(annotation) : annotation;
+      if (n && n !== annotation) n = document.createAnnotation(n);
+      return n;
+    });
 
-    anns = anns.filter(annotation => !!annotation)
-    value = value.set('annotations', anns)
-    return value
+    anns = anns.filter((annotation) => !!annotation);
+    value = value.set('annotations', anns);
+    return value;
   }
 
   mapPoints(iterator) {
-    return this.mapRanges(range => range.updatePoints(iterator))
+    return this.mapRanges((range) => range.updatePoints(iterator));
   }
 
   /**
@@ -861,23 +857,23 @@ class Value extends Record(DEFAULTS) {
     const object = {
       object: this.object,
       document: this.document.toJSON(options),
-    }
+    };
 
     if (options.preserveData) {
-      object.data = this.data.toJSON(options)
+      object.data = this.data.toJSON(options);
     }
 
     if (options.preserveAnnotations) {
       object.annotations = this.annotations
-        .map(a => a.toJSON(options))
-        .toObject()
+        .map((a) => a.toJSON(options))
+        .toObject();
     }
 
     if (options.preserveSelection) {
-      object.selection = this.selection.toJSON(options)
+      object.selection = this.selection.toJSON(options);
     }
 
-    return object
+    return object;
   }
 
   /**
@@ -887,15 +883,15 @@ class Value extends Record(DEFAULTS) {
   get history() {
     invariant(
       false,
-      'As of Slate 0.42.0, the `value.history` model no longer exists, and the history is stored in `value.data` instead using plugins.'
-    )
+      'As of Slate 0.42.0, the `value.history` model no longer exists, and the history is stored in `value.data` instead using plugins.',
+    );
   }
 
   change() {
     invariant(
       false,
-      'As of Slate 0.42.0, value object are no longer schema-aware, and the `value.change()` method is no longer available. Use the `editor.change()` method on the new `Editor` controller instead.'
-    )
+      'As of Slate 0.42.0, value object are no longer schema-aware, and the `value.change()` method is no longer available. Use the `editor.change()` method on the new `Editor` controller instead.',
+    );
   }
 }
 
@@ -903,4 +899,4 @@ class Value extends Record(DEFAULTS) {
  * Export.
  */
 
-export default Value
+export default Value;

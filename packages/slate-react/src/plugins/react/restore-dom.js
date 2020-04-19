@@ -8,15 +8,15 @@ function RestoreDOMPlugin() {
    */
 
   function restoreDOM(editor) {
-    const tmp = editor.tmp.contentRef.current.tmp
-    tmp.contentKey = tmp.contentKey + 1
+    const { tmp } = editor.tmp.contentRef.current;
+    tmp.contentKey += 1;
   }
 
   return {
     commands: {
       restoreDOM,
     },
-  }
+  };
 }
 
-export default RestoreDOMPlugin
+export default RestoreDOMPlugin;

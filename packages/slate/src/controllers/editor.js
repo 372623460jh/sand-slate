@@ -1,16 +1,16 @@
-import Debug from 'debug'
-import invariant from 'tiny-invariant'
-import isPlainObject from 'is-plain-object'
-import warning from 'tiny-warning'
-import { List } from 'immutable'
+import Debug from 'debug';
+import invariant from 'tiny-invariant';
+import isPlainObject from 'is-plain-object';
+import warning from 'tiny-warning';
+import { List } from 'immutable';
 
-import CommandsPlugin from '../plugins/commands'
-import CorePlugin from '../plugins/core'
-import Operation from '../models/operation'
-import PathUtils from '../utils/path-utils'
-import QueriesPlugin from '../plugins/queries'
-import SchemaPlugin from '../plugins/schema'
-import Value from '../models/value'
+import CommandsPlugin from '../plugins/commands';
+import CorePlugin from '../plugins/core';
+import Operation from '../models/operation';
+import PathUtils from '../utils/path-utils';
+import QueriesPlugin from '../plugins/queries';
+import SchemaPlugin from '../plugins/schema';
+import Value from '../models/value';
 
 /**
  * Debug.
@@ -18,7 +18,7 @@ import Value from '../models/value'
  * @type {Function}
  */
 
-const debug = Debug('@jianghe/slate:editor')
+const debug = Debug('@jianghe/slate:editor');
 
 /**
  * Editor.
@@ -35,20 +35,20 @@ class Editor {
    */
 
   constructor(attrs = {}, options = {}) {
-    const { controller = this, construct = true } = options
+    const { controller = this, construct = true } = options;
     const {
       onChange = () => {},
       plugins = [],
       readOnly = false,
       value = Value.create(),
-    } = attrs
+    } = attrs;
 
-    this.controller = controller
-    this.middleware = {}
-    this.onChange = onChange
-    this.operations = List()
-    this.readOnly = null
-    this.value = null
+    this.controller = controller;
+    this.middleware = {};
+    this.onChange = onChange;
+    this.operations = List();
+    this.readOnly = null;
+    this.value = null;
 
     this.tmp = {
       dirty: [],
@@ -56,15 +56,15 @@ class Editor {
       merge: null,
       normalize: true,
       save: true,
-    }
+    };
 
-    const core = CorePlugin({ plugins })
-    registerPlugin(this, core)
+    const core = CorePlugin({ plugins });
+    registerPlugin(this, core);
 
     if (construct) {
-      this.run('onConstruct')
-      this.setReadOnly(readOnly)
-      this.setValue(value, options)
+      this.run('onConstruct');
+      this.setReadOnly(readOnly);
+      this.setValue(value, options);
     }
   }
 
@@ -76,59 +76,59 @@ class Editor {
    */
 
   applyOperation(operation) {
-    const { operations, controller } = this
-    let value = this.value
+    const { operations, controller } = this;
+    let { value } = this;
 
     // Add in the current `value` in case the operation was serialized.
     if (isPlainObject(operation)) {
-      operation = { ...operation, value }
+      operation = { ...operation, value };
     }
 
-    operation = Operation.create(operation)
+    operation = Operation.create(operation);
 
     // Save the operation into the history. Since `save` is a command, we need
     // to do it without normalizing, since it would have side effects.
     this.withoutNormalizing(() => {
-      controller.save(operation)
-      value = this.value
-    })
+      controller.save(operation);
+      value = this.value;
+    });
 
     // Apply the operation to the value.
-    debug('apply', { operation })
-    this.value = operation.apply(value)
-    this.operations = operations.push(operation)
+    debug('apply', { operation });
+    this.value = operation.apply(value);
+    this.operations = operations.push(operation);
 
     // Get the paths of the affected nodes, and mark them as dirty.
-    const newDirtyPaths = getDirtyPaths(operation)
+    const newDirtyPaths = getDirtyPaths(operation);
 
-    const dirty = this.tmp.dirty.map(path => {
-      path = PathUtils.create(path)
-      const transformed = PathUtils.transform(path, operation)
-      return transformed.toArray()
-    })
+    const dirty = this.tmp.dirty.map((path) => {
+      path = PathUtils.create(path);
+      const transformed = PathUtils.transform(path, operation);
+      return transformed.toArray();
+    });
 
-    const pathIndex = {}
-    const dirtyPaths = Array.prototype.concat.apply(newDirtyPaths, dirty)
-    this.tmp.dirty = []
+    const pathIndex = {};
+    const dirtyPaths = Array.prototype.concat.apply(newDirtyPaths, dirty);
+    this.tmp.dirty = [];
 
     // PERF: De-dupe the paths so we don't do extra normalization.
-    dirtyPaths.forEach(dirtyPath => {
-      const key = dirtyPath.join(',')
+    dirtyPaths.forEach((dirtyPath) => {
+      const key = dirtyPath.join(',');
 
       if (!pathIndex[key]) {
-        this.tmp.dirty.push(dirtyPath)
+        this.tmp.dirty.push(dirtyPath);
       }
 
-      pathIndex[key] = true
-    })
+      pathIndex[key] = true;
+    });
 
     // If we're not already, queue the flushing process on the next tick.
     if (!this.tmp.flushing) {
-      this.tmp.flushing = true
-      Promise.resolve().then(() => this.flush())
+      this.tmp.flushing = true;
+      Promise.resolve().then(() => this.flush());
     }
 
-    return controller
+    return controller;
   }
 
   /**
@@ -138,13 +138,13 @@ class Editor {
    */
 
   flush() {
-    this.run('onChange')
-    const { value, operations, controller } = this
-    const change = { value, operations }
-    this.operations = List()
-    this.tmp.flushing = false
-    this.onChange(change)
-    return controller
+    this.run('onChange');
+    const { value, operations, controller } = this;
+    const change = { value, operations };
+    this.operations = List();
+    this.tmp.flushing = false;
+    this.onChange(change);
+    return controller;
   }
 
   /**
@@ -156,19 +156,19 @@ class Editor {
    */
 
   command(type, ...args) {
-    const { controller } = this
+    const { controller } = this;
 
     if (typeof type === 'function') {
-      type(controller, ...args)
-      normalizeDirtyPaths(this)
-      return controller
+      type(controller, ...args);
+      normalizeDirtyPaths(this);
+      return controller;
     }
 
-    debug('command', { type, args })
-    const obj = { type, args }
-    this.run('onCommand', obj)
-    normalizeDirtyPaths(this)
-    return controller
+    debug('command', { type, args });
+    const obj = { type, args };
+    this.run('onCommand', obj);
+    normalizeDirtyPaths(this);
+    return controller;
   }
 
   /**
@@ -179,10 +179,10 @@ class Editor {
    */
 
   hasCommand(type) {
-    const { controller } = this
-    const has = type in controller && controller[type].__command
+    const { controller } = this;
+    const has = type in controller && controller[type].__command;
 
-    return has
+    return has;
   }
 
   /**
@@ -193,10 +193,10 @@ class Editor {
    */
 
   hasQuery(type) {
-    const { controller } = this
-    const has = type in controller && controller[type].__query
+    const { controller } = this;
+    const has = type in controller && controller[type].__query;
 
-    return has
+    return has;
   }
 
   /**
@@ -206,21 +206,21 @@ class Editor {
    */
 
   normalize() {
-    const { value, controller } = this
-    let { document } = value
-    const table = document.getKeysToPathsTable()
-    const paths = Object.values(table).map(PathUtils.create)
-    this.tmp.dirty = this.tmp.dirty.concat(paths)
-    normalizeDirtyPaths(this)
+    const { value, controller } = this;
+    let { document } = value;
+    const table = document.getKeysToPathsTable();
+    const paths = Object.values(table).map(PathUtils.create);
+    this.tmp.dirty = this.tmp.dirty.concat(paths);
+    normalizeDirtyPaths(this);
 
-    const { selection } = value
-    document = value.document
+    const { selection } = value;
+    document = value.document;
 
     if (selection.isUnset && document.nodes.size) {
-      controller.moveToStartOfDocument()
+      controller.moveToStartOfDocument();
     }
 
-    return controller
+    return controller;
   }
 
   /**
@@ -232,15 +232,15 @@ class Editor {
    */
 
   query(type, ...args) {
-    const { controller } = this
+    const { controller } = this;
 
     if (typeof type === 'function') {
-      return type(controller, ...args)
+      return type(controller, ...args);
     }
 
-    debug('query', { type, args })
-    const obj = { type, args }
-    return this.run('onQuery', obj)
+    debug('query', { type, args });
+    const obj = { type, args };
+    return this.run('onQuery', obj);
   }
 
   /**
@@ -251,21 +251,21 @@ class Editor {
    */
 
   registerCommand(type) {
-    const { controller } = this
+    const { controller } = this;
 
     if (type in controller && controller[type].__command) {
-      return controller
+      return controller;
     }
 
     invariant(
       !(type in controller),
-      `You cannot register a \`${type}\` command because it would overwrite an existing property of the \`Editor\`.`
-    )
+      `You cannot register a \`${type}\` command because it would overwrite an existing property of the \`Editor\`.`,
+    );
 
-    const method = (...args) => this.command(type, ...args)
-    controller[type] = method
-    method.__command = true
-    return controller
+    const method = (...args) => this.command(type, ...args);
+    controller[type] = method;
+    method.__command = true;
+    return controller;
   }
 
   /**
@@ -276,21 +276,21 @@ class Editor {
    */
 
   registerQuery(type) {
-    const { controller } = this
+    const { controller } = this;
 
     if (type in controller && controller[type].__query) {
-      return controller
+      return controller;
     }
 
     invariant(
       !(type in controller),
-      `You cannot register a \`${type}\` query because it would overwrite an existing property of the \`Editor\`.`
-    )
+      `You cannot register a \`${type}\` query because it would overwrite an existing property of the \`Editor\`.`,
+    );
 
-    const method = (...args) => this.query(type, ...args)
-    controller[type] = method
-    method.__query = true
-    return controller
+    const method = (...args) => this.query(type, ...args);
+    controller[type] = method;
+    method.__query = true;
+    return controller;
   }
 
   /**
@@ -302,68 +302,68 @@ class Editor {
    */
 
   run(key, ...args) {
-    const { controller, middleware } = this
-    const fns = middleware[key] || []
-    let i = 0
+    const { controller, middleware } = this;
+    const fns = middleware[key] || [];
+    let i = 0;
 
     function next(...overrides) {
-      const fn = fns[i++]
-      if (!fn) return
+      const fn = fns[i++];
+      if (!fn) return;
 
       if (overrides.length) {
-        args = overrides
+        args = overrides;
       }
 
-      const ret = fn(...args, controller, next)
-      return ret
+      const ret = fn(...args, controller, next);
+      return ret;
     }
 
     Object.defineProperty(next, 'change', {
       get() {
         invariant(
           false,
-          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.'
-        )
+          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.',
+        );
       },
-    })
+    });
 
     Object.defineProperty(next, 'onChange', {
       get() {
         invariant(
           false,
-          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.'
-        )
+          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.',
+        );
       },
-    })
+    });
 
     Object.defineProperty(next, 'props', {
       get() {
         invariant(
           false,
-          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.'
-        )
+          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.',
+        );
       },
-    })
+    });
 
     Object.defineProperty(next, 'schema', {
       get() {
         invariant(
           false,
-          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.'
-        )
+          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.',
+        );
       },
-    })
+    });
 
     Object.defineProperty(next, 'stack', {
       get() {
         invariant(
           false,
-          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.'
-        )
+          'As of Slate 0.42, the `editor` is no longer passed as the third argument to event handlers. You can access it via `change.editor` instead.',
+        );
       },
-    })
+    });
 
-    return next()
+    return next();
   }
 
   /**
@@ -374,8 +374,8 @@ class Editor {
    */
 
   setReadOnly(readOnly) {
-    this.readOnly = readOnly
-    return this
+    this.readOnly = readOnly;
+    return this;
   }
 
   /**
@@ -387,14 +387,14 @@ class Editor {
    */
 
   setValue(value, options = {}) {
-    const { normalize = value !== this.value } = options
-    this.value = value
+    const { normalize = value !== this.value } = options;
+    this.value = value;
 
     if (normalize) {
-      this.normalize()
+      this.normalize();
     }
 
-    return this
+    return this;
   }
 
   /**
@@ -406,13 +406,13 @@ class Editor {
    */
 
   withoutNormalizing(fn) {
-    const { controller } = this
-    const value = this.tmp.normalize
-    this.tmp.normalize = false
-    fn(controller)
-    this.tmp.normalize = value
-    normalizeDirtyPaths(this)
-    return controller
+    const { controller } = this;
+    const value = this.tmp.normalize;
+    this.tmp.normalize = false;
+    fn(controller);
+    this.tmp.normalize = value;
+    normalizeDirtyPaths(this);
+    return controller;
   }
 
   /**
@@ -422,77 +422,77 @@ class Editor {
   get editor() {
     warning(
       false,
-      "As of Slate 0.43 the `change` object has been replaced with `editor`, so you don't need to access `change.editor`."
-    )
+      "As of Slate 0.43 the `change` object has been replaced with `editor`, so you don't need to access `change.editor`.",
+    );
 
-    return this.controller
+    return this.controller;
   }
 
   change(fn, ...args) {
     warning(
       false,
-      'As of Slate 0.43 the `change` object has been replaced with `editor`, so the `editor.change()` method is deprecated.`'
-    )
+      'As of Slate 0.43 the `change` object has been replaced with `editor`, so the `editor.change()` method is deprecated.`',
+    );
 
-    fn(this.controller, ...args)
+    fn(this.controller, ...args);
   }
 
   call(fn, ...args) {
     warning(
       false,
-      'As of Slate 0.43 the `editor.call(fn)` method has been deprecated, please use `editor.command(fn)` instead.'
-    )
+      'As of Slate 0.43 the `editor.call(fn)` method has been deprecated, please use `editor.command(fn)` instead.',
+    );
 
-    fn(this.controller, ...args)
-    return this.controller
+    fn(this.controller, ...args);
+    return this.controller;
   }
 
   applyOperations(operations) {
     warning(
       false,
-      'As of Slate 0.43 the `applyOperations` method is deprecated, please apply each operation in a loop instead.'
-    )
+      'As of Slate 0.43 the `applyOperations` method is deprecated, please apply each operation in a loop instead.',
+    );
 
-    operations.forEach(op => this.applyOperation(op))
-    return this.controller
+    operations.forEach((op) => this.applyOperation(op));
+    return this.controller;
   }
 
   setOperationFlag(key, value) {
     warning(
       false,
-      'As of slate@0.41 the `change.setOperationFlag` method has been deprecated.'
-    )
+      'As of slate@0.41 the `change.setOperationFlag` method has been deprecated.',
+    );
 
-    this.tmp[key] = value
-    return this
+    this.tmp[key] = value;
+    return this;
   }
 
   getFlag(key, options = {}) {
     warning(
       false,
-      'As of slate@0.41 the `change.getFlag` method has been deprecated.'
-    )
+      'As of slate@0.41 the `change.getFlag` method has been deprecated.',
+    );
 
-    return options[key] !== undefined ? options[key] : this.tmp[key]
+    return options[key] !== undefined ? options[key] : this.tmp[key];
   }
 
   unsetOperationFlag(key) {
     warning(
       false,
-      'As of slate@0.41 the `change.unsetOperationFlag` method has been deprecated.'
-    )
+      'As of slate@0.41 the `change.unsetOperationFlag` method has been deprecated.',
+    );
 
-    delete this.tmp[key]
-    return this
+    delete this.tmp[key];
+    return this;
   }
 
   withoutNormalization(fn) {
     warning(
       false,
-      'As of slate@0.41 the `change.withoutNormalization` helper has been renamed to `change.withoutNormalizing`.'
-    )
+      'As of slate@0.41 the `change.withoutNormalization` helper has been renamed to `change.withoutNormalizing`.',
+    );
 
-    return this.withoutNormalizing(fn)
+    return this.withoutNormalizing(fn);
   }
 }
 
@@ -504,7 +504,9 @@ class Editor {
  */
 
 function getDirtyPaths(operation) {
-  const { type, node, path, newPath } = operation
+  const {
+    type, node, path, newPath,
+  } = operation;
 
   switch (type) {
     case 'add_mark':
@@ -513,54 +515,54 @@ function getDirtyPaths(operation) {
     case 'remove_text':
     case 'set_mark':
     case 'set_node': {
-      const ancestors = PathUtils.getAncestors(path).toArray()
-      return [...ancestors, path]
+      const ancestors = PathUtils.getAncestors(path).toArray();
+      return [...ancestors, path];
     }
 
     case 'insert_node': {
-      const table = node.getKeysToPathsTable()
-      const paths = Object.values(table).map(p => path.concat(p))
-      const ancestors = PathUtils.getAncestors(path).toArray()
-      return [...ancestors, path, ...paths]
+      const table = node.getKeysToPathsTable();
+      const paths = Object.values(table).map((p) => path.concat(p));
+      const ancestors = PathUtils.getAncestors(path).toArray();
+      return [...ancestors, path, ...paths];
     }
 
     case 'split_node': {
-      const ancestors = PathUtils.getAncestors(path).toArray()
-      const nextPath = PathUtils.increment(path)
-      return [...ancestors, path, nextPath]
+      const ancestors = PathUtils.getAncestors(path).toArray();
+      const nextPath = PathUtils.increment(path);
+      return [...ancestors, path, nextPath];
     }
 
     case 'merge_node': {
-      const ancestors = PathUtils.getAncestors(path).toArray()
-      const previousPath = PathUtils.decrement(path)
-      return [...ancestors, previousPath]
+      const ancestors = PathUtils.getAncestors(path).toArray();
+      const previousPath = PathUtils.decrement(path);
+      return [...ancestors, previousPath];
     }
 
     case 'move_node': {
       if (PathUtils.isEqual(path, newPath)) {
-        return []
+        return [];
       }
 
       const oldAncestors = PathUtils.getAncestors(path).reduce((arr, p) => {
-        arr.push(...PathUtils.transform(p, operation).toArray())
-        return arr
-      }, [])
+        arr.push(...PathUtils.transform(p, operation).toArray());
+        return arr;
+      }, []);
 
       const newAncestors = PathUtils.getAncestors(newPath).reduce((arr, p) => {
-        arr.push(...PathUtils.transform(p, operation).toArray())
-        return arr
-      }, [])
+        arr.push(...PathUtils.transform(p, operation).toArray());
+        return arr;
+      }, []);
 
-      return [...oldAncestors, ...newAncestors]
+      return [...oldAncestors, ...newAncestors];
     }
 
     case 'remove_node': {
-      const ancestors = PathUtils.getAncestors(path).toArray()
-      return [...ancestors]
+      const ancestors = PathUtils.getAncestors(path).toArray();
+      return [...ancestors];
     }
 
     default: {
-      return []
+      return [];
     }
   }
 }
@@ -573,19 +575,19 @@ function getDirtyPaths(operation) {
 
 function normalizeDirtyPaths(editor) {
   if (!editor.tmp.normalize) {
-    return
+    return;
   }
 
   if (!editor.tmp.dirty.length) {
-    return
+    return;
   }
 
   editor.withoutNormalizing(() => {
     while (editor.tmp.dirty.length) {
-      const path = editor.tmp.dirty.pop()
-      normalizeNodeByPath(editor, path)
+      const path = editor.tmp.dirty.pop();
+      normalizeNodeByPath(editor, path);
     }
-  })
+  });
 }
 
 /**
@@ -596,41 +598,41 @@ function normalizeDirtyPaths(editor) {
  */
 
 function normalizeNodeByPath(editor, path) {
-  const { controller } = editor
-  let { value } = editor
-  let { document } = value
-  let node = document.assertNode(path)
-  let iterations = 0
-  const max = 100 + (node.object === 'text' ? 1 : node.nodes.size)
+  const { controller } = editor;
+  let { value } = editor;
+  let { document } = value;
+  let node = document.assertNode(path);
+  let iterations = 0;
+  const max = 100 + (node.object === 'text' ? 1 : node.nodes.size);
 
   while (node) {
-    const fn = node.normalize(controller)
+    const fn = node.normalize(controller);
 
     if (!fn) {
-      break
+      break;
     }
 
     // Run the normalize `fn` to fix the node.
-    fn(controller)
+    fn(controller);
 
     // Attempt to re-find the node by path, or by key if it has changed
     // locations in the tree continue iterating.
-    value = editor.value
-    document = value.document
-    const { key } = node
-    let found = document.getDescendant(path)
+    value = editor.value;
+    document = value.document;
+    const { key } = node;
+    let found = document.getDescendant(path);
 
     if (found && found.key === key) {
-      node = found
+      node = found;
     } else {
-      found = document.getDescendant(key)
+      found = document.getDescendant(key);
 
       if (found) {
-        node = found
-        path = document.getPath(key)
+        node = found;
+        path = document.getPath(key);
       } else {
         // If it no longer exists by key, it was removed, so we're done.
-        break
+        break;
       }
     }
 
@@ -638,12 +640,12 @@ function normalizeNodeByPath(editor, path) {
     // exceeded the max. Without this check, it's easy for the `normalize`
     // function of a schema rule to be written incorrectly and for an infinite
     // invalid loop to occur.
-    iterations++
+    iterations++;
 
     if (iterations > max) {
       throw new Error(
-        'A schema rule could not be normalized after sufficient iterations. This is usually due to a `rule.normalize` or `plugin.normalizeNode` function of a schema being incorrectly written, causing an infinite loop.'
-      )
+        'A schema rule could not be normalized after sufficient iterations. This is usually due to a `rule.normalize` or `plugin.normalizeNode` function of a schema being incorrectly written, causing an infinite loop.',
+      );
     }
   }
 }
@@ -657,35 +659,37 @@ function normalizeNodeByPath(editor, path) {
 
 function registerPlugin(editor, plugin) {
   if (Array.isArray(plugin)) {
-    plugin.forEach(p => registerPlugin(editor, p))
-    return
+    plugin.forEach((p) => registerPlugin(editor, p));
+    return;
   }
 
   if (plugin == null) {
-    return
+    return;
   }
 
-  const { commands, queries, schema, ...rest } = plugin
+  const {
+    commands, queries, schema, ...rest
+  } = plugin;
 
   if (commands) {
-    const commandsPlugin = CommandsPlugin(commands)
-    registerPlugin(editor, commandsPlugin)
+    const commandsPlugin = CommandsPlugin(commands);
+    registerPlugin(editor, commandsPlugin);
   }
 
   if (queries) {
-    const queriesPlugin = QueriesPlugin(queries)
-    registerPlugin(editor, queriesPlugin)
+    const queriesPlugin = QueriesPlugin(queries);
+    registerPlugin(editor, queriesPlugin);
   }
 
   if (schema) {
-    const schemaPlugin = SchemaPlugin(schema)
-    registerPlugin(editor, schemaPlugin)
+    const schemaPlugin = SchemaPlugin(schema);
+    registerPlugin(editor, schemaPlugin);
   }
 
   for (const key in rest) {
-    const fn = rest[key]
-    const middleware = (editor.middleware[key] = editor.middleware[key] || [])
-    middleware.push(fn)
+    const fn = rest[key];
+    const middleware = (editor.middleware[key] = editor.middleware[key] || []);
+    middleware.push(fn);
   }
 }
 
@@ -695,4 +699,4 @@ function registerPlugin(editor, plugin) {
  * @type {Editor}
  */
 
-export default Editor
+export default Editor;

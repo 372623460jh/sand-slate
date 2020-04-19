@@ -1,10 +1,10 @@
-import mixin from '../utils/mixin'
-import Annotation from '../models/annotation'
-import Decoration from '../models/decoration'
-import PathUtils from '../utils/path-utils'
-import Point from '../models/point'
-import Range from '../models/range'
-import Selection from '../models/selection'
+import mixin from '../utils/mixin';
+import Annotation from '../models/annotation';
+import Decoration from '../models/decoration';
+import PathUtils from '../utils/path-utils';
+import Point from '../models/point';
+import Range from '../models/range';
+import Selection from '../models/selection';
 
 /**
  * The interface that `Decoration`, `Range` and `Selection` all implement, to make
@@ -22,10 +22,10 @@ class RangeInterface {
 
   get isCollapsed() {
     return (
-      this.anchor === this.focus ||
-      (this.anchor.key === this.focus.key &&
-        this.anchor.offset === this.focus.offset)
-    )
+      this.anchor === this.focus
+      || (this.anchor.key === this.focus.key
+        && this.anchor.offset === this.focus.offset)
+    );
   }
 
   /**
@@ -35,7 +35,7 @@ class RangeInterface {
    */
 
   get isExpanded() {
-    return !this.isCollapsed
+    return !this.isCollapsed;
   }
 
   /**
@@ -45,18 +45,18 @@ class RangeInterface {
    */
 
   get isBackward() {
-    const { isUnset, anchor, focus } = this
+    const { isUnset, anchor, focus } = this;
 
     if (isUnset) {
-      return null
+      return null;
     }
 
     if (anchor.key === focus.key) {
-      return anchor.offset > focus.offset
+      return anchor.offset > focus.offset;
     }
 
-    const isBackward = PathUtils.isBefore(focus.path, anchor.path)
-    return isBackward
+    const isBackward = PathUtils.isBefore(focus.path, anchor.path);
+    return isBackward;
   }
 
   /**
@@ -66,9 +66,9 @@ class RangeInterface {
    */
 
   get isForward() {
-    const { isBackward } = this
-    const isForward = isBackward == null ? null : !isBackward
-    return isForward
+    const { isBackward } = this;
+    const isForward = isBackward == null ? null : !isBackward;
+    return isForward;
   }
 
   /**
@@ -78,9 +78,9 @@ class RangeInterface {
    */
 
   get isUnset() {
-    const { anchor, focus } = this
-    const isUnset = anchor.isUnset || focus.isUnset
-    return isUnset
+    const { anchor, focus } = this;
+    const isUnset = anchor.isUnset || focus.isUnset;
+    return isUnset;
   }
 
   /**
@@ -90,7 +90,7 @@ class RangeInterface {
    */
 
   get isSet() {
-    return !this.isUnset
+    return !this.isUnset;
   }
 
   /**
@@ -100,7 +100,7 @@ class RangeInterface {
    */
 
   get start() {
-    return this.isBackward ? this.focus : this.anchor
+    return this.isBackward ? this.focus : this.anchor;
   }
 
   /**
@@ -110,7 +110,7 @@ class RangeInterface {
    */
 
   get end() {
-    return this.isBackward ? this.anchor : this.focus
+    return this.isBackward ? this.anchor : this.focus;
   }
 
   /**
@@ -120,8 +120,8 @@ class RangeInterface {
    */
 
   flip() {
-    const range = this.setPoints([this.focus, this.anchor])
-    return range
+    const range = this.setPoints([this.focus, this.anchor]);
+    return range;
   }
 
   /**
@@ -132,7 +132,7 @@ class RangeInterface {
    */
 
   moveForward(n) {
-    return this.updatePoints(point => point.moveForward(n))
+    return this.updatePoints((point) => point.moveForward(n));
   }
 
   /**
@@ -143,7 +143,7 @@ class RangeInterface {
    */
 
   moveBackward(n) {
-    return this.updatePoints(point => point.moveBackward(n))
+    return this.updatePoints((point) => point.moveBackward(n));
   }
 
   /**
@@ -154,8 +154,8 @@ class RangeInterface {
    */
 
   moveAnchorBackward(n) {
-    const range = this.setAnchor(this.anchor.moveBackward(n))
-    return range
+    const range = this.setAnchor(this.anchor.moveBackward(n));
+    return range;
   }
 
   /**
@@ -166,8 +166,8 @@ class RangeInterface {
    */
 
   moveAnchorForward(n) {
-    const range = this.setAnchor(this.anchor.moveForward(n))
-    return range
+    const range = this.setAnchor(this.anchor.moveForward(n));
+    return range;
   }
 
   /**
@@ -182,8 +182,8 @@ class RangeInterface {
    */
 
   moveAnchorTo(path, offset) {
-    const range = this.setAnchor(this.anchor.moveTo(path, offset))
-    return range
+    const range = this.setAnchor(this.anchor.moveTo(path, offset));
+    return range;
   }
 
   /**
@@ -194,8 +194,8 @@ class RangeInterface {
    */
 
   moveAnchorToStartOfNode(node) {
-    const range = this.setAnchor(this.anchor.moveToStartOfNode(node))
-    return range
+    const range = this.setAnchor(this.anchor.moveToStartOfNode(node));
+    return range;
   }
 
   /**
@@ -206,8 +206,8 @@ class RangeInterface {
    */
 
   moveAnchorToEndOfNode(node) {
-    const range = this.setAnchor(this.anchor.moveToEndOfNode(node))
-    return range
+    const range = this.setAnchor(this.anchor.moveToEndOfNode(node));
+    return range;
   }
 
   /**
@@ -218,8 +218,8 @@ class RangeInterface {
    */
 
   moveEndBackward(n) {
-    const range = this.setEnd(this.end.moveBackward(n))
-    return range
+    const range = this.setEnd(this.end.moveBackward(n));
+    return range;
   }
 
   /**
@@ -230,8 +230,8 @@ class RangeInterface {
    */
 
   moveEndForward(n) {
-    const range = this.setEnd(this.end.moveForward(n))
-    return range
+    const range = this.setEnd(this.end.moveForward(n));
+    return range;
   }
 
   /**
@@ -246,8 +246,8 @@ class RangeInterface {
    */
 
   moveEndTo(path, offset) {
-    const range = this.setEnd(this.end.moveTo(path, offset))
-    return range
+    const range = this.setEnd(this.end.moveTo(path, offset));
+    return range;
   }
 
   /**
@@ -258,8 +258,8 @@ class RangeInterface {
    */
 
   moveEndToStartOfNode(node) {
-    const range = this.setEnd(this.end.moveToStartOfNode(node))
-    return range
+    const range = this.setEnd(this.end.moveToStartOfNode(node));
+    return range;
   }
 
   /**
@@ -270,8 +270,8 @@ class RangeInterface {
    */
 
   moveEndToEndOfNode(node) {
-    const range = this.setEnd(this.end.moveToEndOfNode(node))
-    return range
+    const range = this.setEnd(this.end.moveToEndOfNode(node));
+    return range;
   }
 
   /**
@@ -282,8 +282,8 @@ class RangeInterface {
    */
 
   moveFocusBackward(n) {
-    const range = this.setFocus(this.focus.moveBackward(n))
-    return range
+    const range = this.setFocus(this.focus.moveBackward(n));
+    return range;
   }
 
   /**
@@ -294,8 +294,8 @@ class RangeInterface {
    */
 
   moveFocusForward(n) {
-    const range = this.setFocus(this.focus.moveForward(n))
-    return range
+    const range = this.setFocus(this.focus.moveForward(n));
+    return range;
   }
 
   /**
@@ -310,8 +310,8 @@ class RangeInterface {
    */
 
   moveFocusTo(path, offset) {
-    const range = this.setFocus(this.focus.moveTo(path, offset))
-    return range
+    const range = this.setFocus(this.focus.moveTo(path, offset));
+    return range;
   }
 
   /**
@@ -322,8 +322,8 @@ class RangeInterface {
    */
 
   moveFocusToStartOfNode(node) {
-    const range = this.setFocus(this.focus.moveToStartOfNode(node))
-    return range
+    const range = this.setFocus(this.focus.moveToStartOfNode(node));
+    return range;
   }
 
   /**
@@ -334,8 +334,8 @@ class RangeInterface {
    */
 
   moveFocusToEndOfNode(node) {
-    const range = this.setFocus(this.focus.moveToEndOfNode(node))
-    return range
+    const range = this.setFocus(this.focus.moveToEndOfNode(node));
+    return range;
   }
 
   /**
@@ -346,8 +346,8 @@ class RangeInterface {
    */
 
   moveStartBackward(n) {
-    const range = this.setStart(this.start.moveBackward(n))
-    return range
+    const range = this.setStart(this.start.moveBackward(n));
+    return range;
   }
 
   /**
@@ -358,8 +358,8 @@ class RangeInterface {
    */
 
   moveStartForward(n) {
-    const range = this.setStart(this.start.moveForward(n))
-    return range
+    const range = this.setStart(this.start.moveForward(n));
+    return range;
   }
 
   /**
@@ -374,8 +374,8 @@ class RangeInterface {
    */
 
   moveStartTo(path, offset) {
-    const range = this.setStart(this.start.moveTo(path, offset))
-    return range
+    const range = this.setStart(this.start.moveTo(path, offset));
+    return range;
   }
 
   /**
@@ -386,8 +386,8 @@ class RangeInterface {
    */
 
   moveStartToStartOfNode(node) {
-    const range = this.setStart(this.start.moveToStartOfNode(node))
-    return range
+    const range = this.setStart(this.start.moveToStartOfNode(node));
+    return range;
   }
 
   /**
@@ -398,8 +398,8 @@ class RangeInterface {
    */
 
   moveStartToEndOfNode(node) {
-    const range = this.setStart(this.start.moveToEndOfNode(node))
-    return range
+    const range = this.setStart(this.start.moveToEndOfNode(node));
+    return range;
   }
 
   /**
@@ -410,7 +410,7 @@ class RangeInterface {
    */
 
   moveTo(path, offset) {
-    return this.updatePoints(point => point.moveTo(path, offset))
+    return this.updatePoints((point) => point.moveTo(path, offset));
   }
 
   /**
@@ -420,8 +420,8 @@ class RangeInterface {
    */
 
   moveToAnchor() {
-    const range = this.setFocus(this.anchor)
-    return range
+    const range = this.setFocus(this.anchor);
+    return range;
   }
 
   /**
@@ -431,8 +431,8 @@ class RangeInterface {
    */
 
   moveToEnd() {
-    const range = this.setStart(this.end)
-    return range
+    const range = this.setStart(this.end);
+    return range;
   }
 
   /**
@@ -443,7 +443,7 @@ class RangeInterface {
    */
 
   moveToEndOfNode(node) {
-    return this.updatePoints(point => point.moveToEndOfNode(node))
+    return this.updatePoints((point) => point.moveToEndOfNode(node));
   }
 
   /**
@@ -453,8 +453,8 @@ class RangeInterface {
    */
 
   moveToFocus() {
-    const range = this.setAnchor(this.focus)
-    return range
+    const range = this.setAnchor(this.focus);
+    return range;
   }
 
   /**
@@ -469,9 +469,9 @@ class RangeInterface {
     const range = this.setPoints([
       this.anchor.moveToStartOfNode(start),
       this.focus.moveToEndOfNode(end),
-    ])
+    ]);
 
-    return range
+    return range;
   }
 
   /**
@@ -481,8 +481,8 @@ class RangeInterface {
    */
 
   moveToStart() {
-    const range = this.setEnd(this.start)
-    return range
+    const range = this.setEnd(this.start);
+    return range;
   }
 
   /**
@@ -493,7 +493,7 @@ class RangeInterface {
    */
 
   moveToStartOfNode(node) {
-    return this.updatePoints(point => point.moveToStartOfNode(node))
+    return this.updatePoints((point) => point.moveToStartOfNode(node));
   }
 
   /**
@@ -505,7 +505,7 @@ class RangeInterface {
    */
 
   normalize(node) {
-    return this.updatePoints(point => point.normalize(node))
+    return this.updatePoints((point) => point.normalize(node));
   }
 
   /**
@@ -516,8 +516,8 @@ class RangeInterface {
    */
 
   setAnchor(anchor) {
-    const range = this.set('anchor', anchor)
-    return range
+    const range = this.set('anchor', anchor);
+    return range;
   }
 
   /**
@@ -528,8 +528,8 @@ class RangeInterface {
    */
 
   setEnd(point) {
-    const range = this.isBackward ? this.setAnchor(point) : this.setFocus(point)
-    return range
+    const range = this.isBackward ? this.setAnchor(point) : this.setFocus(point);
+    return range;
   }
 
   /**
@@ -540,8 +540,8 @@ class RangeInterface {
    */
 
   setFocus(focus) {
-    const range = this.set('focus', focus)
-    return range
+    const range = this.set('focus', focus);
+    return range;
   }
 
   /**
@@ -552,9 +552,9 @@ class RangeInterface {
    */
 
   setPoints(values) {
-    const [anchor, focus] = values
-    const range = this.set('anchor', anchor).set('focus', focus)
-    return range
+    const [anchor, focus] = values;
+    const range = this.set('anchor', anchor).set('focus', focus);
+    return range;
   }
 
   /**
@@ -565,10 +565,10 @@ class RangeInterface {
    */
 
   updatePoints(updater) {
-    let { anchor, focus } = this
-    anchor = updater(anchor)
-    focus = updater(focus)
-    return this.merge({ anchor, focus })
+    let { anchor, focus } = this;
+    anchor = updater(anchor);
+    focus = updater(focus);
+    return this.merge({ anchor, focus });
   }
 
   /**
@@ -579,8 +579,8 @@ class RangeInterface {
    */
 
   setStart(point) {
-    const range = this.isBackward ? this.setFocus(point) : this.setAnchor(point)
-    return range
+    const range = this.isBackward ? this.setFocus(point) : this.setAnchor(point);
+    return range;
   }
 
   /**
@@ -591,19 +591,19 @@ class RangeInterface {
    */
 
   setProperties(properties) {
-    properties = Range.createProperties(properties)
-    const { anchor, focus, ...props } = properties
+    properties = Range.createProperties(properties);
+    const { anchor, focus, ...props } = properties;
 
     if (anchor) {
-      props.anchor = Point.create(anchor)
+      props.anchor = Point.create(anchor);
     }
 
     if (focus) {
-      props.focus = Point.create(focus)
+      props.focus = Point.create(focus);
     }
 
-    const range = this.merge(props)
-    return range
+    const range = this.merge(props);
+    return range;
   }
 
   /**
@@ -618,9 +618,9 @@ class RangeInterface {
       object: this.object,
       anchor: this.anchor.toJSON(options),
       focus: this.focus.toJSON(options),
-    }
+    };
 
-    return object
+    return object;
   }
 
   /**
@@ -630,9 +630,9 @@ class RangeInterface {
    */
 
   toRange() {
-    const properties = Range.createProperties(this)
-    const range = Range.create(properties)
-    return range
+    const properties = Range.createProperties(this);
+    const range = Range.create(properties);
+    return range;
   }
 
   /**
@@ -642,8 +642,8 @@ class RangeInterface {
    */
 
   unset() {
-    const range = this.updatePoints(p => p.unset())
-    return range
+    const range = this.updatePoints((p) => p.unset());
+    return range;
   }
 }
 
@@ -653,4 +653,4 @@ class RangeInterface {
  * @param {Record}
  */
 
-mixin(RangeInterface, [Annotation, Decoration, Range, Selection])
+mixin(RangeInterface, [Annotation, Decoration, Range, Selection]);

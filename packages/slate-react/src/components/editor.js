@@ -1,17 +1,17 @@
-import Debug from 'debug'
-import React from 'react'
-import SlateTypes from '@jianghe/slate-prop-types'
-import Types from 'prop-types'
-import invariant from 'tiny-invariant'
-import memoizeOne from 'memoize-one'
-import warning from 'tiny-warning'
-import omit from 'lodash/omit'
-import { Editor as Controller } from '@jianghe/slate'
+import Debug from 'debug';
+import React from 'react';
+import SlateTypes from '@jianghe/slate-prop-types';
+import Types from 'prop-types';
+import invariant from 'tiny-invariant';
+import memoizeOne from 'memoize-one';
+import warning from 'tiny-warning';
+import omit from 'lodash/omit';
+import { Editor as Controller } from '@jianghe/slate';
 
-import EVENT_HANDLERS from '../constants/event-handlers'
-import OTHER_HANDLERS from '../constants/other-handlers'
-import Content from './content'
-import ReactPlugin from '../plugins/react'
+import EVENT_HANDLERS from '../constants/event-handlers';
+import OTHER_HANDLERS from '../constants/other-handlers';
+import Content from './content';
+import ReactPlugin from '../plugins/react';
 
 /**
  * Debug.
@@ -19,7 +19,7 @@ import ReactPlugin from '../plugins/react'
  * @type {Function}
  */
 
-const debug = Debug('@jianghe/slate:editor')
+const debug = Debug('@jianghe/slate:editor');
 
 /**
  * Editor.
@@ -52,12 +52,12 @@ class Editor extends React.Component {
     tabIndex: Types.number,
     value: SlateTypes.value,
     ...EVENT_HANDLERS.reduce((obj, handler) => {
-      obj[handler] = Types.func
-      return obj
+      obj[handler] = Types.func;
+      return obj;
     }, {}),
     ...OTHER_HANDLERS.reduce((obj, handler) => {
-      obj[handler] = Types.func
-      return obj
+      obj[handler] = Types.func;
+      return obj;
     }, {}),
   }
 
@@ -106,16 +106,16 @@ class Editor extends React.Component {
    */
 
   componentDidMount() {
-    this.tmp.mounted = true
-    this.tmp.updates++
+    this.tmp.mounted = true;
+    this.tmp.updates++;
 
     if (this.props.autoFocus) {
-      this.focus()
+      this.focus();
     }
 
     if (this.tmp.change) {
-      this.handleChange(this.tmp.change)
-      this.tmp.change = null
+      this.handleChange(this.tmp.change);
+      this.tmp.change = null;
     }
   }
 
@@ -124,11 +124,11 @@ class Editor extends React.Component {
    */
 
   componentDidUpdate() {
-    this.tmp.updates++
+    this.tmp.updates++;
 
     if (this.tmp.change) {
-      this.handleChange(this.tmp.change)
-      this.tmp.change = null
+      this.handleChange(this.tmp.change);
+      this.tmp.change = null;
     }
   }
 
@@ -137,7 +137,7 @@ class Editor extends React.Component {
    */
 
   componentWillUnmount() {
-    this.tmp.mounted = false
+    this.tmp.mounted = false;
   }
 
   /**
@@ -147,10 +147,12 @@ class Editor extends React.Component {
    */
 
   render() {
-    debug('render', this)
+    debug('render', this);
 
     // Re-resolve the controller if needed based on memoized props.
-    const { commands, placeholder, plugins, queries, schema } = this.props
+    const {
+      commands, placeholder, plugins, queries, schema,
+    } = this.props;
 
     this.resolveController(
       plugins,
@@ -158,16 +160,16 @@ class Editor extends React.Component {
       commands,
       queries,
       placeholder,
-      ReactPlugin
-    )
+      ReactPlugin,
+    );
 
     // Set the current props on the controller.
-    const { options, readOnly, value: valueFromProps } = this.props
-    const { value: valueFromState } = this.state
-    const value = valueFromProps || valueFromState
-    const { contentKey } = this.state
-    this.controller.setReadOnly(readOnly)
-    this.controller.setValue(value, options)
+    const { options, readOnly, value: valueFromProps } = this.props;
+    const { value: valueFromState } = this.state;
+    const value = valueFromProps || valueFromState;
+    const { contentKey } = this.state;
+    this.controller.setReadOnly(readOnly);
+    this.controller.setValue(value, options);
 
     const {
       autoCorrect,
@@ -178,9 +180,9 @@ class Editor extends React.Component {
       tabIndex,
       style,
       tagName,
-    } = this.props
+    } = this.props;
 
-    const domProps = omit(this.props, Object.keys(Editor.propTypes))
+    const domProps = omit(this.props, Object.keys(Editor.propTypes));
 
     const children = (
       <Content
@@ -199,16 +201,16 @@ class Editor extends React.Component {
         tabIndex={tabIndex}
         tagName={tagName}
       />
-    )
+    );
 
     // Render the editor's children with the controller.
     const element = this.controller.run('renderEditor', {
       ...this.props,
       editor: this,
       children,
-    })
+    });
 
-    return element
+    return element;
   }
 
   /**
@@ -230,43 +232,43 @@ class Editor extends React.Component {
       // the updates, then warn the user that they may be doing something wrong.
       warning(
         this.tmp.resolves < 5 || this.tmp.resolves !== this.tmp.updates,
-        'A Slate <Editor> component is re-resolving the `plugins`, `schema`, `commands`, `queries` or `placeholder` prop on each update, which leads to poor performance. This is often due to passing in a new references for these props with each render by declaring them inline in your render function. Do not do this! Declare them outside your render function, or memoize them instead.'
-      )
+        'A Slate <Editor> component is re-resolving the `plugins`, `schema`, `commands`, `queries` or `placeholder` prop on each update, which leads to poor performance. This is often due to passing in a new references for these props with each render by declaring them inline in your render function. Do not do this! Declare them outside your render function, or memoize them instead.',
+      );
 
-      this.tmp.resolves++
+      this.tmp.resolves++;
       const react = TheReactPlugin({
         ...this.props,
         editor: this,
         value: this.props.value || this.state.value,
-      })
+      });
 
-      const onChange = change => {
+      const onChange = (change) => {
         if (this.tmp.mounted) {
-          this.handleChange(change)
+          this.handleChange(change);
         } else {
-          this.tmp.change = change
+          this.tmp.change = change;
         }
-      }
+      };
 
       this.controller = new Controller(
         { plugins: [react], onChange },
-        { controller: this, construct: false }
-      )
+        { controller: this, construct: false },
+      );
 
-      this.controller.run('onConstruct')
-    }
+      this.controller.run('onConstruct');
+    },
   )
 
   handleChange(change) {
-    const { onChange } = this.props
-    const { value } = this.state
+    const { onChange } = this.props;
+    const { value } = this.state;
 
     if (value) {
       // Syncing value inside this component since parent does not want control of it (defaultValue was used)
-      this.setState({ value: change.value })
+      this.setState({ value: change.value });
     }
 
-    onChange(change)
+    onChange(change);
   }
 
   /**
@@ -275,55 +277,55 @@ class Editor extends React.Component {
    */
 
   get operations() {
-    return this.controller.operations
+    return this.controller.operations;
   }
 
   get readOnly() {
-    return this.controller.readOnly
+    return this.controller.readOnly;
   }
 
   get value() {
-    return this.controller.value
+    return this.controller.value;
   }
 
   applyOperation(...args) {
-    return this.controller.applyOperation(...args)
+    return this.controller.applyOperation(...args);
   }
 
   command(...args) {
-    return this.controller.command(...args)
+    return this.controller.command(...args);
   }
 
   hasCommand(...args) {
-    return this.controller.hasCommand(...args)
+    return this.controller.hasCommand(...args);
   }
 
   hasQuery(...args) {
-    return this.controller.hasQuery(...args)
+    return this.controller.hasQuery(...args);
   }
 
   normalize(...args) {
-    return this.controller.normalize(...args)
+    return this.controller.normalize(...args);
   }
 
   query(...args) {
-    return this.controller.query(...args)
+    return this.controller.query(...args);
   }
 
   registerCommand(...args) {
-    return this.controller.registerCommand(...args)
+    return this.controller.registerCommand(...args);
   }
 
   registerQuery(...args) {
-    return this.controller.registerQuery(...args)
+    return this.controller.registerQuery(...args);
   }
 
   run(...args) {
-    return this.controller.run(...args)
+    return this.controller.run(...args);
   }
 
   withoutNormalizing(...args) {
-    return this.controller.withoutNormalizing(...args)
+    return this.controller.withoutNormalizing(...args);
   }
 
   /**
@@ -331,53 +333,53 @@ class Editor extends React.Component {
    */
 
   get editor() {
-    return this.controller.editor
+    return this.controller.editor;
   }
 
   get schema() {
     invariant(
       false,
-      'As of Slate 0.42, the `editor.schema` property no longer exists, and its functionality has been folded into the editor itself. Use the `editor` instead.'
-    )
+      'As of Slate 0.42, the `editor.schema` property no longer exists, and its functionality has been folded into the editor itself. Use the `editor` instead.',
+    );
   }
 
   get stack() {
     invariant(
       false,
-      'As of Slate 0.42, the `editor.stack` property no longer exists, and its functionality has been folded into the editor itself. Use the `editor` instead.'
-    )
+      'As of Slate 0.42, the `editor.stack` property no longer exists, and its functionality has been folded into the editor itself. Use the `editor` instead.',
+    );
   }
 
   call(...args) {
-    return this.controller.call(...args)
+    return this.controller.call(...args);
   }
 
   change(...args) {
-    return this.controller.change(...args)
+    return this.controller.change(...args);
   }
 
   onChange(...args) {
-    return this.controller.onChange(...args)
+    return this.controller.onChange(...args);
   }
 
   applyOperations(...args) {
-    return this.controller.applyOperations(...args)
+    return this.controller.applyOperations(...args);
   }
 
   setOperationFlag(...args) {
-    return this.controller.setOperationFlag(...args)
+    return this.controller.setOperationFlag(...args);
   }
 
   getFlag(...args) {
-    return this.controller.getFlag(...args)
+    return this.controller.getFlag(...args);
   }
 
   unsetOperationFlag(...args) {
-    return this.controller.unsetOperationFlag(...args)
+    return this.controller.unsetOperationFlag(...args);
   }
 
   withoutNormalization(...args) {
-    return this.controller.withoutNormalization(...args)
+    return this.controller.withoutNormalization(...args);
   }
 }
 
@@ -387,4 +389,4 @@ class Editor extends React.Component {
  * @type {Component}
  */
 
-export default Editor
+export default Editor;

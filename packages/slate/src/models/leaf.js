@@ -1,8 +1,8 @@
-import isPlainObject from 'is-plain-object'
-import warning from 'tiny-warning'
-import { List, Record, Set } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import warning from 'tiny-warning';
+import { List, Record, Set } from 'immutable';
 
-import Mark from './mark'
+import Mark from './mark';
 
 /**
  * Default properties.
@@ -13,7 +13,7 @@ import Mark from './mark'
 const DEFAULTS = {
   marks: undefined,
   text: undefined,
-}
+};
 
 /**
  * Leaf.
@@ -30,23 +30,23 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   static create(attrs = {}) {
-    warning(false, 'As of slate@0.47 the `Leaf` model is deprecated.')
+    warning(false, 'As of slate@0.47 the `Leaf` model is deprecated.');
 
     if (Leaf.isLeaf(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (typeof attrs === 'string') {
-      attrs = { text: attrs }
+      attrs = { text: attrs };
     }
 
     if (isPlainObject(attrs)) {
-      return Leaf.fromJSON(attrs)
+      return Leaf.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Leaf.create\` only accepts objects, strings or leaves, but you passed it: ${attrs}`
-    )
+      `\`Leaf.create\` only accepts objects, strings or leaves, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -57,45 +57,45 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   static createLeaves(leaves) {
-    if (leaves.size <= 1) return leaves
+    if (leaves.size <= 1) return leaves;
 
-    let invalid = false
+    let invalid = false;
 
     // TODO: we can make this faster with [List] and then flatten
-    const result = List().withMutations(cache => {
+    const result = List().withMutations((cache) => {
       // Search from the leaves left end to find invalid node;
       leaves.findLast((leaf, index) => {
-        const firstLeaf = cache.first()
+        const firstLeaf = cache.first();
 
         // If the first leaf of cache exist, check whether the first leaf is connectable with the current leaf
         if (firstLeaf) {
           // If marks equals, then the two leaves can be connected
           if (firstLeaf.marks.equals(leaf.marks)) {
-            invalid = true
-            cache.set(0, firstLeaf.set('text', `${leaf.text}${firstLeaf.text}`))
-            return
+            invalid = true;
+            cache.set(0, firstLeaf.set('text', `${leaf.text}${firstLeaf.text}`));
+            return;
           }
 
           // If the cached leaf is empty, drop the empty leaf with the upcoming leaf
           if (firstLeaf.text === '') {
-            invalid = true
-            cache.set(0, leaf)
-            return
+            invalid = true;
+            cache.set(0, leaf);
+            return;
           }
 
           // If the current leaf is empty, drop the leaf
           if (leaf.text === '') {
-            invalid = true
-            return
+            invalid = true;
+            return;
           }
         }
 
-        cache.unshift(leaf)
-      })
-    })
+        cache.unshift(leaf);
+      });
+    });
 
-    if (!invalid) return leaves
-    return result
+    if (!invalid) return leaves;
+    return result;
   }
 
   /**
@@ -109,53 +109,54 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   static splitLeaves(leaves, offset) {
-    if (offset < 0) return [List(), leaves]
+    if (offset < 0) return [List(), leaves];
 
     if (leaves.size === 0) {
-      return [List(), List()]
+      return [List(), List()];
     }
 
-    let endOffset = 0
-    let index = -1
-    let left, right
+    let endOffset = 0;
+    let index = -1;
+    let left; let
+      right;
 
-    leaves.find(leaf => {
-      index++
-      const startOffset = endOffset
-      const { text } = leaf
-      endOffset += text.length
+    leaves.find((leaf) => {
+      index++;
+      const startOffset = endOffset;
+      const { text } = leaf;
+      endOffset += text.length;
 
-      if (endOffset < offset) return false
-      if (startOffset > offset) return false
+      if (endOffset < offset) return false;
+      if (startOffset > offset) return false;
 
-      const length = offset - startOffset
-      left = leaf.set('text', text.slice(0, length))
-      right = leaf.set('text', text.slice(length))
-      return true
-    })
+      const length = offset - startOffset;
+      left = leaf.set('text', text.slice(0, length));
+      right = leaf.set('text', text.slice(length));
+      return true;
+    });
 
-    if (!left) return [leaves, List()]
+    if (!left) return [leaves, List()];
 
     if (left.text === '') {
       if (index === 0) {
-        return [List.of(left), leaves]
+        return [List.of(left), leaves];
       }
 
-      return [leaves.take(index), leaves.skip(index)]
+      return [leaves.take(index), leaves.skip(index)];
     }
 
     if (right.text === '') {
       if (index === leaves.size - 1) {
-        return [leaves, List.of(right)]
+        return [leaves, List.of(right)];
       }
 
-      return [leaves.take(index + 1), leaves.skip(index + 1)]
+      return [leaves.take(index + 1), leaves.skip(index + 1)];
     }
 
     return [
       leaves.take(index).push(left),
       leaves.skip(index + 1).unshift(right),
-    ]
+    ];
   }
 
   /**
@@ -167,13 +168,13 @@ class Leaf extends Record(DEFAULTS) {
 
   static createList(attrs = []) {
     if (List.isList(attrs) || Array.isArray(attrs)) {
-      const list = new List(attrs.map(Leaf.create))
-      return list
+      const list = new List(attrs.map(Leaf.create));
+      return list;
     }
 
     throw new Error(
-      `\`Leaf.createList\` only accepts arrays or lists, but you passed it: ${attrs}`
-    )
+      `\`Leaf.createList\` only accepts arrays or lists, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -184,14 +185,14 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   static fromJSON(object) {
-    const { text = '', marks = [] } = object
+    const { text = '', marks = [] } = object;
 
     const leaf = new Leaf({
       text,
       marks: Set(marks.map(Mark.fromJSON)),
-    })
+    });
 
-    return leaf
+    return leaf;
   }
 
   /**
@@ -202,7 +203,7 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   static isLeafList(any) {
-    return List.isList(any) && any.every(item => Leaf.isLeaf(item))
+    return List.isList(any) && any.every((item) => Leaf.isLeaf(item));
   }
 
   /**
@@ -214,13 +215,13 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   updateMark(mark, newMark) {
-    const { marks } = this
-    if (newMark.equals(mark)) return this
-    if (!marks.has(mark)) return this
-    const newMarks = marks.withMutations(collection => {
-      collection.remove(mark).add(newMark)
-    })
-    return this.set('marks', newMarks)
+    const { marks } = this;
+    if (newMark.equals(mark)) return this;
+    if (!marks.has(mark)) return this;
+    const newMarks = marks.withMutations((collection) => {
+      collection.remove(mark).add(newMark);
+    });
+    return this.set('marks', newMarks);
   }
 
   /**
@@ -231,8 +232,8 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   addMark(mark) {
-    const { marks } = this
-    return this.set('marks', marks.add(mark))
+    const { marks } = this;
+    return this.set('marks', marks.add(mark));
   }
 
   /**
@@ -243,8 +244,8 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   addMarks(set) {
-    const { marks } = this
-    return this.set('marks', marks.union(set))
+    const { marks } = this;
+    return this.set('marks', marks.union(set));
   }
 
   /**
@@ -256,9 +257,9 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   insertText(offset, string) {
-    const { text } = this
-    const next = text.slice(0, offset) + string + text.slice(offset)
-    return this.set('text', next)
+    const { text } = this;
+    const next = text.slice(0, offset) + string + text.slice(offset);
+    return this.set('text', next);
   }
 
   /**
@@ -269,8 +270,8 @@ class Leaf extends Record(DEFAULTS) {
    */
 
   removeMark(mark) {
-    const { marks } = this
-    return this.set('marks', marks.remove(mark))
+    const { marks } = this;
+    return this.set('marks', marks.remove(mark));
   }
 
   /**
@@ -283,10 +284,10 @@ class Leaf extends Record(DEFAULTS) {
     const object = {
       object: this.object,
       text: this.text,
-      marks: this.marks.toArray().map(m => m.toJSON()),
-    }
+      marks: this.marks.toArray().map((m) => m.toJSON()),
+    };
 
-    return object
+    return object;
   }
 }
 
@@ -296,4 +297,4 @@ class Leaf extends Record(DEFAULTS) {
  * @type {Leaf}
  */
 
-export default Leaf
+export default Leaf;

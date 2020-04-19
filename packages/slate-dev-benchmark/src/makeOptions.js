@@ -6,7 +6,7 @@ const defaultOptions = {
   allocationTries: 1000,
   async: false,
   mode: 'adaptive',
-}
+};
 
 /**
  * Merge two options for configuring a bench run
@@ -22,19 +22,19 @@ const defaultOptions = {
  */
 
 function makeOptions(options) {
-  const result = { ...defaultOptions, ...options }
+  const result = { ...defaultOptions, ...options };
 
   for (const key in defaultOptions) {
-    const shallType = typeof defaultOptions[key]
-    const inputType = typeof result[key]
+    const shallType = typeof defaultOptions[key];
+    const inputType = typeof result[key];
 
     if (shallType !== inputType) {
       throw TypeError(
-        `Wrong Input in Config Suite, options[${key}] should be ${shallType}, but the input type is ${inputType}`
-      )
+        `Wrong Input in Config Suite, options[${key}] should be ${shallType}, but the input type is ${inputType}`,
+      );
     }
   }
-  return result
+  return result;
 }
 
-module.exports = { makeOptions }
+module.exports = { makeOptions };

@@ -1,8 +1,8 @@
-import isPlainObject from 'is-plain-object'
-import { List, Map, Record } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import { List, Map, Record } from 'immutable';
 
-import KeyUtils from '../utils/key-utils'
-import Node from './node'
+import KeyUtils from '../utils/key-utils';
+import Node from './node';
 
 /**
  * Default properties.
@@ -14,7 +14,7 @@ const DEFAULTS = {
   data: undefined,
   key: undefined,
   nodes: undefined,
-}
+};
 
 /**
  * Document.
@@ -32,20 +32,20 @@ class Document extends Record(DEFAULTS) {
 
   static create(attrs = {}) {
     if (Document.isDocument(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (List.isList(attrs) || Array.isArray(attrs)) {
-      attrs = { nodes: attrs }
+      attrs = { nodes: attrs };
     }
 
     if (isPlainObject(attrs)) {
-      return Document.fromJSON(attrs)
+      return Document.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Document.create\` only accepts objects, arrays, lists or documents, but you passed it: ${attrs}`
-    )
+      `\`Document.create\` only accepts objects, arrays, lists or documents, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -57,18 +57,18 @@ class Document extends Record(DEFAULTS) {
 
   static fromJSON(object) {
     if (Document.isDocument(object)) {
-      return object
+      return object;
     }
 
-    const { data = {}, key = KeyUtils.create(), nodes = [] } = object
+    const { data = {}, key = KeyUtils.create(), nodes = [] } = object;
 
     const document = new Document({
       key,
       data: new Map(data),
       nodes: Node.createList(nodes),
-    })
+    });
 
-    return document
+    return document;
   }
 
   /**
@@ -82,14 +82,14 @@ class Document extends Record(DEFAULTS) {
     const object = {
       object: this.object,
       data: this.data.toJSON(),
-      nodes: this.nodes.toArray().map(n => n.toJSON(options)),
-    }
+      nodes: this.nodes.toArray().map((n) => n.toJSON(options)),
+    };
 
     if (options.preserveKeys) {
-      object.key = this.key
+      object.key = this.key;
     }
 
-    return object
+    return object;
   }
 }
 
@@ -99,4 +99,4 @@ class Document extends Record(DEFAULTS) {
  * @type {Document}
  */
 
-export default Document
+export default Document;

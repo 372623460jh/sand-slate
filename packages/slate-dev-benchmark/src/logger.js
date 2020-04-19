@@ -4,10 +4,9 @@
  * IS in test
  */
 
-const IS_TEST =
-  typeof process !== 'undefined' &&
-  process.env &&
-  process.env.BABEL_ENV === 'test'
+const IS_TEST = typeof process !== 'undefined'
+  && process.env
+  && process.env.BABEL_ENV === 'test';
 
 /**
  * Log a `message`
@@ -18,9 +17,9 @@ const IS_TEST =
  */
 
 function log(message, ...args) {
-  if (IS_TEST) return
+  if (IS_TEST) return;
 
-  return console.log(message, ...args)
+  return console.log(message, ...args);
 }
 
 /*
@@ -28,7 +27,7 @@ function log(message, ...args) {
 */
 
 function errorLog(message, ...args) {
-  console.error(message, ...args)
+  console.error(message, ...args);
 }
 
 /**
@@ -36,39 +35,39 @@ function errorLog(message, ...args) {
  */
 
 function logger(obj) {
-  const prefix = '    '
+  const prefix = '    ';
 
   if (obj.isRepository) {
-    return log(`Repository ${obj.name} is running`)
+    return log(`Repository ${obj.name} is running`);
   }
 
   if (obj.isSuite) {
-    return log(`${prefix}- Suite ${obj.name} is running`)
+    return log(`${prefix}- Suite ${obj.name} is running`);
   }
 
   if (obj.isBench) {
     if (!obj.isFinished) {
-      return log(`${prefix + prefix}- Bench ${obj.name} is running`)
+      return log(`${prefix + prefix}- Bench ${obj.name} is running`);
     }
 
-    const { report } = obj
-    const { cycles } = report
+    const { report } = obj;
+    const { cycles } = report;
 
     const header = {
       user: 'user:',
       hr: 'real:',
-    }
+    };
 
     for (const key of ['user', 'hr']) {
       log(
         `${prefix + prefix + prefix}${header[key]} * ${cycles} cycles: ${
           report[key]
-        } ms; ( ${cycles * 1000 / report[key]} ops/sec)`
-      )
+        } ms; ( ${cycles * 1000 / report[key]} ops/sec)`,
+      );
     }
-    return log(`${prefix + prefix + prefix}cycles: ${cycles}`)
+    return log(`${prefix + prefix + prefix}cycles: ${cycles}`);
   }
-  return log(obj)
+  return log(obj);
 }
 
-module.exports = { logger, errorLog, log }
+module.exports = { logger, errorLog, log };

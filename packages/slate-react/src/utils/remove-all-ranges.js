@@ -1,4 +1,4 @@
-import { IS_IE } from '@jianghe/slate-dev-environment'
+import { IS_IE } from '@jianghe/slate-dev-environment';
 
 /**
  * Cross-browser remove all ranges from a `domSelection`.
@@ -10,11 +10,11 @@ function removeAllRanges(domSelection) {
   // COMPAT: In IE 11, if the selection contains nested tables, then
   // `removeAllRanges` will throw an error.
   if (IS_IE) {
-    const range = window.document.body.createTextRange()
-    range.collapse()
-    range.select()
+    const range = window.document.body.createTextRange();
+    range.collapse();
+    range.select();
   } else {
-    domSelection.removeAllRanges()
+    domSelection.removeAllRanges();
   }
 }
 
@@ -24,4 +24,4 @@ function removeAllRanges(domSelection) {
  * @type {Function}
  */
 
-export default removeAllRanges
+export default removeAllRanges;

@@ -1,17 +1,29 @@
-# editorconfig.org
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
 root = true
 
+# Unix-style newlines with a newline ending every file
 [*]
-charset = utf-8
-end_of_line = lf
-indent_size = 2
 indent_style = space
-insert_final_newline = true
+indent_size = 2
+end_of_line = lf
+# 编码
+charset = utf-8
+# 是否删除行尾空格
 trim_trailing_whitespace = true
+# 是否让文件以空行结束
+insert_final_newline = true
 
 [*.md]
+# 是否删除行尾空格
 trim_trailing_whitespace = false
 
-[*.txt]
-insert_final_newline = false
-trim_trailing_whitespace = false
+# 4 space indentation
+[*.py]
+indent_size = 4
+
+# Tab indentation (no size specified)
+[Makefile]
+indent_style = tab
+© 2020 GitHub, Inc.

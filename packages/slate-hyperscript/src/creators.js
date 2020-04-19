@@ -7,7 +7,7 @@ import {
   Selection,
   Text,
   Value,
-} from '@jianghe/slate'
+} from '@jianghe/slate';
 
 /**
  * Auto-incrementing ID to keep track of paired annotations.
@@ -15,7 +15,7 @@ import {
  * @type {Number}
  */
 
-let uid = 0
+let uid = 0;
 
 /**
  * Create an anchor point.
@@ -27,7 +27,7 @@ let uid = 0
  */
 
 export function createAnchor(tagName, attributes, children) {
-  return new AnchorPoint(attributes)
+  return new AnchorPoint(attributes);
 }
 
 /**
@@ -40,9 +40,9 @@ export function createAnchor(tagName, attributes, children) {
  */
 
 export function createBlock(tagName, attributes, children) {
-  const attrs = { ...attributes, object: 'block' }
-  const block = createNode(null, attrs, children)
-  return block
+  const attrs = { ...attributes, object: 'block' };
+  const block = createNode(null, attrs, children);
+  return block;
 }
 
 /**
@@ -55,7 +55,7 @@ export function createBlock(tagName, attributes, children) {
  */
 
 export function createCursor(tagName, attributes, children) {
-  return new CursorPoint(attributes)
+  return new CursorPoint(attributes);
 }
 
 /**
@@ -69,22 +69,22 @@ export function createCursor(tagName, attributes, children) {
  */
 
 export function createAnnotation(tagName, attributes, children) {
-  const { key, data } = attributes
-  const type = tagName
+  const { key, data } = attributes;
+  const type = tagName;
 
   if (key) {
-    return new AnnotationPoint({ id: key, type, data })
+    return new AnnotationPoint({ id: key, type, data });
   }
 
-  const texts = createChildren(children)
-  const first = texts.first()
-  const last = texts.last()
-  const id = `${uid++}`
-  const start = new AnnotationPoint({ id, type, data })
-  const end = new AnnotationPoint({ id, type, data })
-  setPoint(first, start, 0)
-  setPoint(last, end, last.text.length)
-  return texts
+  const texts = createChildren(children);
+  const first = texts.first();
+  const last = texts.last();
+  const id = `${uid++}`;
+  const start = new AnnotationPoint({ id, type, data });
+  const end = new AnnotationPoint({ id, type, data });
+  setPoint(first, start, 0);
+  setPoint(last, end, last.text.length);
+  return texts;
 }
 
 /**
@@ -97,9 +97,9 @@ export function createAnnotation(tagName, attributes, children) {
  */
 
 export function createDocument(tagName, attributes, children) {
-  const attrs = { ...attributes, object: 'document' }
-  const document = createNode(null, attrs, children)
-  return document
+  const attrs = { ...attributes, object: 'document' };
+  const document = createNode(null, attrs, children);
+  return document;
 }
 
 /**
@@ -112,7 +112,7 @@ export function createDocument(tagName, attributes, children) {
  */
 
 export function createFocus(tagName, attributes, children) {
-  return new FocusPoint(attributes)
+  return new FocusPoint(attributes);
 }
 
 /**
@@ -125,9 +125,9 @@ export function createFocus(tagName, attributes, children) {
  */
 
 export function createInline(tagName, attributes, children) {
-  const attrs = { ...attributes, object: 'inline' }
-  const inline = createNode(null, attrs, children)
-  return inline
+  const attrs = { ...attributes, object: 'inline' };
+  const inline = createNode(null, attrs, children);
+  return inline;
 }
 
 /**
@@ -140,28 +140,28 @@ export function createInline(tagName, attributes, children) {
  */
 
 export function createMark(tagName, attributes, children) {
-  const { key, ...mark } = attributes
-  const marks = Mark.createSet([mark])
-  const list = createChildren(children)
-  let node
+  const { key, ...mark } = attributes;
+  const marks = Mark.createSet([mark]);
+  const list = createChildren(children);
+  let node;
 
   if (list.size > 1) {
     throw new Error(
-      `The <mark> hyperscript tag must only contain a single node's worth of children.`
-    )
+      'The <mark> hyperscript tag must only contain a single node\'s worth of children.',
+    );
   } else if (list.size === 0) {
-    node = Text.create({ key, marks })
+    node = Text.create({ key, marks });
   } else {
-    node = list.first()
+    node = list.first();
 
-    node = preservePoints(node, n => {
-      if (key) n = n.set('key', key)
-      if (marks) n = n.set('marks', n.marks.union(marks))
-      return n
-    })
+    node = preservePoints(node, (n) => {
+      if (key) n = n.set('key', key);
+      if (marks) n = n.set('marks', n.marks.union(marks));
+      return n;
+    });
   }
 
-  return node
+  return node;
 }
 
 /**
@@ -174,16 +174,16 @@ export function createMark(tagName, attributes, children) {
  */
 
 export function createNode(tagName, attributes, children) {
-  const { object } = attributes
+  const { object } = attributes;
 
   if (object === 'text') {
-    const text = createText(null, attributes, children)
-    return text
+    const text = createText(null, attributes, children);
+    return text;
   }
 
-  const nodes = createChildren(children)
-  const node = Node.create({ ...attributes, nodes })
-  return node
+  const nodes = createChildren(children);
+  const node = Node.create({ ...attributes, nodes });
+  return node;
 }
 
 /**
@@ -196,9 +196,9 @@ export function createNode(tagName, attributes, children) {
  */
 
 export function createSelection(tagName, attributes, children) {
-  const anchor = children.find(c => c instanceof AnchorPoint)
-  const focus = children.find(c => c instanceof FocusPoint)
-  const { marks, focused } = attributes
+  const anchor = children.find((c) => c instanceof AnchorPoint);
+  const focus = children.find((c) => c instanceof FocusPoint);
+  const { marks, focused } = attributes;
   const selection = Selection.create({
     marks,
     isFocused: focused,
@@ -212,9 +212,9 @@ export function createSelection(tagName, attributes, children) {
       offset: focus.offset,
       path: focus.path,
     },
-  })
+  });
 
-  return selection
+  return selection;
 }
 
 /**
@@ -227,27 +227,27 @@ export function createSelection(tagName, attributes, children) {
  */
 
 export function createText(tagName, attributes, children) {
-  const { key, marks } = attributes
-  const list = createChildren(children)
-  let node
+  const { key, marks } = attributes;
+  const list = createChildren(children);
+  let node;
 
   if (list.size > 1) {
     throw new Error(
-      `The <text> hyperscript tag must only contain a single node's worth of children.`
-    )
+      'The <text> hyperscript tag must only contain a single node\'s worth of children.',
+    );
   } else if (list.size === 0) {
-    node = Text.create({ key })
+    node = Text.create({ key });
   } else {
-    node = list.first()
+    node = list.first();
 
-    node = preservePoints(node, n => {
-      if (key) n = n.set('key', key)
-      if (marks) n = n.set('marks', Mark.createSet(marks))
-      return n
-    })
+    node = preservePoints(node, (n) => {
+      if (key) n = n.set('key', key);
+      if (marks) n = n.set('marks', Mark.createSet(marks));
+      return n;
+    });
   }
 
-  return node
+  return node;
 }
 
 /**
@@ -260,44 +260,44 @@ export function createText(tagName, attributes, children) {
  */
 
 export function createValue(tagName, attributes, children) {
-  const { data } = attributes
-  const document = children.find(Document.isDocument)
-  let selection = children.find(Selection.isSelection)
-  let anchor
-  let focus
-  let marks
-  let isFocused
-  let annotations = {}
-  const partials = {}
+  const { data } = attributes;
+  const document = children.find(Document.isDocument);
+  let selection = children.find(Selection.isSelection);
+  let anchor;
+  let focus;
+  let marks;
+  let isFocused;
+  let annotations = {};
+  const partials = {};
 
   // Search the document's texts to see if any of them have the anchor or
   // focus information saved, or annotations applied.
   if (document) {
     for (const [node, path] of document.texts()) {
-      const { __anchor, __annotations, __focus } = node
+      const { __anchor, __annotations, __focus } = node;
 
       if (__anchor != null) {
-        anchor = Point.create({ path, key: node.key, offset: __anchor.offset })
-        marks = __anchor.marks
-        isFocused = __anchor.isFocused
+        anchor = Point.create({ path, key: node.key, offset: __anchor.offset });
+        marks = __anchor.marks;
+        isFocused = __anchor.isFocused;
       }
 
       if (__focus != null) {
-        focus = Point.create({ path, key: node.key, offset: __focus.offset })
-        marks = __focus.marks
-        isFocused = __focus.isFocused
+        focus = Point.create({ path, key: node.key, offset: __focus.offset });
+        marks = __focus.marks;
+        isFocused = __focus.isFocused;
       }
 
       if (__annotations != null) {
         for (const ann of __annotations) {
-          const { id } = ann
-          const partial = partials[id]
-          delete partials[id]
+          const { id } = ann;
+          const partial = partials[id];
+          delete partials[id];
 
           if (!partial) {
-            ann.key = node.key
-            partials[id] = ann
-            continue
+            ann.key = node.key;
+            partials[id] = ann;
+            continue;
           }
 
           const annotation = Annotation.create({
@@ -314,9 +314,9 @@ export function createValue(tagName, attributes, children) {
               key: node.key,
               offset: ann.offset,
             },
-          })
+          });
 
-          annotations[id] = annotation
+          annotations[id] = annotation;
         }
       }
     }
@@ -324,36 +324,38 @@ export function createValue(tagName, attributes, children) {
 
   if (Object.keys(partials).length > 0) {
     throw new Error(
-      `Slate hyperscript must have both a start and an end defined for each annotation using the \`key=\` prop.`
-    )
+      'Slate hyperscript must have both a start and an end defined for each annotation using the `key=` prop.',
+    );
   }
 
   if (anchor && !focus) {
     throw new Error(
-      `Slate hyperscript ranges must have both \`<anchor />\` and \`<focus />\` defined if one is defined, but you only defined \`<anchor />\`. For collapsed selections, use \`<cursor />\` instead.`
-    )
+      'Slate hyperscript ranges must have both `<anchor />` and `<focus />` defined if one is defined, but you only defined `<anchor />`. For collapsed selections, use `<cursor />` instead.',
+    );
   }
 
   if (!anchor && focus) {
     throw new Error(
-      `Slate hyperscript ranges must have both \`<anchor />\` and \`<focus />\` defined if one is defined, but you only defined \`<focus />\`. For collapsed selections, use \`<cursor />\` instead.`
-    )
+      'Slate hyperscript ranges must have both `<anchor />` and `<focus />` defined if one is defined, but you only defined `<focus />`. For collapsed selections, use `<cursor />` instead.',
+    );
   }
 
   if (anchor || focus) {
     if (!selection) {
-      selection = Selection.create({ anchor, focus, isFocused, marks })
+      selection = Selection.create({
+        anchor, focus, isFocused, marks,
+      });
     } else {
-      selection = selection.setPoints([anchor, focus])
+      selection = selection.setPoints([anchor, focus]);
     }
   } else if (!selection) {
-    selection = Selection.create()
+    selection = Selection.create();
   }
 
-  selection = selection.normalize(document)
+  selection = selection.normalize(document);
 
   if (annotations.length > 0) {
-    annotations = annotations.map(a => a.normalize(document))
+    annotations = annotations.map((a) => a.normalize(document));
   }
 
   const value = Value.fromJSON({
@@ -362,9 +364,9 @@ export function createValue(tagName, attributes, children) {
     document,
     selection,
     ...attributes,
-  })
+  });
 
-  return value
+  return value;
 }
 
 /**
@@ -375,64 +377,64 @@ export function createValue(tagName, attributes, children) {
  */
 
 export function createChildren(children) {
-  let nodes = Node.createList()
+  let nodes = Node.createList();
 
-  const push = node => {
-    const last = nodes.last()
-    const isString = typeof node === 'string'
+  const push = (node) => {
+    const last = nodes.last();
+    const isString = typeof node === 'string';
 
     if (last && last.__string && (isString || node.__string)) {
-      const text = isString ? node : node.text
-      const { length } = last.text
-      const next = preservePoints(last, l => l.insertText(length, text))
-      incrementPoints(node, length)
-      copyPoints(node, next)
-      next.__string = true
-      nodes = nodes.pop().push(next)
+      const text = isString ? node : node.text;
+      const { length } = last.text;
+      const next = preservePoints(last, (l) => l.insertText(length, text));
+      incrementPoints(node, length);
+      copyPoints(node, next);
+      next.__string = true;
+      nodes = nodes.pop().push(next);
     } else if (isString) {
-      node = Text.create({ text: node })
-      node.__string = true
-      nodes = nodes.push(node)
+      node = Text.create({ text: node });
+      node.__string = true;
+      nodes = nodes.push(node);
     } else {
-      nodes = nodes.push(node)
+      nodes = nodes.push(node);
     }
-  }
+  };
 
-  children.forEach(child => {
+  children.forEach((child) => {
     if (Node.isNodeList(child)) {
-      child.forEach(c => push(c))
+      child.forEach((c) => push(c));
     }
 
     if (Node.isNode(child)) {
-      push(child)
+      push(child);
     }
 
     if (typeof child === 'string') {
-      push(child)
+      push(child);
     }
 
     if (isPoint(child)) {
       if (!nodes.size) {
-        push('')
+        push('');
       }
 
-      let last = nodes.last()
+      let last = nodes.last();
 
       if (last.object !== 'text') {
-        push('')
-        last = nodes.last()
+        push('');
+        last = nodes.last();
       }
 
       if (!last || !last.__string) {
-        push('')
-        last = nodes.last()
+        push('');
+        last = nodes.last();
       }
 
-      setPoint(last, child, last.text.length)
+      setPoint(last, child, last.text.length);
     }
-  })
+  });
 
-  return nodes
+  return nodes;
 }
 
 /**
@@ -444,10 +446,10 @@ export function createChildren(children) {
 
 class CursorPoint {
   constructor(attrs = {}) {
-    const { isFocused = true, marks = null } = attrs
-    this.isFocused = isFocused
-    this.marks = marks
-    this.offset = null
+    const { isFocused = true, marks = null } = attrs;
+    this.isFocused = isFocused;
+    this.marks = marks;
+    this.offset = null;
   }
 }
 
@@ -459,12 +461,12 @@ class AnchorPoint {
       marks = null,
       offset = null,
       path = null,
-    } = attrs
-    this.isFocused = isFocused
-    this.key = key
-    this.marks = marks
-    this.offset = offset
-    this.path = path
+    } = attrs;
+    this.isFocused = isFocused;
+    this.key = key;
+    this.marks = marks;
+    this.offset = offset;
+    this.path = path;
   }
 }
 
@@ -476,22 +478,22 @@ class FocusPoint {
       marks = null,
       offset = null,
       path = null,
-    } = attrs
-    this.isFocused = isFocused
-    this.key = key
-    this.marks = marks
-    this.offset = offset
-    this.path = path
+    } = attrs;
+    this.isFocused = isFocused;
+    this.key = key;
+    this.marks = marks;
+    this.offset = offset;
+    this.path = path;
   }
 }
 
 class AnnotationPoint {
   constructor(attrs) {
-    const { id = null, data = {}, type } = attrs
-    this.id = id
-    this.offset = null
-    this.type = type
-    this.data = data
+    const { id = null, data = {}, type } = attrs;
+    this.id = id;
+    this.offset = null;
+    this.type = type;
+    this.data = data;
   }
 }
 
@@ -503,18 +505,18 @@ class AnnotationPoint {
  */
 
 function incrementPoints(object, n) {
-  const { __anchor, __focus, __annotations } = object
+  const { __anchor, __focus, __annotations } = object;
 
   if (__anchor != null) {
-    __anchor.offset += n
+    __anchor.offset += n;
   }
 
   if (__focus != null && __focus !== __anchor) {
-    __focus.offset += n
+    __focus.offset += n;
   }
 
   if (__annotations != null) {
-    __annotations.forEach(a => (a.offset += n))
+    __annotations.forEach((a) => (a.offset += n));
   }
 }
 
@@ -527,11 +529,11 @@ function incrementPoints(object, n) {
 
 function isPoint(object) {
   return (
-    object instanceof AnchorPoint ||
-    object instanceof CursorPoint ||
-    object instanceof AnnotationPoint ||
-    object instanceof FocusPoint
-  )
+    object instanceof AnchorPoint
+    || object instanceof CursorPoint
+    || object instanceof AnnotationPoint
+    || object instanceof FocusPoint
+  );
 }
 
 /**
@@ -543,16 +545,16 @@ function isPoint(object) {
  */
 
 function preservePoints(object, updator) {
-  const next = updator(object)
-  copyPoints(object, next)
-  return next
+  const next = updator(object);
+  copyPoints(object, next);
+  return next;
 }
 
 function copyPoints(object, other) {
-  const { __anchor, __focus, __annotations } = object
-  if (__anchor != null) other.__anchor = __anchor
-  if (__focus != null) other.__focus = __focus
-  if (__annotations != null) other.__annotations = __annotations
+  const { __anchor, __focus, __annotations } = object;
+  if (__anchor != null) other.__anchor = __anchor;
+  if (__focus != null) other.__focus = __focus;
+  if (__annotations != null) other.__annotations = __annotations;
 }
 
 /**
@@ -565,18 +567,18 @@ function copyPoints(object, other) {
 
 function setPoint(object, point, offset) {
   if (point instanceof AnchorPoint || point instanceof CursorPoint) {
-    point.offset = offset
-    object.__anchor = point
+    point.offset = offset;
+    object.__anchor = point;
   }
 
   if (point instanceof FocusPoint || point instanceof CursorPoint) {
-    point.offset = offset
-    object.__focus = point
+    point.offset = offset;
+    object.__focus = point;
   }
 
   if (point instanceof AnnotationPoint) {
-    point.offset = offset
-    object.__annotations = object.__annotations || []
-    object.__annotations = object.__annotations.concat(point)
+    point.offset = offset;
+    object.__annotations = object.__annotations || [];
+    object.__annotations = object.__annotations.concat(point);
   }
 }

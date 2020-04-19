@@ -1,4 +1,4 @@
-import DATA_ATTRS from './data-attributes'
+import DATA_ATTRS from './data-attributes';
 
 /**
  * DOM selector strings that refer to Slate concepts.
@@ -17,4 +17,4 @@ export default {
   TEXT: `[${DATA_ATTRS.OBJECT}="text"]`,
   VOID: `[${DATA_ATTRS.VOID}]`,
   ZERO_WIDTH: `[${DATA_ATTRS.ZERO_WIDTH}]`,
-}
+};

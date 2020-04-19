@@ -1,26 +1,13 @@
-# Build files.
-*.js.map
-build/
-dist/
-lib/
-
-# Temporary files.
-tmp/
-
-# Gitbook files.
-_book/
-
-# Package files.
-lerna-debug.log
-node_modules/
-npm-debug.log
-yarn-error.log
-yarn.lock
+/yarn.lock
+/node_modules
+/packages/*/esm
+/packages/*/cjs
+/packages/*/dist
+/packages/*/node_modules
 
 # OS files.
 .DS_Store
 .idea/
 .vscode/
-
-# Editor files
-.tern-port
+.git
+*.log

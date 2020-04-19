@@ -1,12 +1,12 @@
-import isPlainObject from 'is-plain-object'
-import warning from 'tiny-warning'
-import { List } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import warning from 'tiny-warning';
+import { List } from 'immutable';
 
-import Block from './block'
-import Data from './data'
-import Document from './document'
-import Inline from './inline'
-import Text from './text'
+import Block from './block';
+import Data from './data';
+import Document from './document';
+import Inline from './inline';
+import Text from './text';
 
 /**
  * A pseudo-model that is used for its static methods only.
@@ -24,40 +24,40 @@ class Node {
 
   static create(attrs = {}) {
     if (Node.isNode(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (isPlainObject(attrs)) {
-      let { object } = attrs
+      let { object } = attrs;
 
       if (!object && attrs.kind) {
         warning(
           false,
-          'As of slate@0.32.0, the `kind` property of Slate objects has been renamed to `object`.'
-        )
+          'As of slate@0.32.0, the `kind` property of Slate objects has been renamed to `object`.',
+        );
 
-        object = attrs.kind
+        object = attrs.kind;
       }
 
       switch (object) {
         case 'block':
-          return Block.create(attrs)
+          return Block.create(attrs);
         case 'document':
-          return Document.create(attrs)
+          return Document.create(attrs);
         case 'inline':
-          return Inline.create(attrs)
+          return Inline.create(attrs);
         case 'text':
-          return Text.create(attrs)
+          return Text.create(attrs);
 
         default: {
-          throw new Error('`Node.create` requires a `object` string.')
+          throw new Error('`Node.create` requires a `object` string.');
         }
       }
     }
 
     throw new Error(
-      `\`Node.create\` only accepts objects or nodes but you passed it: ${attrs}`
-    )
+      `\`Node.create\` only accepts objects or nodes but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -69,36 +69,36 @@ class Node {
 
   static createList(elements = []) {
     if (List.isList(elements) || Array.isArray(elements)) {
-      let array = []
+      let array = [];
 
-      elements.forEach(el => {
+      elements.forEach((el) => {
         if (
-          el &&
-          el.object === 'text' &&
-          el.leaves &&
-          Array.isArray(el.leaves)
+          el
+          && el.object === 'text'
+          && el.leaves
+          && Array.isArray(el.leaves)
         ) {
           warning(
             false,
-            'As of slate@0.46, the `leaves` property of Text nodes has been removed. Instead, each text node contains a string of text and a unique set of marks and leaves are unnecessary.'
-          )
+            'As of slate@0.46, the `leaves` property of Text nodes has been removed. Instead, each text node contains a string of text and a unique set of marks and leaves are unnecessary.',
+          );
 
-          const texts = Text.createList(el.leaves).toArray()
-          array = array.concat(texts)
-          return
+          const texts = Text.createList(el.leaves).toArray();
+          array = array.concat(texts);
+          return;
         }
 
-        const node = Node.create(el)
-        array.push(node)
-      })
+        const node = Node.create(el);
+        array.push(node);
+      });
 
-      const list = List(array)
-      return list
+      const list = List(array);
+      return list;
     }
 
     throw new Error(
-      `\`Node.createList\` only accepts lists or arrays, but you passed it: ${elements}`
-    )
+      `\`Node.createList\` only accepts lists or arrays, but you passed it: ${elements}`,
+    );
   }
 
   /**
@@ -113,23 +113,23 @@ class Node {
       return {
         data: attrs.data,
         type: attrs.type,
-      }
+      };
     }
 
     if (typeof attrs === 'string') {
-      return { type: attrs }
+      return { type: attrs };
     }
 
     if (isPlainObject(attrs)) {
-      const props = {}
-      if ('type' in attrs) props.type = attrs.type
-      if ('data' in attrs) props.data = Data.create(attrs.data)
-      return props
+      const props = {};
+      if ('type' in attrs) props.type = attrs.type;
+      if ('data' in attrs) props.data = Data.create(attrs.data);
+      return props;
     }
 
     throw new Error(
-      `\`Node.createProperties\` only accepts objects, strings, blocks or inlines, but you passed it: ${attrs}`
-    )
+      `\`Node.createProperties\` only accepts objects, strings, blocks or inlines, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -140,31 +140,31 @@ class Node {
    */
 
   static fromJSON(value) {
-    let { object } = value
+    let { object } = value;
 
     if (!object && value.kind) {
       warning(
         false,
-        'As of slate@0.32.0, the `kind` property of Slate objects has been renamed to `object`.'
-      )
+        'As of slate@0.32.0, the `kind` property of Slate objects has been renamed to `object`.',
+      );
 
-      object = value.kind
+      object = value.kind;
     }
 
     switch (object) {
       case 'block':
-        return Block.fromJSON(value)
+        return Block.fromJSON(value);
       case 'document':
-        return Document.fromJSON(value)
+        return Document.fromJSON(value);
       case 'inline':
-        return Inline.fromJSON(value)
+        return Inline.fromJSON(value);
       case 'text':
-        return Text.fromJSON(value)
+        return Text.fromJSON(value);
 
       default: {
         throw new Error(
-          `\`Node.fromJSON\` requires an \`object\` of either 'block', 'document', 'inline' or 'text', but you passed: ${value}`
-        )
+          `\`Node.fromJSON\` requires an \`object\` of either 'block', 'document', 'inline' or 'text', but you passed: ${value}`,
+        );
       }
     }
   }
@@ -178,11 +178,11 @@ class Node {
 
   static isNode(any) {
     return (
-      Block.isBlock(any) ||
-      Document.isDocument(any) ||
-      Inline.isInline(any) ||
-      Text.isText(any)
-    )
+      Block.isBlock(any)
+      || Document.isDocument(any)
+      || Inline.isInline(any)
+      || Text.isText(any)
+    );
   }
 
   /**
@@ -193,7 +193,7 @@ class Node {
    */
 
   static isNodeList(any) {
-    return List.isList(any) && any.every(item => Node.isNode(item))
+    return List.isList(any) && any.every((item) => Node.isNode(item));
   }
 }
 
@@ -203,4 +203,4 @@ class Node {
  * @type {Object}
  */
 
-export default Node
+export default Node;

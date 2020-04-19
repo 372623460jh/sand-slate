@@ -1,4 +1,4 @@
-import Debug from 'debug'
+import Debug from 'debug';
 
 /**
  * Debug mutations function.
@@ -6,7 +6,7 @@ import Debug from 'debug'
  * @type {Function}
  */
 
-const debug = Debug('@jianghe/slate:mutations')
+const debug = Debug('@jianghe/slate:mutations');
 
 /**
  * Properties on a MutationRecord
@@ -24,7 +24,7 @@ const MUTATION_PROPERTIES = [
   'attributeNamespace',
   'nextSibling',
   'previousSibling',
-]
+];
 
 /**
  * Takes a DOM node and returns an easily readable version of it.
@@ -34,14 +34,13 @@ const MUTATION_PROPERTIES = [
 
 function normalizeNode(node) {
   if (node.nodeType === window.Node.TEXT_NODE) {
-    return node.textContent
-  } else if (node.nodeType === window.Node.ELEMENT_NODE) {
-    const { outerHTML, innerHTML } = node
-    if (outerHTML == null) return JSON.stringify(node.textContent)
-    return outerHTML.slice(0, outerHTML.indexOf(innerHTML))
-  } else {
-    return `Node(type=${node.nodeType}`
+    return node.textContent;
+  } if (node.nodeType === window.Node.ELEMENT_NODE) {
+    const { outerHTML, innerHTML } = node;
+    if (outerHTML == null) return JSON.stringify(node.textContent);
+    return outerHTML.slice(0, outerHTML.indexOf(innerHTML));
   }
+  return `Node(type=${node.nodeType}`;
 }
 
 /**
@@ -57,41 +56,41 @@ function normalizeNode(node) {
  */
 
 function DebugMutationsPlugin() {
-  const observer = new window.MutationObserver(mutations => {
-    const array = Array.from(mutations).map(mutationRecord => {
-      const object = {}
+  const observer = new window.MutationObserver((mutations) => {
+    const array = Array.from(mutations).map((mutationRecord) => {
+      const object = {};
 
       // Only add properties that provide meaningful values to the object
       // to make the debug info easier to read
-      MUTATION_PROPERTIES.forEach(key => {
-        let value = mutationRecord[key]
-        if (value == null) return
+      MUTATION_PROPERTIES.forEach((key) => {
+        let value = mutationRecord[key];
+        if (value == null) return;
 
         // Make NodeList easier to read
         if (value instanceof window.NodeList) {
-          if (value.length === 0) return
+          if (value.length === 0) return;
 
           object[key] = Array.from(value)
             .map(normalizeNode)
-            .join(', ')
-          return
+            .join(', ');
+          return;
         }
 
         // Make Node easier to read
         if (value instanceof window.Node) {
-          value = normalizeNode(value)
+          value = normalizeNode(value);
         }
 
-        object[key] = value
-      })
+        object[key] = value;
+      });
 
-      return object
-    })
+      return object;
+    });
 
     // The first argument must not be the array as `debug` renders the first
     // argument in a different way than the rest
-    debug(`${array.length} Mutations`, ...array)
-  })
+    debug(`${array.length} Mutations`, ...array);
+  });
 
   /**
    * The previously observed DOM node
@@ -99,18 +98,18 @@ function DebugMutationsPlugin() {
    * @type {DOMNode}
    */
 
-  let prevRootEl = null
+  let prevRootEl = null;
 
   /**
    * Start observing the DOM node for mutations if it isn't being observed
    */
 
   function start(event, editor, next) {
-    const rootEl = editor.findDOMNode([])
+    const rootEl = editor.findDOMNode([]);
 
-    if (rootEl === prevRootEl) return next()
+    if (rootEl === prevRootEl) return next();
 
-    debug('start')
+    debug('start');
 
     observer.observe(rootEl, {
       childList: true,
@@ -118,11 +117,11 @@ function DebugMutationsPlugin() {
       attributes: true,
       subtree: true,
       characterDataOldValue: true,
-    })
+    });
 
-    prevRootEl = rootEl
+    prevRootEl = rootEl;
 
-    next()
+    next();
   }
 
   /**
@@ -130,18 +129,18 @@ function DebugMutationsPlugin() {
    */
 
   function stop(event, editor, next) {
-    debug('stop')
+    debug('stop');
 
-    observer.disconnect()
-    prevRootEl = null
-    next()
+    observer.disconnect();
+    prevRootEl = null;
+    next();
   }
 
   return {
     onComponentDidMount: start,
     onComponentDidUpdate: start,
     onComponentWillUnmount: stop,
-  }
+  };
 }
 
-export default DebugMutationsPlugin
+export default DebugMutationsPlugin;

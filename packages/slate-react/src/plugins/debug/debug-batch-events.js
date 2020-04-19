@@ -1,12 +1,12 @@
-import Debug from 'debug'
-import EVENT_HANDLERS from '../../constants/event-handlers'
-import stringifyEvent from './stringify-event'
+import Debug from 'debug';
+import EVENT_HANDLERS from '../../constants/event-handlers';
+import stringifyEvent from './stringify-event';
 
 /**
  * Constants
  */
 
-const INTERVAL = 2000
+const INTERVAL = 2000;
 
 /**
  * Debug events function.
@@ -14,7 +14,7 @@ const INTERVAL = 2000
  * @type {Function}
  */
 
-const debug = Debug('@jianghe/slate:batch-events')
+const debug = Debug('@jianghe/slate:batch-events');
 
 /**
  * A plugin that sends short easy to digest debug info about each event to
@@ -30,7 +30,7 @@ function DebugBatchEventsPlugin() {
    * @type {Date}
    */
 
-  let startDate = null
+  let startDate = null;
 
   /**
    * The timeoutId used to cancel the timeout
@@ -38,7 +38,7 @@ function DebugBatchEventsPlugin() {
    * @type {Any}
    */
 
-  let timeoutId = null
+  let timeoutId = null;
 
   /**
    * An array of events not yet dumped with `debug`
@@ -46,7 +46,7 @@ function DebugBatchEventsPlugin() {
    * @type {Array}
    */
 
-  const events = []
+  const events = [];
 
   /**
    * Send all events to debug
@@ -56,8 +56,8 @@ function DebugBatchEventsPlugin() {
    */
 
   function dumpEvents() {
-    debug(`\n${events.join('\n')}`)
-    events.length = 0
+    debug(`\n${events.join('\n')}`);
+    events.length = 0;
   }
 
   /**
@@ -68,14 +68,14 @@ function DebugBatchEventsPlugin() {
 
   function pushEvent(event) {
     if (events.length === 0) {
-      startDate = new Date()
+      startDate = new Date();
     }
 
-    const s = stringifyEvent(event)
-    const now = new Date()
-    events.push(`- ${now - startDate} - ${s}`)
-    clearTimeout(timeoutId)
-    timeoutId = setTimeout(dumpEvents, INTERVAL)
+    const s = stringifyEvent(event);
+    const now = new Date();
+    events.push(`- ${now - startDate} - ${s}`);
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(dumpEvents, INTERVAL);
   }
 
   /**
@@ -84,13 +84,13 @@ function DebugBatchEventsPlugin() {
    * @type {Object}
    */
 
-  const plugin = {}
+  const plugin = {};
 
   for (const eventName of EVENT_HANDLERS) {
-    plugin[eventName] = function(event, editor, next) {
-      pushEvent(event)
-      next()
-    }
+    plugin[eventName] = function (event, editor, next) {
+      pushEvent(event);
+      next();
+    };
   }
 
   /**
@@ -99,7 +99,7 @@ function DebugBatchEventsPlugin() {
    * @type {Object}
    */
 
-  return plugin
+  return plugin;
 }
 
 /**
@@ -108,4 +108,4 @@ function DebugBatchEventsPlugin() {
  * @type {Function}
  */
 
-export default DebugBatchEventsPlugin
+export default DebugBatchEventsPlugin;

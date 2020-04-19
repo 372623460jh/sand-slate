@@ -1,7 +1,7 @@
-import isPlainObject from 'is-plain-object'
-import { Map, Record, Set } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import { Map, Record, Set } from 'immutable';
 
-import Data from './data'
+import Data from './data';
 
 /**
  * Default properties.
@@ -12,7 +12,7 @@ import Data from './data'
 const DEFAULTS = {
   data: undefined,
   type: undefined,
-}
+};
 
 /**
  * Mark.
@@ -30,20 +30,20 @@ class Mark extends Record(DEFAULTS) {
 
   static create(attrs = {}) {
     if (Mark.isMark(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (typeof attrs === 'string') {
-      attrs = { type: attrs }
+      attrs = { type: attrs };
     }
 
     if (isPlainObject(attrs)) {
-      return Mark.fromJSON(attrs)
+      return Mark.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Mark.create\` only accepts objects, strings or marks, but you passed it: ${attrs}`
-    )
+      `\`Mark.create\` only accepts objects, strings or marks, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -55,17 +55,17 @@ class Mark extends Record(DEFAULTS) {
 
   static createSet(elements) {
     if (Set.isSet(elements) || Array.isArray(elements)) {
-      const marks = new Set(elements.map(Mark.create))
-      return marks
+      const marks = new Set(elements.map(Mark.create));
+      return marks;
     }
 
     if (elements == null) {
-      return Set()
+      return Set();
     }
 
     throw new Error(
-      `\`Mark.createSet\` only accepts sets, arrays or null, but you passed it: ${elements}`
-    )
+      `\`Mark.createSet\` only accepts sets, arrays or null, but you passed it: ${elements}`,
+    );
   }
 
   /**
@@ -80,23 +80,23 @@ class Mark extends Record(DEFAULTS) {
       return {
         data: attrs.data,
         type: attrs.type,
-      }
+      };
     }
 
     if (typeof attrs === 'string') {
-      return { type: attrs }
+      return { type: attrs };
     }
 
     if (isPlainObject(attrs)) {
-      const props = {}
-      if ('type' in attrs) props.type = attrs.type
-      if ('data' in attrs) props.data = Data.create(attrs.data)
-      return props
+      const props = {};
+      if ('type' in attrs) props.type = attrs.type;
+      if ('data' in attrs) props.data = Data.create(attrs.data);
+      return props;
     }
 
     throw new Error(
-      `\`Mark.createProperties\` only accepts objects, strings or marks, but you passed it: ${attrs}`
-    )
+      `\`Mark.createProperties\` only accepts objects, strings or marks, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -107,18 +107,18 @@ class Mark extends Record(DEFAULTS) {
    */
 
   static fromJSON(object) {
-    const { data = {}, type } = object
+    const { data = {}, type } = object;
 
     if (typeof type !== 'string') {
-      throw new Error('`Mark.fromJS` requires a `type` string.')
+      throw new Error('`Mark.fromJS` requires a `type` string.');
     }
 
     const mark = new Mark({
       type,
       data: new Map(data),
-    })
+    });
 
-    return mark
+    return mark;
   }
 
   /**
@@ -129,7 +129,7 @@ class Mark extends Record(DEFAULTS) {
    */
 
   static isMarkSet(any) {
-    return Set.isSet(any) && any.every(item => Mark.isMark(item))
+    return Set.isSet(any) && any.every((item) => Mark.isMark(item));
   }
 
   /**
@@ -143,9 +143,9 @@ class Mark extends Record(DEFAULTS) {
       object: this.object,
       type: this.type,
       data: this.data.toJSON(),
-    }
+    };
 
-    return object
+    return object;
   }
 }
 
@@ -155,4 +155,4 @@ class Mark extends Record(DEFAULTS) {
  * @type {Mark}
  */
 
-export default Mark
+export default Mark;

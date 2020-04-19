@@ -7,14 +7,14 @@
  */
 
 function getDiffStart(prev, next) {
-  const length = Math.min(prev.length, next.length)
+  const length = Math.min(prev.length, next.length);
 
   for (let i = 0; i < length; i++) {
-    if (prev.charAt(i) !== next.charAt(i)) return i
+    if (prev.charAt(i) !== next.charAt(i)) return i;
   }
 
-  if (prev.length !== next.length) return length
-  return null
+  if (prev.length !== next.length) return length;
+  return null;
 }
 
 /**
@@ -28,18 +28,18 @@ function getDiffStart(prev, next) {
  */
 
 function getDiffEnd(prev, next, max) {
-  const prevLength = prev.length
-  const nextLength = next.length
-  const length = Math.min(prevLength, nextLength, max)
+  const prevLength = prev.length;
+  const nextLength = next.length;
+  const length = Math.min(prevLength, nextLength, max);
 
   for (let i = 0; i < length; i++) {
-    const prevChar = prev.charAt(prevLength - i - 1)
-    const nextChar = next.charAt(nextLength - i - 1)
-    if (prevChar !== nextChar) return i
+    const prevChar = prev.charAt(prevLength - i - 1);
+    const nextChar = next.charAt(nextLength - i - 1);
+    if (prevChar !== nextChar) return i;
   }
 
-  if (prev.length !== next.length) return length
-  return null
+  if (prev.length !== next.length) return length;
+  return null;
 }
 
 /**
@@ -55,11 +55,11 @@ function getDiffEnd(prev, next, max) {
  */
 
 function getDiffOffsets(prev, next) {
-  if (prev === next) return null
-  const start = getDiffStart(prev, next)
-  const maxEnd = Math.min(prev.length - start, next.length - start)
-  const end = getDiffEnd(prev, next, maxEnd)
-  return { start, end, total: start + end }
+  if (prev === next) return null;
+  const start = getDiffStart(prev, next);
+  const maxEnd = Math.min(prev.length - start, next.length - start);
+  const end = getDiffEnd(prev, next, maxEnd);
+  return { start, end, total: start + end };
 }
 
 /**
@@ -70,7 +70,7 @@ function getDiffOffsets(prev, next) {
  */
 
 function sliceText(text, offsets) {
-  return text.slice(offsets.start, text.length - offsets.end)
+  return text.slice(offsets.start, text.length - offsets.end);
 }
 
 /**
@@ -83,15 +83,15 @@ function sliceText(text, offsets) {
  */
 
 export default function diff(prev, next) {
-  const offsets = getDiffOffsets(prev, next)
-  if (offsets == null) return null
-  const insertText = sliceText(next, offsets)
-  const removeText = sliceText(prev, offsets)
+  const offsets = getDiffOffsets(prev, next);
+  if (offsets == null) return null;
+  const insertText = sliceText(next, offsets);
+  const removeText = sliceText(prev, offsets);
   return {
     start: offsets.start,
     end: prev.length - offsets.end,
     cursor: offsets.start + insertText.length,
     insertText,
     removeText,
-  }
+  };
 }

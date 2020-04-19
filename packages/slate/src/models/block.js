@@ -1,8 +1,8 @@
-import isPlainObject from 'is-plain-object'
-import { List, Map, Record } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import { List, Map, Record } from 'immutable';
 
-import KeyUtils from '../utils/key-utils'
-import Node from './node'
+import KeyUtils from '../utils/key-utils';
+import Node from './node';
 
 /**
  * Default properties.
@@ -15,7 +15,7 @@ const DEFAULTS = {
   key: undefined,
   nodes: undefined,
   type: undefined,
-}
+};
 
 /**
  * Block.
@@ -33,20 +33,20 @@ class Block extends Record(DEFAULTS) {
 
   static create(attrs = {}) {
     if (Block.isBlock(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (typeof attrs === 'string') {
-      attrs = { type: attrs }
+      attrs = { type: attrs };
     }
 
     if (isPlainObject(attrs)) {
-      return Block.fromJSON(attrs)
+      return Block.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Block.create\` only accepts objects, strings or blocks, but you passed it: ${attrs}`
-    )
+      `\`Block.create\` only accepts objects, strings or blocks, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -58,13 +58,13 @@ class Block extends Record(DEFAULTS) {
 
   static createList(attrs = []) {
     if (List.isList(attrs) || Array.isArray(attrs)) {
-      const list = new List(attrs.map(Block.create))
-      return list
+      const list = new List(attrs.map(Block.create));
+      return list;
     }
 
     throw new Error(
-      `\`Block.createList\` only accepts arrays or lists, but you passed it: ${attrs}`
-    )
+      `\`Block.createList\` only accepts arrays or lists, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -76,13 +76,15 @@ class Block extends Record(DEFAULTS) {
 
   static fromJSON(object) {
     if (Block.isBlock(object)) {
-      return object
+      return object;
     }
 
-    const { data = {}, key = KeyUtils.create(), nodes = [], type } = object
+    const {
+      data = {}, key = KeyUtils.create(), nodes = [], type,
+    } = object;
 
     if (typeof type !== 'string') {
-      throw new Error('`Block.fromJSON` requires a `type` string.')
+      throw new Error('`Block.fromJSON` requires a `type` string.');
     }
 
     const block = new Block({
@@ -90,9 +92,9 @@ class Block extends Record(DEFAULTS) {
       type,
       data: Map(data),
       nodes: Node.createList(nodes),
-    })
+    });
 
-    return block
+    return block;
   }
 
   /**
@@ -103,7 +105,7 @@ class Block extends Record(DEFAULTS) {
    */
 
   static isBlockList(any) {
-    return List.isList(any) && any.every(item => Block.isBlock(item))
+    return List.isList(any) && any.every((item) => Block.isBlock(item));
   }
 
   /**
@@ -118,14 +120,14 @@ class Block extends Record(DEFAULTS) {
       object: this.object,
       type: this.type,
       data: this.data.toJSON(),
-      nodes: this.nodes.toArray().map(n => n.toJSON(options)),
-    }
+      nodes: this.nodes.toArray().map((n) => n.toJSON(options)),
+    };
 
     if (options.preserveKeys) {
-      object.key = this.key
+      object.key = this.key;
     }
 
-    return object
+    return object;
   }
 }
 
@@ -135,4 +137,4 @@ class Block extends Record(DEFAULTS) {
  * @type {Block}
  */
 
-export default Block
+export default Block;

@@ -1,30 +1,30 @@
-import './interfaces/object'
-import './interfaces/model'
-import './interfaces/node'
-import './interfaces/element'
-import './interfaces/range'
+import './interfaces/object';
+import './interfaces/model';
+import './interfaces/node';
+import './interfaces/element';
+import './interfaces/range';
 
-import Annotation from './models/annotation'
-import Block from './models/block'
-import Change from './models/change'
-import Data from './models/data'
-import Decoration from './models/decoration'
-import Document from './models/document'
-import Editor from './controllers/editor'
-import Inline from './models/inline'
-import KeyUtils from './utils/key-utils'
-import Leaf from './models/leaf'
-import Mark from './models/mark'
-import Node from './models/node'
-import Operation from './models/operation'
-import PathUtils from './utils/path-utils'
-import Point from './models/point'
-import Range from './models/range'
-import Selection from './models/selection'
-import Text from './models/text'
-import TextUtils from './utils/text-utils'
-import Value from './models/value'
-import { resetMemoization, useMemoization } from './utils/memoize'
+import Annotation from './models/annotation';
+import Block from './models/block';
+import Change from './models/change';
+import Data from './models/data';
+import Decoration from './models/decoration';
+import Document from './models/document';
+import Editor from './controllers/editor';
+import Inline from './models/inline';
+import KeyUtils from './utils/key-utils';
+import Leaf from './models/leaf';
+import Mark from './models/mark';
+import Node from './models/node';
+import Operation from './models/operation';
+import PathUtils from './utils/path-utils';
+import Point from './models/point';
+import Range from './models/range';
+import Selection from './models/selection';
+import Text from './models/text';
+import TextUtils from './utils/text-utils';
+import Value from './models/value';
+import { resetMemoization, useMemoization } from './utils/memoize';
 
 /**
  * Export.
@@ -55,7 +55,7 @@ export {
   TextUtils,
   useMemoization,
   Value,
-}
+};
 
 export default {
   Annotation,
@@ -80,4 +80,4 @@ export default {
   TextUtils,
   useMemoization,
   Value,
-}
+};

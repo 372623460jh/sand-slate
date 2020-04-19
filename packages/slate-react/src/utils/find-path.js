@@ -1,5 +1,5 @@
-import findNode from './find-node'
-import warning from 'tiny-warning'
+import warning from 'tiny-warning';
+import findNode from './find-node';
 
 /**
  * Find a Slate path from a DOM `element`.
@@ -12,19 +12,19 @@ import warning from 'tiny-warning'
 function findPath(element, editor) {
   warning(
     false,
-    'As of slate-react@0.22 the `findPath(element)` helper is deprecated in favor of `editor.findPath(element)`.'
-  )
+    'As of slate-react@0.22 the `findPath(element)` helper is deprecated in favor of `editor.findPath(element)`.',
+  );
 
-  const node = findNode(element, editor)
+  const node = findNode(element, editor);
 
   if (!node) {
-    return null
+    return null;
   }
 
-  const { value } = editor
-  const { document } = value
-  const path = document.getPath(node)
-  return path
+  const { value } = editor;
+  const { document } = value;
+  const path = document.getPath(node);
+  return path;
 }
 
 /**
@@ -33,4 +33,4 @@ function findPath(element, editor) {
  * @type {Function}
  */
 
-export default findPath
+export default findPath;

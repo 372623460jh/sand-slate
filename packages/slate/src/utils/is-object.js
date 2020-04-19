@@ -20,7 +20,7 @@ export const TYPES = {
   selection: '@@__SLATE_SELECTION__@@',
   text: '@@__SLATE_TEXT__@@',
   value: '@@__SLATE_VALUE__@@',
-}
+};
 
 /**
  * Determine whether a `value` is of `type`.
@@ -31,5 +31,5 @@ export const TYPES = {
  */
 
 export default function isObject(type, value) {
-  return !!(value && value[TYPES[type]])
+  return !!(value && value[TYPES[type]]);
 }

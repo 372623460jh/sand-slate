@@ -1,14 +1,14 @@
-import Debug from 'debug'
-import Hotkeys from '@jianghe/slate-hotkeys'
-import getWindow from 'get-window'
+import Debug from 'debug';
+import Hotkeys from '@jianghe/slate-hotkeys';
+import getWindow from 'get-window';
 import {
   IS_FIREFOX,
   IS_IE,
   IS_IOS,
   HAS_INPUT_EVENTS_LEVEL_2,
-} from '@jianghe/slate-dev-environment'
+} from '@jianghe/slate-dev-environment';
 
-import DATA_ATTRS from '../../constants/data-attributes'
+import DATA_ATTRS from '../../constants/data-attributes';
 
 /**
  * Debug.
@@ -16,7 +16,7 @@ import DATA_ATTRS from '../../constants/data-attributes'
  * @type {Function}
  */
 
-const debug = Debug('@jianghe/slate:before')
+const debug = Debug('@jianghe/slate:before');
 
 /**
  * A plugin that adds the "before" browser-specific logic to the editor.
@@ -25,12 +25,12 @@ const debug = Debug('@jianghe/slate:before')
  */
 
 function BeforePlugin() {
-  let activeElement = null
-  let compositionCount = 0
-  let isComposing = false
-  let isCopying = false
-  let isDragging = false
-  let isUserActionPerformed = false
+  let activeElement = null;
+  let compositionCount = 0;
+  let isComposing = false;
+  let isCopying = false;
+  let isDragging = false;
+  let isUserActionPerformed = false;
 
   /**
    * On before input.
@@ -41,17 +41,17 @@ function BeforePlugin() {
    */
 
   function onBeforeInput(event, editor, next) {
-    const isSynthetic = !!event.nativeEvent
-    if (editor.readOnly) return
-    isUserActionPerformed = true
+    const isSynthetic = !!event.nativeEvent;
+    if (editor.readOnly) return;
+    isUserActionPerformed = true;
 
     // COMPAT: If the browser supports Input Events Level 2, we will have
     // attached a custom handler for the real `beforeinput` events, instead of
     // allowing React's synthetic polyfill, so we need to ignore synthetics.
-    if (isSynthetic && HAS_INPUT_EVENTS_LEVEL_2) return
+    if (isSynthetic && HAS_INPUT_EVENTS_LEVEL_2) return;
 
-    debug('onBeforeInput', { event })
-    next()
+    debug('onBeforeInput', { event });
+    next();
   }
 
   /**
@@ -63,44 +63,44 @@ function BeforePlugin() {
    */
 
   function onBlur(event, editor, next) {
-    if (isCopying) return
-    if (editor.readOnly) return
+    if (isCopying) return;
+    if (editor.readOnly) return;
 
-    const { relatedTarget, target } = event
-    const window = getWindow(target)
+    const { relatedTarget, target } = event;
+    const window = getWindow(target);
 
     // COMPAT: If the current `activeElement` is still the previous one, this is
     // due to the window being blurred when the tab itself becomes unfocused, so
     // we want to abort early to allow to editor to stay focused when the tab
     // becomes focused again.
-    if (activeElement === window.document.activeElement) return
+    if (activeElement === window.document.activeElement) return;
 
     // COMPAT: The `relatedTarget` can be null when the new focus target is not
     // a "focusable" element (eg. a `<div>` without `tabindex` set).
     if (relatedTarget) {
-      const el = editor.findDOMNode([])
+      const el = editor.findDOMNode([]);
 
       // COMPAT: The event should be ignored if the focus is returning to the
       // editor from an embedded editable element (eg. an <input> element inside
       // a void node).
-      if (relatedTarget === el) return
+      if (relatedTarget === el) return;
 
       // COMPAT: The event should be ignored if the focus is moving from the
       // editor to inside a void node's spacer element.
-      if (relatedTarget.hasAttribute(DATA_ATTRS.SPACER)) return
+      if (relatedTarget.hasAttribute(DATA_ATTRS.SPACER)) return;
 
       // COMPAT: The event should be ignored if the focus is moving to a non-
       // editable section of an element that isn't a void node (eg. a list item
       // of the check list example).
-      const node = editor.findNode(relatedTarget)
+      const node = editor.findNode(relatedTarget);
 
       if (el.contains(relatedTarget) && node && !editor.isVoid(node)) {
-        return
+        return;
       }
     }
 
-    debug('onBlur', { event })
-    next()
+    debug('onBlur', { event });
+    next();
   }
 
   /**
@@ -112,19 +112,19 @@ function BeforePlugin() {
    */
 
   function onCompositionEnd(event, editor, next) {
-    const n = compositionCount
-    isUserActionPerformed = true
+    const n = compositionCount;
+    isUserActionPerformed = true;
 
     // The `count` check here ensures that if another composition starts
     // before the timeout has closed out this one, we will abort unsetting the
     // `isComposing` flag, since a composition is still in affect.
     window.requestAnimationFrame(() => {
-      if (compositionCount > n) return
-      isComposing = false
-    })
+      if (compositionCount > n) return;
+      isComposing = false;
+    });
 
-    debug('onCompositionEnd', { event })
-    next()
+    debug('onCompositionEnd', { event });
+    next();
   }
 
   /**
@@ -136,9 +136,9 @@ function BeforePlugin() {
    */
 
   function onClick(event, editor, next) {
-    debug('onClick', { event })
-    isUserActionPerformed = true
-    next()
+    debug('onClick', { event });
+    isUserActionPerformed = true;
+    next();
   }
 
   /**
@@ -150,12 +150,12 @@ function BeforePlugin() {
    */
 
   function onCompositionStart(event, editor, next) {
-    isComposing = true
-    compositionCount++
+    isComposing = true;
+    compositionCount++;
 
-    const { value } = editor
-    const { selection } = value
-    isUserActionPerformed = true
+    const { value } = editor;
+    const { selection } = value;
+    isUserActionPerformed = true;
 
     if (!selection.isCollapsed) {
       // https://github.com/ianstormtaylor/slate/issues/1879
@@ -165,11 +165,11 @@ function BeforePlugin() {
       // (because it cannot find <span> nodes in DOM). This is a workaround that
       // erases selection as soon as composition starts and preventing <spans>
       // to be dropped.
-      editor.delete()
+      editor.delete();
     }
 
-    debug('onCompositionStart', { event })
-    next()
+    debug('onCompositionStart', { event });
+    next();
   }
 
   /**
@@ -181,12 +181,12 @@ function BeforePlugin() {
    */
 
   function onCopy(event, editor, next) {
-    const window = getWindow(event.target)
-    isCopying = true
-    window.requestAnimationFrame(() => (isCopying = false))
+    const window = getWindow(event.target);
+    isCopying = true;
+    window.requestAnimationFrame(() => (isCopying = false));
 
-    debug('onCopy', { event })
-    next()
+    debug('onCopy', { event });
+    next();
   }
 
   /**
@@ -198,14 +198,14 @@ function BeforePlugin() {
    */
 
   function onCut(event, editor, next) {
-    if (editor.readOnly) return
+    if (editor.readOnly) return;
 
-    const window = getWindow(event.target)
-    isCopying = true
-    window.requestAnimationFrame(() => (isCopying = false))
+    const window = getWindow(event.target);
+    isCopying = true;
+    window.requestAnimationFrame(() => (isCopying = false));
 
-    debug('onCut', { event })
-    next()
+    debug('onCut', { event });
+    next();
   }
 
   /**
@@ -217,9 +217,9 @@ function BeforePlugin() {
    */
 
   function onDragEnd(event, editor, next) {
-    isDragging = false
-    debug('onDragEnd', { event })
-    next()
+    isDragging = false;
+    debug('onDragEnd', { event });
+    next();
   }
 
   /**
@@ -231,8 +231,8 @@ function BeforePlugin() {
    */
 
   function onDragEnter(event, editor, next) {
-    debug('onDragEnter', { event })
-    next()
+    debug('onDragEnter', { event });
+    next();
   }
 
   /**
@@ -244,8 +244,8 @@ function BeforePlugin() {
    */
 
   function onDragExit(event, editor, next) {
-    debug('onDragExit', { event })
-    next()
+    debug('onDragExit', { event });
+    next();
   }
 
   /**
@@ -257,8 +257,8 @@ function BeforePlugin() {
    */
 
   function onDragLeave(event, editor, next) {
-    debug('onDragLeave', { event })
-    next()
+    debug('onDragLeave', { event });
+    next();
   }
 
   /**
@@ -274,10 +274,10 @@ function BeforePlugin() {
     // call `preventDefault` to signal that drops are allowed.
     // When the target is editable, dropping is already allowed by
     // default, and calling `preventDefault` hides the cursor.
-    const node = editor.findNode(event.target)
+    const node = editor.findNode(event.target);
 
     if (!node || editor.isVoid(node)) {
-      event.preventDefault()
+      event.preventDefault();
     }
 
     // COMPAT: IE won't call onDrop on contentEditables unless the
@@ -285,22 +285,22 @@ function BeforePlugin() {
     // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/913982/
     // (2018/07/11)
     if (IS_IE) {
-      event.preventDefault()
+      event.preventDefault();
     }
 
     // If a drag is already in progress, don't do this again.
     if (!isDragging) {
-      isDragging = true
+      isDragging = true;
 
       // COMPAT: IE will raise an `unspecified error` if dropEffect is
       // set. (2018/07/11)
       if (!IS_IE) {
-        event.nativeEvent.dataTransfer.dropEffect = 'move'
+        event.nativeEvent.dataTransfer.dropEffect = 'move';
       }
     }
 
-    debug('onDragOver', { event })
-    next()
+    debug('onDragOver', { event });
+    next();
   }
 
   /**
@@ -312,9 +312,9 @@ function BeforePlugin() {
    */
 
   function onDragStart(event, editor, next) {
-    isDragging = true
-    debug('onDragStart', { event })
-    next()
+    isDragging = true;
+    debug('onDragStart', { event });
+    next();
   }
 
   /**
@@ -326,14 +326,14 @@ function BeforePlugin() {
    */
 
   function onDrop(event, editor, next) {
-    if (editor.readOnly) return
-    isUserActionPerformed = true
+    if (editor.readOnly) return;
+    isUserActionPerformed = true;
 
     // Prevent default so the DOM's value isn't corrupted.
-    event.preventDefault()
+    event.preventDefault();
 
-    debug('onDrop', { event })
-    next()
+    debug('onDrop', { event });
+    next();
   }
 
   /**
@@ -345,25 +345,25 @@ function BeforePlugin() {
    */
 
   function onFocus(event, editor, next) {
-    if (isCopying) return
-    if (editor.readOnly) return
+    if (isCopying) return;
+    if (editor.readOnly) return;
 
-    const el = editor.findDOMNode([])
+    const el = editor.findDOMNode([]);
 
     // Save the new `activeElement`.
-    const window = getWindow(event.target)
-    activeElement = window.document.activeElement
+    const window = getWindow(event.target);
+    activeElement = window.document.activeElement;
 
     // COMPAT: If the editor has nested editable elements, the focus can go to
     // those elements. In Firefox, this must be prevented because it results in
     // issues with keyboard navigation. (2017/03/30)
     if (IS_FIREFOX && event.target !== el) {
-      el.focus()
-      return
+      el.focus();
+      return;
     }
 
-    debug('onFocus', { event })
-    next()
+    debug('onFocus', { event });
+    next();
   }
 
   /**
@@ -375,11 +375,11 @@ function BeforePlugin() {
    */
 
   function onInput(event, editor, next) {
-    if (isComposing) return
-    if (editor.value.selection.isBlurred) return
-    isUserActionPerformed = true
-    debug('onInput', { event })
-    next()
+    if (isComposing) return;
+    if (editor.value.selection.isBlurred) return;
+    isUserActionPerformed = true;
+    debug('onInput', { event });
+    next();
   }
 
   /**
@@ -391,40 +391,40 @@ function BeforePlugin() {
    */
 
   function onKeyDown(event, editor, next) {
-    if (editor.readOnly) return
+    if (editor.readOnly) return;
 
     // When composing, we need to prevent all hotkeys from executing while
     // typing. However, certain characters also move the selection before
     // we're able to handle it, so prevent their default behavior.
     if (isComposing) {
-      if (Hotkeys.isCompose(event)) event.preventDefault()
-      return
+      if (Hotkeys.isCompose(event)) event.preventDefault();
+      return;
     }
 
     // Certain hotkeys have native editing behaviors in `contenteditable`
     // elements which will editor the DOM and cause our value to be out of sync,
     // so they need to always be prevented.
     if (
-      !IS_IOS &&
-      (Hotkeys.isBold(event) ||
-        Hotkeys.isDeleteBackward(event) ||
-        Hotkeys.isDeleteForward(event) ||
-        Hotkeys.isDeleteLineBackward(event) ||
-        Hotkeys.isDeleteLineForward(event) ||
-        Hotkeys.isDeleteWordBackward(event) ||
-        Hotkeys.isDeleteWordForward(event) ||
-        Hotkeys.isItalic(event) ||
-        Hotkeys.isRedo(event) ||
-        Hotkeys.isSplitBlock(event) ||
-        Hotkeys.isTransposeCharacter(event) ||
-        Hotkeys.isUndo(event))
+      !IS_IOS
+      && (Hotkeys.isBold(event)
+        || Hotkeys.isDeleteBackward(event)
+        || Hotkeys.isDeleteForward(event)
+        || Hotkeys.isDeleteLineBackward(event)
+        || Hotkeys.isDeleteLineForward(event)
+        || Hotkeys.isDeleteWordBackward(event)
+        || Hotkeys.isDeleteWordForward(event)
+        || Hotkeys.isItalic(event)
+        || Hotkeys.isRedo(event)
+        || Hotkeys.isSplitBlock(event)
+        || Hotkeys.isTransposeCharacter(event)
+        || Hotkeys.isUndo(event))
     ) {
-      event.preventDefault()
+      event.preventDefault();
     }
 
-    isUserActionPerformed = true
-    debug('onKeyDown', { event })
-    next()
+    isUserActionPerformed = true;
+    debug('onKeyDown', { event });
+    next();
   }
 
   /**
@@ -436,14 +436,14 @@ function BeforePlugin() {
    */
 
   function onPaste(event, editor, next) {
-    if (editor.readOnly) return
-    isUserActionPerformed = true
+    if (editor.readOnly) return;
+    isUserActionPerformed = true;
 
     // Prevent defaults so the DOM state isn't corrupted.
-    event.preventDefault()
+    event.preventDefault();
 
-    debug('onPaste', { event })
-    next()
+    debug('onPaste', { event });
+    next();
   }
 
   /**
@@ -455,27 +455,27 @@ function BeforePlugin() {
    */
 
   function onSelect(event, editor, next) {
-    if (isCopying) return
-    if (isComposing) return
+    if (isCopying) return;
+    if (isComposing) return;
 
-    if (editor.readOnly) return
+    if (editor.readOnly) return;
 
     // Save the new `activeElement`.
-    const window = getWindow(event.target)
-    activeElement = window.document.activeElement
-    isUserActionPerformed = true
+    const window = getWindow(event.target);
+    activeElement = window.document.activeElement;
+    isUserActionPerformed = true;
 
-    debug('onSelect', { event })
-    next()
+    debug('onSelect', { event });
+    next();
   }
 
   function userActionPerformed() {
-    return isUserActionPerformed
+    return isUserActionPerformed;
   }
 
   function clearUserActionPerformed() {
-    isUserActionPerformed = false
-    return null
+    isUserActionPerformed = false;
+    return null;
   }
 
   /**
@@ -506,7 +506,7 @@ function BeforePlugin() {
     onSelect,
     queries: { userActionPerformed },
     commands: { clearUserActionPerformed },
-  }
+  };
 }
 
 /**
@@ -515,4 +515,4 @@ function BeforePlugin() {
  * @type {Function}
  */
 
-export default BeforePlugin
+export default BeforePlugin;

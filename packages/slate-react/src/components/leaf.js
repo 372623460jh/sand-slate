@@ -1,10 +1,10 @@
-import React from 'react'
-import Types from 'prop-types'
-import SlateTypes from '@jianghe/slate-prop-types'
-import ImmutableTypes from 'react-immutable-proptypes'
+import React from 'react';
+import Types from 'prop-types';
+import SlateTypes from '@jianghe/slate-prop-types';
+import ImmutableTypes from 'react-immutable-proptypes';
 
-import OffsetKey from '../utils/offset-key'
-import DATA_ATTRS from '../constants/data-attributes'
+import OffsetKey from '../utils/offset-key';
+import DATA_ATTRS from '../constants/data-attributes';
 
 /**
  * Leaf strings with text in them.
@@ -12,18 +12,16 @@ import DATA_ATTRS from '../constants/data-attributes'
  * @type {Component}
  */
 
-const TextString = ({ text = '', isTrailing = false }) => {
-  return (
-    <span
-      {...{
-        [DATA_ATTRS.STRING]: true,
-      }}
-    >
-      {text}
-      {isTrailing ? '\n' : null}
-    </span>
-  )
-}
+const TextString = ({ text = '', isTrailing = false }) => (
+  <span
+    {...{
+      [DATA_ATTRS.STRING]: true,
+    }}
+  >
+    {text}
+    {isTrailing ? '\n' : null}
+  </span>
+);
 
 /**
  * Leaf strings without text, render as zero-width strings.
@@ -31,19 +29,17 @@ const TextString = ({ text = '', isTrailing = false }) => {
  * @type {Component}
  */
 
-const ZeroWidthString = ({ length = 0, isLineBreak = false }) => {
-  return (
-    <span
-      {...{
-        [DATA_ATTRS.ZERO_WIDTH]: isLineBreak ? 'n' : 'z',
-        [DATA_ATTRS.LENGTH]: length,
-      }}
-    >
-      {'\uFEFF'}
-      {isLineBreak ? <br /> : null}
-    </span>
-  )
-}
+const ZeroWidthString = ({ length = 0, isLineBreak = false }) => (
+  <span
+    {...{
+      [DATA_ATTRS.ZERO_WIDTH]: isLineBreak ? 'n' : 'z',
+      [DATA_ATTRS.LENGTH]: length,
+    }}
+  >
+    {'\uFEFF'}
+    {isLineBreak ? <br /> : null}
+  </span>
+);
 
 /**
  * Individual leaves in a text node with unique formatting.
@@ -51,7 +47,7 @@ const ZeroWidthString = ({ length = 0, isLineBreak = false }) => {
  * @type {Component}
  */
 
-const Leaf = props => {
+const Leaf = (props) => {
   const {
     marks,
     annotations,
@@ -64,46 +60,46 @@ const Leaf = props => {
     parent,
     block,
     leaves,
-  } = props
+  } = props;
 
   const offsetKey = OffsetKey.stringify({
     key: node.key,
     index,
-  })
+  });
 
-  let children
+  let children;
 
   if (editor.query('isVoid', parent)) {
     // COMPAT: Render text inside void nodes with a zero-width space.
     // So the node can contain selection but the text is not visible.
-    children = <ZeroWidthString length={parent.text.length} />
+    children = <ZeroWidthString length={parent.text.length} />;
   } else if (
-    text === '' &&
-    parent.object === 'block' &&
-    parent.text === '' &&
-    parent.nodes.last() === node
+    text === ''
+    && parent.object === 'block'
+    && parent.text === ''
+    && parent.nodes.last() === node
   ) {
     // COMPAT: If this is the last text node in an empty block, render a zero-
     // width space that will convert into a line break when copying and pasting
     // to support expected plain text.
-    children = <ZeroWidthString isLineBreak />
+    children = <ZeroWidthString isLineBreak />;
   } else if (text === '') {
     // COMPAT: If the text is empty, it's because it's on the edge of an inline
     // node, so we render a zero-width space so that the selection can be
     // inserted next to it still.
-    children = <ZeroWidthString />
+    children = <ZeroWidthString />;
   } else {
     // COMPAT: Browsers will collapse trailing new lines at the end of blocks,
     // so we need to add an extra trailing new lines to prevent that.
-    const lastText = block.getLastText()
-    const lastChar = text.charAt(text.length - 1)
-    const isLastText = node === lastText
-    const isLastLeaf = index === leaves.size - 1
+    const lastText = block.getLastText();
+    const lastChar = text.charAt(text.length - 1);
+    const isLastText = node === lastText;
+    const isLastLeaf = index === leaves.size - 1;
 
     if (isLastText && isLastLeaf && lastChar === '\n') {
-      children = <TextString isTrailing text={text} />
+      children = <TextString isTrailing text={text} />;
     } else {
-      children = <TextString text={text} />
+      children = <TextString text={text} />;
     }
   }
 
@@ -115,7 +111,7 @@ const Leaf = props => {
     node,
     offset,
     text,
-  }
+  };
 
   // COMPAT: Having the `data-` attributes on these leaf elements ensures that
   // in certain misbehaving browsers they aren't weirdly cloned/destroyed by
@@ -128,10 +124,10 @@ const Leaf = props => {
       attributes: {
         [DATA_ATTRS.OBJECT]: 'mark',
       },
-    })
+    });
 
     if (ret) {
-      children = ret
+      children = ret;
     }
   }
 
@@ -143,10 +139,10 @@ const Leaf = props => {
       attributes: {
         [DATA_ATTRS.OBJECT]: 'decoration',
       },
-    })
+    });
 
     if (ret) {
-      children = ret
+      children = ret;
     }
   }
 
@@ -158,20 +154,20 @@ const Leaf = props => {
       attributes: {
         [DATA_ATTRS.OBJECT]: 'annotation',
       },
-    })
+    });
 
     if (ret) {
-      children = ret
+      children = ret;
     }
   }
 
   const attrs = {
     [DATA_ATTRS.LEAF]: true,
     [DATA_ATTRS.OFFSET_KEY]: offsetKey,
-  }
+  };
 
-  return <span {...attrs}>{children}</span>
-}
+  return <span {...attrs}>{children}</span>;
+};
 
 /**
  * Prop types.
@@ -191,7 +187,7 @@ Leaf.propTypes = {
   offset: Types.number.isRequired,
   parent: SlateTypes.node.isRequired,
   text: Types.string.isRequired,
-}
+};
 
 /**
  * A memoized version of `Leaf` that updates less frequently.
@@ -199,17 +195,15 @@ Leaf.propTypes = {
  * @type {Component}
  */
 
-const MemoizedLeaf = React.memo(Leaf, (prev, next) => {
-  return (
-    next.block === prev.block &&
-    next.index === prev.index &&
-    next.marks === prev.marks &&
-    next.parent === prev.parent &&
-    next.text === prev.text &&
-    next.annotations.equals(prev.annotations) &&
-    next.decorations.equals(prev.decorations)
-  )
-})
+const MemoizedLeaf = React.memo(Leaf, (prev, next) => (
+  next.block === prev.block
+    && next.index === prev.index
+    && next.marks === prev.marks
+    && next.parent === prev.parent
+    && next.text === prev.text
+    && next.annotations.equals(prev.annotations)
+    && next.decorations.equals(prev.decorations)
+));
 
 /**
  * Export.
@@ -217,4 +211,4 @@ const MemoizedLeaf = React.memo(Leaf, (prev, next) => {
  * @type {Component}
  */
 
-export default MemoizedLeaf
+export default MemoizedLeaf;

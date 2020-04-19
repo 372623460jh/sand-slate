@@ -1,4 +1,4 @@
-import { List } from 'immutable'
+import { List } from 'immutable';
 
 /**
  * Compare paths `path` and `target` to see which is before or after.
@@ -9,21 +9,21 @@ import { List } from 'immutable'
  */
 
 function compare(path, target) {
-  const m = min(path, target)
+  const m = min(path, target);
 
   for (let i = 0; i < m; i++) {
-    const pv = path.get(i)
-    const tv = target.get(i)
+    const pv = path.get(i);
+    const tv = target.get(i);
 
     // If the path's value is ever less than the target's, it's before.
-    if (pv < tv) return -1
+    if (pv < tv) return -1;
 
     // If the target's value is ever less than the path's, it's after.
-    if (pv > tv) return 1
+    if (pv > tv) return 1;
   }
 
   // Paths should now be equal, otherwise something is wrong
-  return path.size === target.size ? 0 : null
+  return path.size === target.size ? 0 : null;
 }
 
 /**
@@ -35,20 +35,20 @@ function compare(path, target) {
 
 function create(attrs) {
   if (attrs == null) {
-    return null
+    return null;
   }
 
   if (List.isList(attrs)) {
-    return attrs
+    return attrs;
   }
 
   if (Array.isArray(attrs)) {
-    return List(attrs)
+    return List(attrs);
   }
 
   throw new Error(
-    `Paths can only be created from arrays or lists, but you passed: ${attrs}`
-  )
+    `Paths can only be created from arrays or lists, but you passed: ${attrs}`,
+  );
 }
 
 /**
@@ -59,9 +59,9 @@ function create(attrs) {
  */
 
 function crop(a, b, size = min(a, b)) {
-  const ca = a.slice(0, size)
-  const cb = b.slice(0, size)
-  return [ca, cb]
+  const ca = a.slice(0, size);
+  const cb = b.slice(0, size);
+  return [ca, cb];
 }
 
 /**
@@ -73,7 +73,7 @@ function crop(a, b, size = min(a, b)) {
  */
 
 function decrement(path, n = 1, index = path.size - 1) {
-  return increment(path, 0 - n, index)
+  return increment(path, 0 - n, index);
 }
 
 /**
@@ -84,13 +84,13 @@ function decrement(path, n = 1, index = path.size - 1) {
  */
 
 function getAncestors(path) {
-  const ancestors = List().withMutations(list => {
+  const ancestors = List().withMutations((list) => {
     for (let i = 0; i < path.size; i++) {
-      list.push(path.slice(0, i))
+      list.push(path.slice(0, i));
     }
-  })
+  });
 
-  return ancestors
+  return ancestors;
 }
 
 /**
@@ -102,10 +102,10 @@ function getAncestors(path) {
  */
 
 function increment(path, n = 1, index = path.size - 1) {
-  const value = path.get(index)
-  const newValue = value + n
-  const newPath = path.set(index, newValue)
-  return newPath
+  const value = path.get(index);
+  const newValue = value + n;
+  const newPath = path.set(index, newValue);
+  return newPath;
 }
 
 /**
@@ -117,8 +117,8 @@ function increment(path, n = 1, index = path.size - 1) {
  */
 
 function isAbove(path, target) {
-  const [p, t] = crop(path, target)
-  return path.size < target.size && compare(p, t) === 0
+  const [p, t] = crop(path, target);
+  return path.size < target.size && compare(p, t) === 0;
 }
 
 /**
@@ -130,8 +130,8 @@ function isAbove(path, target) {
  */
 
 function isAfter(path, target) {
-  const [p, t] = crop(path, target)
-  return compare(p, t) === 1
+  const [p, t] = crop(path, target);
+  return compare(p, t) === 1;
 }
 
 /**
@@ -143,8 +143,8 @@ function isAfter(path, target) {
  */
 
 function isBefore(path, target) {
-  const [p, t] = crop(path, target)
-  return compare(p, t) === -1
+  const [p, t] = crop(path, target);
+  return compare(p, t) === -1;
 }
 
 /**
@@ -156,7 +156,7 @@ function isBefore(path, target) {
  */
 
 function isEqual(path, target) {
-  return path.equals(target)
+  return path.equals(target);
 }
 
 /**
@@ -169,11 +169,11 @@ function isEqual(path, target) {
  */
 
 function isOlder(path, target) {
-  const index = path.size - 1
-  const [p, t] = crop(path, target, index)
-  const pl = path.get(index)
-  const tl = target.get(index)
-  return isEqual(p, t) && pl > tl
+  const index = path.size - 1;
+  const [p, t] = crop(path, target, index);
+  const pl = path.get(index);
+  const tl = target.get(index);
+  return isEqual(p, t) && pl > tl;
 }
 
 /**
@@ -185,9 +185,9 @@ function isOlder(path, target) {
 
 function isPath(any) {
   return (
-    (List.isList(any) || Array.isArray(any)) &&
-    any.every(n => typeof n === 'number')
-  )
+    (List.isList(any) || Array.isArray(any))
+    && any.every((n) => typeof n === 'number')
+  );
 }
 
 /**
@@ -199,10 +199,10 @@ function isPath(any) {
  */
 
 function isSibling(path, target) {
-  if (path.size !== target.size) return false
-  const p = path.butLast()
-  const t = target.butLast()
-  return p.equals(t)
+  if (path.size !== target.size) return false;
+  const p = path.butLast();
+  const t = target.butLast();
+  return p.equals(t);
 }
 
 /**
@@ -215,11 +215,11 @@ function isSibling(path, target) {
  */
 
 function isYounger(path, target) {
-  const index = path.size - 1
-  const [p, t] = crop(path, target, index)
-  const pl = path.get(index)
-  const tl = target.get(index)
-  return isEqual(p, t) && pl < tl
+  const index = path.size - 1;
+  const [p, t] = crop(path, target, index);
+  const pl = path.get(index);
+  const tl = target.get(index);
+  return isEqual(p, t) && pl < tl;
 }
 
 /**
@@ -230,8 +230,8 @@ function isYounger(path, target) {
  */
 
 function lift(path, n = 1) {
-  const ancestor = path.slice(0, -1 * n)
-  return ancestor
+  const ancestor = path.slice(0, -1 * n);
+  return ancestor;
 }
 
 /**
@@ -243,8 +243,8 @@ function lift(path, n = 1) {
  */
 
 function drop(path, n = 1) {
-  const relative = path.slice(n)
-  return relative
+  const relative = path.slice(n);
+  return relative;
 }
 
 /**
@@ -256,8 +256,8 @@ function drop(path, n = 1) {
  */
 
 function max(a, b) {
-  const n = Math.max(a.size, b.size)
-  return n
+  const n = Math.max(a.size, b.size);
+  return n;
 }
 
 /**
@@ -269,8 +269,8 @@ function max(a, b) {
  */
 
 function min(a, b) {
-  const n = Math.min(a.size, b.size)
-  return n
+  const n = Math.min(a.size, b.size);
+  return n;
 }
 
 /**
@@ -282,21 +282,21 @@ function min(a, b) {
  */
 
 function relate(a, b) {
-  const array = []
+  const array = [];
 
   for (let i = 0; i < a.size && i < b.size; i++) {
-    const av = a.get(i)
-    const bv = b.get(i)
+    const av = a.get(i);
+    const bv = b.get(i);
 
     // If the values aren't equal, they've diverged and don't share an ancestor.
-    if (av !== bv) break
+    if (av !== bv) break;
 
     // Otherwise, the current value is still a common ancestor.
-    array.push(av)
+    array.push(av);
   }
 
-  const path = create(array)
-  return path
+  const path = create(array);
+  return path;
 }
 
 /**
@@ -308,96 +308,96 @@ function relate(a, b) {
  */
 
 function transform(path, operation) {
-  const { type, position, path: p } = operation
+  const { type, position, path: p } = operation;
 
   if (
-    type === 'add_mark' ||
-    type === 'insert_text' ||
-    type === 'remove_mark' ||
-    type === 'remove_text' ||
-    type === 'set_mark' ||
-    type === 'set_node' ||
-    type === 'set_selection' ||
-    type === 'set_value' ||
-    type === 'add_annotation' ||
-    type === 'remove_annotation' ||
-    type === 'set_annotation' ||
-    path.size === 0
+    type === 'add_mark'
+    || type === 'insert_text'
+    || type === 'remove_mark'
+    || type === 'remove_text'
+    || type === 'set_mark'
+    || type === 'set_node'
+    || type === 'set_selection'
+    || type === 'set_value'
+    || type === 'add_annotation'
+    || type === 'remove_annotation'
+    || type === 'set_annotation'
+    || path.size === 0
   ) {
-    return List([path])
+    return List([path]);
   }
 
-  const pIndex = p.size - 1
-  const pEqual = isEqual(p, path)
-  const pYounger = isYounger(p, path)
-  const pAbove = isAbove(p, path)
+  const pIndex = p.size - 1;
+  const pEqual = isEqual(p, path);
+  const pYounger = isYounger(p, path);
+  const pAbove = isAbove(p, path);
 
   if (type === 'insert_node') {
     if (pEqual || pYounger || pAbove) {
-      path = increment(path, 1, pIndex)
+      path = increment(path, 1, pIndex);
     }
   }
 
   if (type === 'remove_node') {
     if (pYounger) {
-      path = decrement(path, 1, pIndex)
+      path = decrement(path, 1, pIndex);
     } else if (pEqual || pAbove) {
-      path = []
+      path = [];
     }
   }
 
   if (type === 'merge_node') {
     if (pEqual || pYounger) {
-      path = decrement(path, 1, pIndex)
+      path = decrement(path, 1, pIndex);
     } else if (pAbove) {
-      path = decrement(path, 1, pIndex)
-      path = increment(path, position, pIndex + 1)
+      path = decrement(path, 1, pIndex);
+      path = increment(path, position, pIndex + 1);
     }
   }
 
   if (type === 'split_node') {
     if (pEqual) {
-      path = [path, increment(path)]
+      path = [path, increment(path)];
     } else if (pYounger) {
-      path = increment(path, 1, pIndex)
+      path = increment(path, 1, pIndex);
     } else if (pAbove) {
       if (path.get(pIndex + 1) >= position) {
-        path = increment(path, 1, pIndex)
-        path = decrement(path, position, pIndex + 1)
+        path = increment(path, 1, pIndex);
+        path = decrement(path, position, pIndex + 1);
       }
     }
   }
 
   if (type === 'move_node') {
-    const { newPath: np } = operation
+    const { newPath: np } = operation;
 
     if (isEqual(p, np)) {
-      return List([path])
+      return List([path]);
     }
 
     if (pAbove || pEqual) {
       // We are comparing something that was moved
       // The new path is unaffected unless the old path was the left-sibling of an ancestor
       if (isYounger(p, np) && p.size < np.size) {
-        path = decrement(np, 1, min(np, p) - 1).concat(path.slice(p.size))
+        path = decrement(np, 1, min(np, p) - 1).concat(path.slice(p.size));
       } else {
-        path = np.concat(path.slice(p.size))
+        path = np.concat(path.slice(p.size));
       }
     } else {
       // This is equivalent logic to remove_node for path
       if (pYounger) {
-        path = decrement(path, 1, pIndex)
+        path = decrement(path, 1, pIndex);
       }
 
       // This is the equivalent logic to insert_node for newPath
       if (isYounger(np, path) || isEqual(np, path) || isAbove(np, path)) {
-        path = increment(path, 1, np.size - 1)
+        path = increment(path, 1, np.size - 1);
       }
     }
   }
 
-  const paths = Array.isArray(path) ? path : [path]
-  return List(paths)
+  const paths = Array.isArray(path) ? path : [path];
+  return List(paths);
 }
 
 /**
@@ -427,4 +427,4 @@ export default {
   min,
   relate,
   transform,
-}
+};

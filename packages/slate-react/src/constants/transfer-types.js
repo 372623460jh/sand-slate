@@ -10,4 +10,4 @@ export default {
   NODE: 'application/x-slate-node',
   RICH: 'text/rtf',
   TEXT: 'text/plain',
-}
+};

@@ -1,15 +1,15 @@
-import warning from 'tiny-warning'
-import { List } from 'immutable'
+import warning from 'tiny-warning';
+import { List } from 'immutable';
 
-import mixin from '../utils/mixin'
-import Block from '../models/block'
-import Document from '../models/document'
-import Inline from '../models/inline'
-import Node from '../models/node'
-import KeyUtils from '../utils/key-utils'
-import memoize from '../utils/memoize'
-import PathUtils from '../utils/path-utils'
-import Text from '../models/text'
+import mixin from '../utils/mixin';
+import Block from '../models/block';
+import Document from '../models/document';
+import Inline from '../models/inline';
+import Node from '../models/node';
+import KeyUtils from '../utils/key-utils';
+import memoize from '../utils/memoize';
+import PathUtils from '../utils/path-utils';
+import Text from '../models/text';
 
 /**
  * The interface that `Document`, `Block` and `Inline` all implement, to make
@@ -27,18 +27,18 @@ class NodeInterface {
 
   getFirstText() {
     if (this.object === 'text') {
-      return this
+      return this;
     }
 
-    let descendant = null
+    let descendant = null;
 
-    const found = this.nodes.find(node => {
-      if (node.object === 'text') return true
-      descendant = node.getFirstText()
-      return !!descendant
-    })
+    const found = this.nodes.find((node) => {
+      if (node.object === 'text') return true;
+      descendant = node.getFirstText();
+      return !!descendant;
+    });
 
-    return descendant || found
+    return descendant || found;
   }
 
   /**
@@ -50,26 +50,26 @@ class NodeInterface {
   getKeysToPathsTable() {
     const ret = {
       [this.key]: [],
-    }
+    };
 
     if (this.nodes) {
       this.nodes.forEach((node, i) => {
-        const nested = node.getKeysToPathsTable()
+        const nested = node.getKeysToPathsTable();
 
         for (const key in nested) {
-          const path = nested[key]
+          const path = nested[key];
 
           warning(
             !(key in ret),
-            `A node with a duplicate key of "${key}" was found! Duplicate keys are not allowed, you should use \`node.regenerateKey\` before inserting if you are reusing an existing node.`
-          )
+            `A node with a duplicate key of "${key}" was found! Duplicate keys are not allowed, you should use \`node.regenerateKey\` before inserting if you are reusing an existing node.`,
+          );
 
-          ret[key] = [i, ...path]
+          ret[key] = [i, ...path];
         }
-      })
+      });
     }
 
-    return ret
+    return ret;
   }
 
   /**
@@ -80,18 +80,18 @@ class NodeInterface {
 
   getLastText() {
     if (this.object === 'text') {
-      return this
+      return this;
     }
 
-    let descendant = null
+    let descendant = null;
 
-    const found = this.nodes.findLast(node => {
-      if (node.object === 'text') return true
-      descendant = node.getLastText()
-      return descendant
-    })
+    const found = this.nodes.findLast((node) => {
+      if (node.object === 'text') return true;
+      descendant = node.getLastText();
+      return descendant;
+    });
 
-    return descendant || found
+    return descendant || found;
   }
 
   /**
@@ -102,11 +102,11 @@ class NodeInterface {
    */
 
   getNode(path) {
-    path = this.resolvePath(path)
-    if (!path) return null
-    if (this.object === 'text' && path.size) return null
-    const node = path.size ? this.getDescendant(path) : this
-    return node
+    path = this.resolvePath(path);
+    if (!path) return null;
+    if (this.object === 'text' && path.size) return null;
+    const node = path.size ? this.getDescendant(path) : this;
+    return node;
   }
 
   /**
@@ -119,20 +119,20 @@ class NodeInterface {
   getPath(key) {
     // COMPAT: Handle passing in a path, to match other methods.
     if (List.isList(key)) {
-      return key
+      return key;
     }
 
     // COMPAT: Handle a node object by iterating the descendants tree, so that
     // we avoid using keys for the future.
     if (Node.isNode(key) && this.descendants) {
       for (const [node, path] of this.descendants()) {
-        if (key === node) return path
+        if (key === node) return path;
       }
     }
 
-    const dict = this.getKeysToPathsTable()
-    const path = dict[key]
-    return path ? List(path) : null
+    const dict = this.getKeysToPathsTable();
+    const path = dict[key];
+    return path ? List(path) : null;
   }
 
   /**
@@ -143,11 +143,11 @@ class NodeInterface {
 
   getText() {
     if (this.object === 'text') {
-      return this.text
+      return this.text;
     }
 
-    const text = this.nodes.reduce((memo, c) => memo + c.text, '')
-    return text
+    const text = this.nodes.reduce((memo, c) => memo + c.text, '');
+    return text;
   }
 
   /**
@@ -158,8 +158,8 @@ class NodeInterface {
    */
 
   hasNode(path) {
-    const node = this.getNode(path)
-    return !!node
+    const node = this.getNode(path);
+    return !!node;
   }
 
   /**
@@ -170,8 +170,8 @@ class NodeInterface {
    */
 
   normalize(editor) {
-    const normalizer = editor.run('normalizeNode', this)
-    return normalizer
+    const normalizer = editor.run('normalizeNode', this);
+    return normalizer;
   }
 
   /**
@@ -181,9 +181,9 @@ class NodeInterface {
    */
 
   regenerateKey() {
-    const key = KeyUtils.create()
-    const node = this.set('key', key)
-    return node
+    const key = KeyUtils.create();
+    const node = this.set('key', key);
+    return node;
   }
 
   /**
@@ -201,16 +201,16 @@ class NodeInterface {
 
   resolvePath(path, index) {
     if (typeof path === 'string') {
-      path = this.getPath(path)
+      path = this.getPath(path);
 
       if (index != null) {
-        path = path.concat(index)
+        path = path.concat(index);
       }
     } else {
-      path = PathUtils.create(path)
+      path = PathUtils.create(path);
     }
 
-    return path
+    return path;
   }
 
   /**
@@ -221,8 +221,8 @@ class NodeInterface {
    */
 
   validate(editor) {
-    const error = editor.run('validateNode', this)
-    return error
+    const error = editor.run('validateNode', this);
+    return error;
   }
 }
 
@@ -237,10 +237,10 @@ memoize(NodeInterface.prototype, [
   'getText',
   'normalize',
   'validate',
-])
+]);
 
 /**
  * Mix in the node interface.
  */
 
-mixin(NodeInterface, [Block, Document, Inline, Text])
+mixin(NodeInterface, [Block, Document, Inline, Text]);

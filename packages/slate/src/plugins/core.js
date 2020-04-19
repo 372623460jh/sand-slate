@@ -1,13 +1,13 @@
-import AtRange from '../commands/at-range'
-import ByPath from '../commands/by-path'
-import Commands from './commands'
-import OnHistory from '../commands/on-history'
-import OnSelection from '../commands/on-selection'
-import OnValue from '../commands/on-value'
-import Queries from './queries'
-import Schema from './schema'
-import Text from '../models/text'
-import WithIntent from '../commands/with-intent'
+import AtRange from '../commands/at-range';
+import ByPath from '../commands/by-path';
+import Commands from './commands';
+import OnHistory from '../commands/on-history';
+import OnSelection from '../commands/on-selection';
+import OnValue from '../commands/on-value';
+import Queries from './queries';
+import Schema from './schema';
+import Text from '../models/text';
+import WithIntent from '../commands/with-intent';
 
 /**
  * A plugin that defines the core Slate logic.
@@ -17,7 +17,7 @@ import WithIntent from '../commands/with-intent'
  */
 
 function CorePlugin(options = {}) {
-  const { plugins = [] } = options
+  const { plugins = [] } = options;
 
   /**
    * The core Slate commands.
@@ -32,7 +32,7 @@ function CorePlugin(options = {}) {
     ...OnSelection,
     ...OnValue,
     ...WithIntent,
-  })
+  });
 
   /**
    * The core Slate queries.
@@ -43,7 +43,7 @@ function CorePlugin(options = {}) {
   const queries = Queries({
     isAtomic: () => false,
     isVoid: () => false,
-  })
+  });
 
   /**
    * The core Slate schema.
@@ -98,10 +98,10 @@ function CorePlugin(options = {}) {
         match: [{ object: 'block' }, { object: 'inline' }],
         nodes: [{ min: 1 }],
         normalize: (editor, error) => {
-          const { code, node } = error
+          const { code, node } = error;
 
           if (code === 'child_min_invalid' && node.nodes.isEmpty()) {
-            editor.insertNodeByKey(node.key, 0, Text.create())
+            editor.insertNodeByKey(node.key, 0, Text.create());
           }
         },
       },
@@ -112,19 +112,19 @@ function CorePlugin(options = {}) {
         first: [{ object: 'block' }, { object: 'text' }],
         last: [{ object: 'block' }, { object: 'text' }],
         normalize: (editor, error) => {
-          const { code, node } = error
-          const text = Text.create()
-          let i
+          const { code, node } = error;
+          const text = Text.create();
+          let i;
 
           if (code === 'first_child_object_invalid') {
-            i = 0
+            i = 0;
           } else if (code === 'last_child_object_invalid') {
-            i = node.nodes.size
+            i = node.nodes.size;
           } else {
-            return
+            return;
           }
 
-          editor.insertNodeByKey(node.key, i, text)
+          editor.insertNodeByKey(node.key, i, text);
         },
       },
       {
@@ -134,37 +134,35 @@ function CorePlugin(options = {}) {
         previous: [{ object: 'block' }, { object: 'text' }],
         next: [{ object: 'block' }, { object: 'text' }],
         normalize: (editor, error) => {
-          const { code, node, index } = error
-          const text = Text.create()
-          let i
+          const { code, node, index } = error;
+          const text = Text.create();
+          let i;
 
           if (code === 'first_child_object_invalid') {
-            i = 0
+            i = 0;
           } else if (code === 'last_child_object_invalid') {
-            i = node.nodes.size
+            i = node.nodes.size;
           } else if (code === 'previous_sibling_object_invalid') {
-            i = index
+            i = index;
           } else if (code === 'next_sibling_object_invalid') {
-            i = index + 1
+            i = index + 1;
           } else {
-            return
+            return;
           }
 
-          editor.insertNodeByKey(node.key, i, text)
+          editor.insertNodeByKey(node.key, i, text);
         },
       },
 
       // Merge adjacent text nodes with the same marks.
       {
         match: { object: 'text' },
-        next: (next, match) => {
-          return next.object !== 'text' || !match.marks.equals(next.marks)
-        },
+        next: (next, match) => next.object !== 'text' || !match.marks.equals(next.marks),
         normalize: (editor, error) => {
-          const { code, next } = error
+          const { code, next } = error;
 
           if (code === 'next_sibling_invalid') {
-            editor.mergeNodeByKey(next.key)
+            editor.mergeNodeByKey(next.key);
           }
         },
       },
@@ -172,24 +170,20 @@ function CorePlugin(options = {}) {
       // Remove extra adjacent empty text nodes.
       {
         match: { object: 'text' },
-        previous: prev => {
-          return prev.object !== 'text' || prev.text !== ''
-        },
-        next: next => {
-          return next.object !== 'text' || next.text !== ''
-        },
+        previous: (prev) => prev.object !== 'text' || prev.text !== '',
+        next: (next) => next.object !== 'text' || next.text !== '',
         normalize: (editor, error) => {
-          const { code, next, previous } = error
+          const { code, next, previous } = error;
 
           if (code === 'next_sibling_invalid') {
-            editor.removeNodeByKey(next.key)
+            editor.removeNodeByKey(next.key);
           } else if (code === 'previous_sibling_invalid') {
-            editor.removeNodeByKey(previous.key)
+            editor.removeNodeByKey(previous.key);
           }
         },
       },
     ],
-  })
+  });
 
   /**
    * Return the plugins.
@@ -197,7 +191,7 @@ function CorePlugin(options = {}) {
    * @type {Array}
    */
 
-  return [schema, ...plugins, commands, queries]
+  return [schema, ...plugins, commands, queries];
 }
 
 /**
@@ -206,4 +200,4 @@ function CorePlugin(options = {}) {
  * @type {Object}
  */
 
-export default CorePlugin
+export default CorePlugin;

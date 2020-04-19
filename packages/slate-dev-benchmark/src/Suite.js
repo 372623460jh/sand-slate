@@ -1,9 +1,9 @@
 /* global Promise */
-const { repo } = require('./Repository.js')
-const { SuiteType } = require('./types')
-const { logger } = require('./logger')
-const { compose } = require('./compose')
-const { makeOptions } = require('./makeOptions')
+const { repo } = require('./Repository.js');
+const { SuiteType } = require('./types');
+const { logger } = require('./logger');
+const { compose } = require('./compose');
+const { makeOptions } = require('./makeOptions');
 
 /**
  * Suite is for holding Benches
@@ -19,22 +19,22 @@ class Suite {
    */
 
   constructor(name, options = {}) {
-    const { repository = repo } = options
+    const { repository = repo } = options;
 
     if (repository[name]) {
-      throw Error(`The suite name ${name} has benn occupied in repository`)
+      throw Error(`The suite name ${name} has benn occupied in repository`);
     }
 
     if (typeof name !== 'string') {
-      throw Error(`The suite name must be a string`)
+      throw Error('The suite name must be a string');
     }
 
-    this.name = name
-    this.options = makeOptions(options)
-    this.isFinished = false
-    this.benches = []
-    this.report = {}
-    repository.addSuite(this)
+    this.name = name;
+    this.options = makeOptions(options);
+    this.isFinished = false;
+    this.benches = [];
+    this.report = {};
+    repository.addSuite(this);
   }
 
   /**
@@ -44,7 +44,7 @@ class Suite {
    */
 
   isSuite(obj) {
-    return obj && obj[SuiteType]
+    return obj && obj[SuiteType];
   }
 
   /**
@@ -54,8 +54,8 @@ class Suite {
    */
 
   addBench(bench) {
-    this.isFinished = false
-    this.benches.push(bench)
+    this.isFinished = false;
+    this.benches.push(bench);
   }
 
   /**
@@ -64,22 +64,22 @@ class Suite {
    */
 
   makeRun() {
-    if (this.isFinished) return Promise.resolve(this.report)
-    logger(this)
+    if (this.isFinished) return Promise.resolve(this.report);
+    logger(this);
     return compose(this.benches).then(() => {
-      this.isFinished = true
-      const report = {}
+      this.isFinished = true;
+      const report = {};
 
       for (const bench of this.benches) {
-        report[bench.name] = bench.report
+        report[bench.name] = bench.report;
       }
 
-      this.report = report
-      return report
-    })
+      this.report = report;
+      return report;
+    });
   }
 }
 
-Suite.prototype[SuiteType] = true
+Suite.prototype[SuiteType] = true;
 
-module.exports = { Suite }
+module.exports = { Suite };

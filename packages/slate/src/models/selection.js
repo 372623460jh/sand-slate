@@ -1,9 +1,9 @@
-import isPlainObject from 'is-plain-object'
-import { Record, Set } from 'immutable'
+import isPlainObject from 'is-plain-object';
+import { Record, Set } from 'immutable';
 
-import Mark from './mark'
-import Point from './point'
-import Range from './range'
+import Mark from './mark';
+import Point from './point';
+import Range from './range';
 
 /**
  * Default properties.
@@ -16,7 +16,7 @@ const DEFAULTS = {
   focus: undefined,
   isFocused: undefined,
   marks: undefined,
-}
+};
 
 /**
  * Selection.
@@ -34,20 +34,20 @@ class Selection extends Record(DEFAULTS) {
 
   static create(attrs = {}) {
     if (Selection.isSelection(attrs)) {
-      return attrs
+      return attrs;
     }
 
     if (Range.isRange(attrs)) {
-      return Selection.fromJSON(Range.createProperties(attrs))
+      return Selection.fromJSON(Range.createProperties(attrs));
     }
 
     if (isPlainObject(attrs)) {
-      return Selection.fromJSON(attrs)
+      return Selection.fromJSON(attrs);
     }
 
     throw new Error(
-      `\`Selection.create\` only accepts objects, ranges or selections, but you passed it: ${attrs}`
-    )
+      `\`Selection.create\` only accepts objects, ranges or selections, but you passed it: ${attrs}`,
+    );
   }
 
   /**
@@ -64,29 +64,28 @@ class Selection extends Record(DEFAULTS) {
         focus: Point.createProperties(a.focus),
         isFocused: a.isFocused,
         marks: a.marks,
-      }
+      };
     }
 
     if (Range.isRange(a)) {
       return {
         anchor: Point.createProperties(a.anchor),
         focus: Point.createProperties(a.focus),
-      }
+      };
     }
 
     if (isPlainObject(a)) {
-      const p = {}
-      if ('anchor' in a) p.anchor = Point.create(a.anchor)
-      if ('focus' in a) p.focus = Point.create(a.focus)
-      if ('isFocused' in a) p.isFocused = a.isFocused
-      if ('marks' in a)
-        p.marks = a.marks == null ? null : Mark.createSet(a.marks)
-      return p
+      const p = {};
+      if ('anchor' in a) p.anchor = Point.create(a.anchor);
+      if ('focus' in a) p.focus = Point.create(a.focus);
+      if ('isFocused' in a) p.isFocused = a.isFocused;
+      if ('marks' in a) { p.marks = a.marks == null ? null : Mark.createSet(a.marks); }
+      return p;
     }
 
     throw new Error(
-      `\`Selection.createProperties\` only accepts objects, ranges or selections, but you passed it: ${a}`
-    )
+      `\`Selection.createProperties\` only accepts objects, ranges or selections, but you passed it: ${a}`,
+    );
   }
 
   /**
@@ -97,15 +96,17 @@ class Selection extends Record(DEFAULTS) {
    */
 
   static fromJSON(object) {
-    const { anchor, focus, isFocused = false, marks = null } = object
+    const {
+      anchor, focus, isFocused = false, marks = null,
+    } = object;
     const selection = new Selection({
       anchor: Point.fromJSON(anchor || {}),
       focus: Point.fromJSON(focus || {}),
       isFocused,
       marks: marks == null ? null : new Set(marks.map(Mark.fromJSON)),
-    })
+    });
 
-    return selection
+    return selection;
   }
 
   /**
@@ -115,7 +116,7 @@ class Selection extends Record(DEFAULTS) {
    */
 
   get isBlurred() {
-    return !this.isFocused
+    return !this.isFocused;
   }
 
   /**
@@ -126,8 +127,8 @@ class Selection extends Record(DEFAULTS) {
    */
 
   setIsFocused(value) {
-    const selection = this.set('isFocused', value)
-    return selection
+    const selection = this.set('isFocused', value);
+    return selection;
   }
 
   /**
@@ -138,8 +139,8 @@ class Selection extends Record(DEFAULTS) {
    */
 
   setMarks(marks) {
-    const selection = this.set('marks', marks)
-    return selection
+    const selection = this.set('marks', marks);
+    return selection;
   }
 
   /**
@@ -150,19 +151,19 @@ class Selection extends Record(DEFAULTS) {
    */
 
   setProperties(properties) {
-    properties = Selection.createProperties(properties)
-    const { anchor, focus, ...props } = properties
+    properties = Selection.createProperties(properties);
+    const { anchor, focus, ...props } = properties;
 
     if (anchor) {
-      props.anchor = Point.create(anchor)
+      props.anchor = Point.create(anchor);
     }
 
     if (focus) {
-      props.focus = Point.create(focus)
+      props.focus = Point.create(focus);
     }
 
-    const selection = this.merge(props)
-    return selection
+    const selection = this.merge(props);
+    return selection;
   }
 
   /**
@@ -179,10 +180,10 @@ class Selection extends Record(DEFAULTS) {
       focus: this.focus.toJSON(options),
       isFocused: this.isFocused,
       marks:
-        this.marks == null ? null : this.marks.toArray().map(m => m.toJSON()),
-    }
+        this.marks == null ? null : this.marks.toArray().map((m) => m.toJSON()),
+    };
 
-    return object
+    return object;
   }
 }
 
@@ -192,4 +193,4 @@ class Selection extends Record(DEFAULTS) {
  * @type {Selection}
  */
 
-export default Selection
+export default Selection;

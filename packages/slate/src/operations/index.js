@@ -1,5 +1,5 @@
-import apply from './apply'
-import invert from './invert'
+import apply from './apply';
+import invert from './invert';
 
 /**
  * Export.
@@ -10,4 +10,4 @@ import invert from './invert'
 export default {
   apply,
   invert,
-}
+};

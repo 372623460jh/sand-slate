@@ -1,5 +1,5 @@
-import getWindow from 'get-window'
-import CompositionManager from './composition-manager'
+import getWindow from 'get-window';
+import CompositionManager from './composition-manager';
 
 /**
  * Fixes a selection within the DOM when the cursor is in Slate's special
@@ -12,22 +12,22 @@ import CompositionManager from './composition-manager'
  */
 
 function fixSelectionInZeroWidthBlock(window) {
-  const domSelection = window.getSelection()
-  const { anchorNode } = domSelection
-  if (anchorNode == null) return
-  const { dataset } = anchorNode.parentElement
-  const isZeroWidth = dataset ? dataset.slateZeroWidth === 'n' : false
+  const domSelection = window.getSelection();
+  const { anchorNode } = domSelection;
+  if (anchorNode == null) return;
+  const { dataset } = anchorNode.parentElement;
+  const isZeroWidth = dataset ? dataset.slateZeroWidth === 'n' : false;
 
   if (
-    isZeroWidth &&
-    anchorNode.textContent.length === 1 &&
-    domSelection.anchorOffset !== 0
+    isZeroWidth
+    && anchorNode.textContent.length === 1
+    && domSelection.anchorOffset !== 0
   ) {
-    const range = window.document.createRange()
-    range.setStart(anchorNode, 0)
-    range.setEnd(anchorNode, 0)
-    domSelection.removeAllRanges()
-    domSelection.addRange(range)
+    const range = window.document.createRange();
+    range.setStart(anchorNode, 0);
+    range.setEnd(anchorNode, 0);
+    domSelection.removeAllRanges();
+    domSelection.addRange(range);
   }
 }
 
@@ -38,14 +38,14 @@ function fixSelectionInZeroWidthBlock(window) {
  */
 
 function AndroidPlugin({ editor }) {
-  const observer = new CompositionManager(editor)
+  const observer = new CompositionManager(editor);
 
   /**
    * handle `onCompositionStart`
    */
 
   function onCompositionStart() {
-    observer.onCompositionStart()
+    observer.onCompositionStart();
   }
 
   /**
@@ -53,7 +53,7 @@ function AndroidPlugin({ editor }) {
    */
 
   function onCompositionEnd() {
-    observer.onCompositionEnd()
+    observer.onCompositionEnd();
   }
 
   /**
@@ -63,9 +63,9 @@ function AndroidPlugin({ editor }) {
    */
 
   function onSelect(event) {
-    const window = getWindow(event.target)
-    fixSelectionInZeroWidthBlock(window)
-    observer.onSelect(event)
+    const window = getWindow(event.target);
+    fixSelectionInZeroWidthBlock(window);
+    observer.onSelect(event);
   }
 
   /**
@@ -73,7 +73,7 @@ function AndroidPlugin({ editor }) {
    */
 
   function onComponentDidMount() {
-    observer.connect()
+    observer.connect();
   }
 
   /**
@@ -81,7 +81,7 @@ function AndroidPlugin({ editor }) {
    */
 
   function onComponentDidUpdate() {
-    observer.connect()
+    observer.connect();
   }
 
   /**
@@ -91,7 +91,7 @@ function AndroidPlugin({ editor }) {
    */
 
   function onComponentWillUnmount() {
-    observer.disconnect()
+    observer.disconnect();
   }
 
   /**
@@ -101,11 +101,11 @@ function AndroidPlugin({ editor }) {
    */
 
   function onRender() {
-    observer.disconnect()
+    observer.disconnect();
 
     // We don't want the `diff` from a previous render to apply to a
     // potentially different value (e.g. when we switch examples)
-    observer.clearDiff()
+    observer.clearDiff();
   }
 
   return {
@@ -116,7 +116,7 @@ function AndroidPlugin({ editor }) {
     onCompositionStart,
     onRender,
     onSelect,
-  }
+  };
 }
 
-export default AndroidPlugin
+export default AndroidPlugin;

@@ -1,11 +1,11 @@
-import invariant from 'tiny-invariant'
-import React from 'react'
+import invariant from 'tiny-invariant';
+import React from 'react';
 
 /*
  * Instance counter to enable unique marks for multiple Placeholder instances.
  */
 
-let instanceCounter = 0
+let instanceCounter = 0;
 
 /**
  * A plugin that renders a React placeholder for a given Slate node.
@@ -15,18 +15,18 @@ let instanceCounter = 0
  */
 
 function SlateReactPlaceholder(options = {}) {
-  const instanceId = instanceCounter++
-  const { placeholder, when, style = {} } = options
+  const instanceId = instanceCounter++;
+  const { placeholder, when, style = {} } = options;
 
   invariant(
     typeof placeholder === 'string',
-    'You must pass `SlateReactPlaceholder` an `options.placeholder` string.'
-  )
+    'You must pass `SlateReactPlaceholder` an `options.placeholder` string.',
+  );
 
   invariant(
     typeof when === 'string' || typeof when === 'function',
-    'You must pass `SlateReactPlaceholder` an `options.when` query.'
-  )
+    'You must pass `SlateReactPlaceholder` an `options.when` query.',
+  );
 
   /**
    * Decorate a match node with a placeholder mark when it fits the query.
@@ -39,14 +39,14 @@ function SlateReactPlaceholder(options = {}) {
 
   function decorateNode(node, editor, next) {
     if (!editor.query(when, node)) {
-      return next()
+      return next();
     }
 
-    const others = next()
-    const [first] = node.texts()
-    const [last] = node.texts({ direction: 'backward' })
-    const [firstNode, firstPath] = first
-    const [lastNode, lastPath] = last
+    const others = next();
+    const [first] = node.texts();
+    const [last] = node.texts({ direction: 'backward' });
+    const [firstNode, firstPath] = first;
+    const [lastNode, lastPath] = last;
     const decoration = {
       type: 'placeholder',
       data: { key: instanceId },
@@ -56,9 +56,9 @@ function SlateReactPlaceholder(options = {}) {
         offset: lastNode.text.length,
         path: lastPath,
       },
-    }
+    };
 
-    return [...others, decoration]
+    return [...others, decoration];
   }
 
   /**
@@ -71,7 +71,7 @@ function SlateReactPlaceholder(options = {}) {
    */
 
   function renderDecoration(props, editor, next) {
-    const { children, decoration: deco } = props
+    const { children, decoration: deco } = props;
 
     if (deco.type === 'placeholder' && deco.data.get('key') === instanceId) {
       const placeHolderStyle = {
@@ -83,7 +83,7 @@ function SlateReactPlaceholder(options = {}) {
         opacity: '0.333',
         verticalAlign: 'text-top',
         ...style,
-      }
+      };
 
       return (
         <span>
@@ -92,10 +92,10 @@ function SlateReactPlaceholder(options = {}) {
           </span>
           {children}
         </span>
-      )
+      );
     }
 
-    return next()
+    return next();
   }
 
   /**
@@ -104,7 +104,7 @@ function SlateReactPlaceholder(options = {}) {
    * @return {Object}
    */
 
-  return { decorateNode, renderDecoration }
+  return { decorateNode, renderDecoration };
 }
 
 /**
@@ -113,4 +113,4 @@ function SlateReactPlaceholder(options = {}) {
  * @type {Function}
  */
 
-export default SlateReactPlaceholder
+export default SlateReactPlaceholder;

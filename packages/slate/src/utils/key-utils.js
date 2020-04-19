@@ -4,7 +4,7 @@
  * @type {Number}
  */
 
-let n
+let n;
 
 /**
  * The global key generating function.
@@ -12,7 +12,7 @@ let n
  * @type {Function}
  */
 
-let generate
+let generate;
 
 /**
  * Create a key, using a provided key if available.
@@ -23,14 +23,14 @@ let generate
 
 function create(key) {
   if (key == null) {
-    return generate()
+    return generate();
   }
 
   if (typeof key === 'string') {
-    return key
+    return key;
   }
 
-  throw new Error(`Keys must be strings, but you passed: ${key}`)
+  throw new Error(`Keys must be strings, but you passed: ${key}`);
 }
 
 /**
@@ -40,7 +40,7 @@ function create(key) {
  */
 
 function setGenerator(func) {
-  generate = func
+  generate = func;
 }
 
 /**
@@ -48,15 +48,15 @@ function setGenerator(func) {
  */
 
 function resetGenerator() {
-  n = 0
-  generate = () => `${n++}`
+  n = 0;
+  generate = () => `${n++}`;
 }
 
 /**
  * Set the initial state.
  */
 
-resetGenerator()
+resetGenerator();
 
 /**
  * Export.
@@ -68,4 +68,4 @@ export default {
   create,
   setGenerator,
   resetGenerator,
-}
+};

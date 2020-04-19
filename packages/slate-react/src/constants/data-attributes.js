@@ -17,4 +17,4 @@ export default {
   TEXT: 'data-slate-object',
   VOID: 'data-slate-void',
   ZERO_WIDTH: 'data-slate-zero-width',
-}
+};

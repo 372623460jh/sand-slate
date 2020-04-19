@@ -1,16 +1,16 @@
-import Debug from 'debug'
+import Debug from 'debug';
 
-import { IS_ANDROID } from '@jianghe/slate-dev-environment'
-import PlaceholderPlugin from '@jianghe/slate-react-placeholder'
-import EditorPropsPlugin from './editor-props'
-import RenderingPlugin from './rendering'
-import CommandsPlugin from './commands'
-import QueriesPlugin from './queries'
-import DOMPlugin from '../dom'
-import RestoreDOMPlugin from './restore-dom'
-import DebugEventsPlugin from '../debug/debug-events'
-import DebugBatchEventsPlugin from '../debug/debug-batch-events'
-import DebugMutationsPlugin from '../debug/debug-mutations'
+import { IS_ANDROID } from '@jianghe/slate-dev-environment';
+import PlaceholderPlugin from '@jianghe/slate-react-placeholder';
+import EditorPropsPlugin from './editor-props';
+import RenderingPlugin from './rendering';
+import CommandsPlugin from './commands';
+import QueriesPlugin from './queries';
+import DOMPlugin from '../dom';
+import RestoreDOMPlugin from './restore-dom';
+import DebugEventsPlugin from '../debug/debug-events';
+import DebugBatchEventsPlugin from '../debug/debug-batch-events';
+import DebugMutationsPlugin from '../debug/debug-mutations';
 
 /**
  * A plugin that adds the React-specific rendering logic to the editor.
@@ -20,22 +20,22 @@ import DebugMutationsPlugin from '../debug/debug-mutations'
  */
 
 function ReactPlugin(options = {}) {
-  const { placeholder = '' } = options
+  const { placeholder = '' } = options;
   const debugEventsPlugin = Debug.enabled('@jianghe/slate:events')
     ? DebugEventsPlugin(options)
-    : null
+    : null;
   const debugBatchEventsPlugin = Debug.enabled('@jianghe/slate:batch-events')
     ? DebugBatchEventsPlugin(options)
-    : null
+    : null;
   const debugMutationsPlugin = Debug.enabled('@jianghe/slate:mutations')
     ? DebugMutationsPlugin(options)
-    : null
-  const renderingPlugin = RenderingPlugin(options)
-  const commandsPlugin = CommandsPlugin(options)
-  const queriesPlugin = QueriesPlugin(options)
-  const editorPropsPlugin = EditorPropsPlugin(options)
-  const domPlugin = DOMPlugin(options)
-  const restoreDomPlugin = RestoreDOMPlugin()
+    : null;
+  const renderingPlugin = RenderingPlugin(options);
+  const commandsPlugin = CommandsPlugin(options);
+  const queriesPlugin = QueriesPlugin(options);
+  const editorPropsPlugin = EditorPropsPlugin(options);
+  const domPlugin = DOMPlugin(options);
+  const restoreDomPlugin = RestoreDOMPlugin();
 
   // Disable placeholder for Android because it messes with reconciliation
   // and doesn't disappear until composition is complete.
@@ -43,13 +43,12 @@ function ReactPlugin(options = {}) {
   const placeholderPlugin = IS_ANDROID
     ? null
     : PlaceholderPlugin({
-        placeholder,
-        when: (editor, node) =>
-          node.object === 'document' &&
-          node.text === '' &&
-          node.nodes.size === 1 &&
-          Array.from(node.texts()).length === 1,
-      })
+      placeholder,
+      when: (editor, node) => node.object === 'document'
+          && node.text === ''
+          && node.nodes.size === 1
+          && Array.from(node.texts()).length === 1,
+    });
 
   return [
     debugEventsPlugin,
@@ -62,7 +61,7 @@ function ReactPlugin(options = {}) {
     renderingPlugin,
     commandsPlugin,
     queriesPlugin,
-  ]
+  ];
 }
 
 /**
@@ -71,4 +70,4 @@ function ReactPlugin(options = {}) {
  * @type {Function}
  */
 
-export default ReactPlugin
+export default ReactPlugin;

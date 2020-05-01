@@ -27,7 +27,6 @@
     "@jianghe/slate-dev-environment": "^0.2.3-3",
     "@jianghe/slate-hotkeys": "^0.2.10-3",
     "@jianghe/slate-plain-serializer": "^0.7.11-3",
-    "@jianghe/slate-prop-types": "^0.5.42-3",
     "@jianghe/slate-react-placeholder": "^0.2.9-3",
     "debug": "^3.1.0",
     "get-window": "^1.1.1",

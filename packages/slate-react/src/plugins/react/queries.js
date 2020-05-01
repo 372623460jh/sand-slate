@@ -4,21 +4,96 @@ import { PathUtils } from '@jianghe/slate';
 import DATA_ATTRS from '../../constants/data-attributes';
 import SELECTORS from '../../constants/selectors';
 
+
 /**
- * A set of queries for the React plugin.
- *
+ * Get the nearest editable child at `index` in a `parent`, preferring
+ * `direction`.
+ * @param {Element} parent
+ * @param {Number} index
+ * @param {String} direction ('forward' or 'backward')
+ * @return {Element|Null}
+ */
+function getEditableChild(parent, index, direction) {
+  const { childNodes } = parent;
+  let child = childNodes[index];
+  let i = index;
+  let triedForward = false;
+  let triedBackward = false;
+
+  // While the child is a comment node, or an element node with no children,
+  // keep iterating to find a sibling non-void, non-comment node.
+  while (
+    child.nodeType === 8
+    || (child.nodeType === 1 && child.childNodes.length === 0)
+    || (child.nodeType === 1 && child.getAttribute('contenteditable') === 'false')
+  ) {
+    if (triedForward && triedBackward) break;
+
+    if (i >= childNodes.length) {
+      triedForward = true;
+      i = index - 1;
+      direction = 'backward';
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    if (i < 0) {
+      triedBackward = true;
+      i = index + 1;
+      direction = 'forward';
+      continue;
+    }
+
+    child = childNodes[i];
+    if (direction === 'forward') i++;
+    if (direction === 'backward') i--;
+  }
+
+  return child || null;
+}
+
+/**
+ * From a DOM selection's `node` and `offset`, normalize so that it always
+ * refers to a text node.
+ * @param {Element} node
+ * @param {Number} offset
  * @return {Object}
  */
+function normalizeNodeAndOffset(node, offset) {
+  // If it's an element node, its offset refers to the index of its children
+  // including comment nodes, so try to find the right text child node.
+  if (node.nodeType === 1 && node.childNodes.length) {
+    const isLast = offset === node.childNodes.length;
+    const direction = isLast ? 'backward' : 'forward';
+    const index = isLast ? offset - 1 : offset;
+    node = getEditableChild(node, index, direction);
 
+    // If the node has children, traverse until we have a leaf node. Leaf nodes
+    // can be either text nodes, or other void DOM nodes.
+    while (node.nodeType === 1 && node.childNodes.length) {
+      const i = isLast ? node.childNodes.length - 1 : 0;
+      node = getEditableChild(node, i, direction);
+    }
+
+    // Determine the new offset inside the text node.
+    offset = isLast ? node.textContent.length : 0;
+  }
+
+  // Return the node and offset.
+  return { node, offset };
+}
+
+/**
+ * A set of queries for the React plugin.
+ * @return {Object}
+ */
 function QueriesPlugin() {
   /**
    * Find the native DOM element for a node at `path`.
-   *
    * @param {Editor} editor
    * @param {Array|List} path
    * @return {DOMNode|Null}
    */
-
   function findDOMNode(editor, path) {
     path = PathUtils.create(path);
     const content = editor.tmp.contentRef.current;
@@ -56,13 +131,12 @@ function QueriesPlugin() {
 
   /**
    * Find a native DOM selection point from a Slate `point`.
-   *
    * @param {Editor} editor
    * @param {Point} point
    * @return {Object|Null}
    */
-
   function findDOMPoint(editor, point) {
+    // eslint-disable-next-line react/no-find-dom-node
     const el = editor.findDOMNode(point.path);
     let start = 0;
 
@@ -101,12 +175,10 @@ function QueriesPlugin() {
 
   /**
    * Find a native DOM range from a Slate `range`.
-   *
    * @param {Editor} editor
    * @param {Range} range
    * @return {DOMRange|Null}
    */
-
   function findDOMRange(editor, range) {
     const {
       anchor, focus, isBackward, isCollapsed,
@@ -129,12 +201,10 @@ function QueriesPlugin() {
 
   /**
    * Find a Slate node from a native DOM `element`.
-   *
    * @param {Editor} editor
    * @param {Element} element
    * @return {List|Null}
    */
-
   function findNode(editor, element) {
     const path = editor.findPath(element);
 
@@ -150,12 +220,10 @@ function QueriesPlugin() {
 
   /**
    * Get the target range from a DOM `event`.
-   *
    * @param {Event} event
    * @param {Editor} editor
    * @return {Range}
    */
-
   function findEventRange(editor, event) {
     if (event.nativeEvent) {
       event = event.nativeEvent;
@@ -226,12 +294,10 @@ function QueriesPlugin() {
 
   /**
    * Find the path of a native DOM `element` by searching React refs.
-   *
    * @param {Editor} editor
    * @param {Element} element
    * @return {List|Null}
    */
-
   function findPath(editor, element) {
     const content = editor.tmp.contentRef.current;
     let nodeElement = element;
@@ -296,13 +362,11 @@ function QueriesPlugin() {
 
   /**
    * Find a Slate point from a DOM selection's `nativeNode` and `nativeOffset`.
-   *
    * @param {Editor} editor
    * @param {Element} nativeNode
    * @param {Number} nativeOffset
    * @return {Point}
    */
-
   function findPoint(editor, nativeNode, nativeOffset) {
     const { node: nearestNode, offset: nearestOffset } = normalizeNodeAndOffset(
       nativeNode,
@@ -384,12 +448,10 @@ function QueriesPlugin() {
 
   /**
    * Find a Slate range from a DOM range or selection.
-   *
    * @param {Editor} editor
    * @param {Selection} domRange
    * @return {Range}
    */
-
   function findRange(editor, domRange) {
     const el = domRange.anchorNode || domRange.startContainer;
 
@@ -441,12 +503,10 @@ function QueriesPlugin() {
 
   /**
    * Find a Slate selection from a DOM selection.
-   *
    * @param {Editor} editor
    * @param {Selection} domSelection
    * @return {Range}
    */
-
   function findSelection(editor, domSelection) {
     const { value } = editor;
     const { document } = value;
@@ -552,87 +612,6 @@ function QueriesPlugin() {
       findSelection,
     },
   };
-}
-
-/**
- * From a DOM selection's `node` and `offset`, normalize so that it always
- * refers to a text node.
- *
- * @param {Element} node
- * @param {Number} offset
- * @return {Object}
- */
-
-function normalizeNodeAndOffset(node, offset) {
-  // If it's an element node, its offset refers to the index of its children
-  // including comment nodes, so try to find the right text child node.
-  if (node.nodeType === 1 && node.childNodes.length) {
-    const isLast = offset === node.childNodes.length;
-    const direction = isLast ? 'backward' : 'forward';
-    const index = isLast ? offset - 1 : offset;
-    node = getEditableChild(node, index, direction);
-
-    // If the node has children, traverse until we have a leaf node. Leaf nodes
-    // can be either text nodes, or other void DOM nodes.
-    while (node.nodeType === 1 && node.childNodes.length) {
-      const i = isLast ? node.childNodes.length - 1 : 0;
-      node = getEditableChild(node, i, direction);
-    }
-
-    // Determine the new offset inside the text node.
-    offset = isLast ? node.textContent.length : 0;
-  }
-
-  // Return the node and offset.
-  return { node, offset };
-}
-
-/**
- * Get the nearest editable child at `index` in a `parent`, preferring
- * `direction`.
- *
- * @param {Element} parent
- * @param {Number} index
- * @param {String} direction ('forward' or 'backward')
- * @return {Element|Null}
- */
-
-function getEditableChild(parent, index, direction) {
-  const { childNodes } = parent;
-  let child = childNodes[index];
-  let i = index;
-  let triedForward = false;
-  let triedBackward = false;
-
-  // While the child is a comment node, or an element node with no children,
-  // keep iterating to find a sibling non-void, non-comment node.
-  while (
-    child.nodeType === 8
-    || (child.nodeType === 1 && child.childNodes.length === 0)
-    || (child.nodeType === 1 && child.getAttribute('contenteditable') === 'false')
-  ) {
-    if (triedForward && triedBackward) break;
-
-    if (i >= childNodes.length) {
-      triedForward = true;
-      i = index - 1;
-      direction = 'backward';
-      continue;
-    }
-
-    if (i < 0) {
-      triedBackward = true;
-      i = index + 1;
-      direction = 'forward';
-      continue;
-    }
-
-    child = childNodes[i];
-    if (direction === 'forward') i++;
-    if (direction === 'backward') i--;
-  }
-
-  return child || null;
 }
 
 /**

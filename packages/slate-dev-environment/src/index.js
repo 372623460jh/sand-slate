@@ -1,11 +1,11 @@
+/* eslint-disable no-useless-escape */
 import isBrowser from 'is-in-browser';
 
 /**
  * Browser matching rules.
- *
+ * 浏览器ua匹配
  * @type {Array}
  */
-
 const BROWSER_RULES = [
   ['edge', /Edge\/([0-9\._]+)/],
   ['chrome', /(?!Chrom.*OPR)Chrom(?:e|ium)\/([0-9\.]+)(:?\s|$)/],
@@ -32,10 +32,9 @@ if (isBrowser) {
 
 /**
  * Operating system matching rules.
- *
+ * 操作系统ua匹配
  * @type {Array}
  */
-
 const OS_RULES = [
   ['ios', /os ([\.\_\d]+) like mac os/i], // must be before the macos rule
   ['macos', /mac os x/i],
@@ -57,14 +56,14 @@ if (isBrowser) {
 
 /**
  * Feature matching rules.
- *
+ * 匹配浏览器特性
  * @type {Array}
  */
-
 const FEATURE_RULES = [
   [
     'inputeventslevel1',
     (window) => {
+      // inputeventslevel1 InputEvent中是否有inputType
       const event = window.InputEvent ? new window.InputEvent('input') : {};
       const support = 'inputType' in event;
       return support;
@@ -73,6 +72,7 @@ const FEATURE_RULES = [
   [
     'inputeventslevel2',
     (window) => {
+      // inputeventslevel2 contentEditable时onbeforeinput事件
       const element = window.document.createElement('div');
       element.contentEditable = true;
       const support = 'onbeforeinput' in element;
@@ -93,10 +93,9 @@ if (isBrowser) {
 
 /**
  * Array of regular expression matchers and their API version
- *
+ * Android版本
  * @type {Array}
  */
-
 const ANDROID_API_VERSIONS = [
   [/^9([.]0|)/, 28],
   [/^8[.]1/, 27],
@@ -111,17 +110,14 @@ const ANDROID_API_VERSIONS = [
 
 /**
  * get the Android API version from the userAgent
- *
  * @return {number} version
  */
-
 function getAndroidApiVersion() {
   if (os !== 'android') return null;
   const { userAgent } = window.navigator;
   const matchData = userAgent.match(/Android\s([0-9\.]+)/);
   if (matchData == null) return null;
   const versionString = matchData[1];
-
   for (const [regex, version] of ANDROID_API_VERSIONS) {
     if (versionString.match(regex)) return version;
   }
@@ -130,24 +126,30 @@ function getAndroidApiVersion() {
 
 /**
  * Export.
- *
  * @type {Boolean}
  */
-
+// 是否是chrome
 export const IS_CHROME = browser === 'chrome';
+// 是否是opera
 export const IS_OPERA = browser === 'opera';
+// 是否是firefox
 export const IS_FIREFOX = browser === 'firefox';
+// 是否是safari
 export const IS_SAFARI = browser === 'safari';
+// 是否是ie
 export const IS_IE = browser === 'ie';
+// 是否是edge
 export const IS_EDGE = browser === 'edge';
-
+// 是否是android
 export const IS_ANDROID = os === 'android';
+// 是否是ios
 export const IS_IOS = os === 'ios';
+// 是否是macos
 export const IS_MAC = os === 'macos';
+// 是否是windows
 export const IS_WINDOWS = os === 'windows';
-
+// android1 版本
 export const ANDROID_API_VERSION = getAndroidApiVersion();
-
+// level1
 export const HAS_INPUT_EVENTS_LEVEL_1 = features.includes('inputeventslevel1');
-export const HAS_INPUT_EVENTS_LEVEL_2 = features.includes('inputeventslevel2')
-  || (IS_ANDROID && (ANDROID_API_VERSION === 28 || ANDROID_API_VERSION === null));
+export const HAS_INPUT_EVENTS_LEVEL_2 = features.includes('inputeventslevel2') || (IS_ANDROID && (ANDROID_API_VERSION === 28 || ANDROID_API_VERSION === null));

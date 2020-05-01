@@ -10,36 +10,30 @@ import EVENT_HANDLERS from '../../constants/event-handlers';
  *
  * This plugin is detached (i.e. there is no way to turn it on in Slate).
  * You must hard code it into `plugins/react/index`.
- *
  * @return {Object}
  */
-
 function NoopPlugin() {
   /**
    * Plugin Object
-   *
    * @type {Object}
    */
-
   const plugin = {};
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const eventName of EVENT_HANDLERS) {
-    plugin[eventName] = function (event, editor, next) {};
+    // eslint-disable-next-line no-unused-vars
+    plugin[eventName] = (event, editor, next) => {};
   }
 
   /**
    * Return the plugin.
-   *
    * @type {Object}
    */
-
   return plugin;
 }
 
 /**
  * Export.
- *
  * @type {Function}
  */
-
 export default NoopPlugin;

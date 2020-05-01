@@ -2,18 +2,14 @@ import Debug from 'debug';
 
 /**
  * Debug mutations function.
- *
  * @type {Function}
  */
-
 const debug = Debug('@jianghe/slate:mutations');
 
 /**
  * Properties on a MutationRecord
- *
  * @type {Object}
  */
-
 const MUTATION_PROPERTIES = [
   'type',
   'oldValue',
@@ -28,10 +24,8 @@ const MUTATION_PROPERTIES = [
 
 /**
  * Takes a DOM node and returns an easily readable version of it.
- *
  * @param {DOMNode} node
  */
-
 function normalizeNode(node) {
   if (node.nodeType === window.Node.TEXT_NODE) {
     return node.textContent;
@@ -46,15 +40,11 @@ function normalizeNode(node) {
 /**
  * A plugin that sends short easy to digest debug info about each dom mutation
  * to browser.
- *
  * More information about mutations here:
- *
  * <https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver>
  * <https://developer.mozilla.org/en-US/docs/Web/API/MutationRecord>
- *
  * @param {Object} options
  */
-
 function DebugMutationsPlugin() {
   const observer = new window.MutationObserver((mutations) => {
     const array = Array.from(mutations).map((mutationRecord) => {
@@ -94,17 +84,16 @@ function DebugMutationsPlugin() {
 
   /**
    * The previously observed DOM node
-   *
    * @type {DOMNode}
    */
-
   let prevRootEl = null;
 
   /**
    * Start observing the DOM node for mutations if it isn't being observed
    */
-
+  // eslint-disable-next-line consistent-return
   function start(event, editor, next) {
+    // eslint-disable-next-line react/no-find-dom-node
     const rootEl = editor.findDOMNode([]);
 
     if (rootEl === prevRootEl) return next();
@@ -127,10 +116,8 @@ function DebugMutationsPlugin() {
   /**
    * Stop observing the DOM node for mutations
    */
-
   function stop(event, editor, next) {
     debug('stop');
-
     observer.disconnect();
     prevRootEl = null;
     next();

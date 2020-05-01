@@ -1,23 +1,20 @@
 /**
  * A set of commands for the React plugin.
- *
  * @return {Object}
  */
-
 function CommandsPlugin() {
   /**
    * Takes a `node`, find the matching `domNode` and uses it to set the text
    * in the `node`.
-   *
    * @param {Editor} editor
    * @param {Node} node
    */
-
   function reconcileNode(editor, node) {
     const { value } = editor;
     const { document, selection } = value;
     const path = document.getPath(node.key);
 
+    // eslint-disable-next-line react/no-find-dom-node
     const domElement = editor.findDOMNode(path);
     const block = document.getClosestBlock(path);
 
@@ -49,12 +46,11 @@ function CommandsPlugin() {
   /**
    * Takes text from the `domNode` and uses it to set the text in the matching
    * `node` in Slate.
-   *
    * @param {Editor} editor
    * @param {DOMNode} domNode
    */
-
   function reconcileDOMNode(editor, domNode) {
+    // 查找带data-key最近的祖先元素
     const domElement = domNode.parentElement.closest('[data-key]');
     const node = editor.findNode(domElement);
     editor.reconcileNode(node);

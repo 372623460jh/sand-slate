@@ -1,11 +1,11 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 
 /**
  * The default rendering behavior for the React plugin.
- *
+ * 默认的render插件
  * @return {Object}
  */
-
 function Rendering() {
   return {
     decorateNode() {
@@ -32,6 +32,10 @@ function Rendering() {
       return children;
     },
 
+    /**
+     * 用于返回编辑器组件的插件，改插件可对children进行自定制包装
+     * @param {*} param0
+     */
     renderEditor({ children }) {
       return children;
     },
@@ -52,8 +56,6 @@ function Rendering() {
 
 /**
  * Export.
- *
  * @type {Function}
  */
-
 export default Rendering;

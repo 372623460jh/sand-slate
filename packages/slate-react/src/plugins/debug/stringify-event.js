@@ -1,10 +1,9 @@
 /**
  * Takes a React Synthetic Event or a DOM Event and turns it into a String that
  * is easy to log. It's succinct and keeps info to a bare minimum.
- *
+ * 处理event成一个string，用于log输出
  * @param {Event} event
  */
-
 export default function stringifyEvent(event) {
   const e = event.nativeEvent || event;
 

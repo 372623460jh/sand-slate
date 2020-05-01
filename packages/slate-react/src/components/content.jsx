@@ -1,6 +1,7 @@
+/* eslint-disable react/require-default-props */
 import Debug from 'debug';
 import React from 'react';
-import Types from 'prop-types';
+import PropTypes from 'prop-types';
 import getWindow from 'get-window';
 import warning from 'tiny-warning';
 import throttle from 'lodash/throttle';
@@ -13,7 +14,6 @@ import {
   IS_CHROME,
 } from '@jianghe/slate-dev-environment';
 import Hotkeys from '@jianghe/slate-hotkeys';
-
 import EVENT_HANDLERS from '../constants/event-handlers';
 import DATA_ATTRS from '../constants/data-attributes';
 import SELECTORS from '../constants/selectors';
@@ -25,69 +25,60 @@ const FIREFOX_NODE_TYPE_ACCESS_ERROR = /Permission denied to access property "no
 
 /**
  * Debug.
- *
  * @type {Function}
  */
-
-const debug = Debug('slate:content');
+const debug = Debug('@jianghe/slate:content');
 
 /**
  * Separate debug to easily see when the DOM has updated either by render or
  * changing selection.
- *
  * @type {Function}
  */
-
-debug.update = Debug('slate:update');
+debug.update = Debug('@jianghe/slate:update');
 
 /**
  * Content.
- *
  * @type {Component}
  */
-
 class Content extends React.Component {
   /**
    * Property types.
-   *
    * @type {Object}
    */
-
   static propTypes = {
-    autoCorrect: Types.bool.isRequired,
-    className: Types.string,
-    contentKey: Types.number,
-    editor: Types.object.isRequired,
-    id: Types.string,
-    onEvent: Types.func.isRequired,
-    readOnly: Types.bool.isRequired,
-    role: Types.string,
-    spellCheck: Types.bool.isRequired,
-    style: Types.object,
-    tabIndex: Types.number,
-    tagName: Types.string,
+    autoCorrect: PropTypes.bool.isRequired,
+    className: PropTypes.string,
+    // this.props.contentKey好像没有用到
+    contentKey: PropTypes.number.isRequired,
+    editor: PropTypes.object.isRequired,
+    id: PropTypes.string,
+    onEvent: PropTypes.func.isRequired,
+    readOnly: PropTypes.bool.isRequired,
+    role: PropTypes.string,
+    spellCheck: PropTypes.bool.isRequired,
+    style: PropTypes.object,
+    tabIndex: PropTypes.number,
+    tagName: PropTypes.string,
   }
 
   /**
    * Default properties.
-   *
    * @type {Object}
    */
-
   static defaultProps = {
     style: {},
     tagName: 'div',
+    className: '',
+    id: '',
   }
 
   /**
    * An error boundary. If there is a render error, we increment `errorKey`
    * which is part of the container `key` which forces a re-render from
    * scratch.
-   *
    * @param {Error} error
    * @param {String} info
    */
-
   componentDidCatch(error, info) {
     debug('componentDidCatch', { error, info });
     // The call to `setState` is required despite not setting a value.
@@ -97,44 +88,50 @@ class Content extends React.Component {
 
   /**
    * Temporary values.
-   *
    * @type {Object}
    */
-
   tmp = {
+    // 是否在中文输入onComposition中
     isComposing: false,
+    // 是否正在更新选区
     isUpdatingSelection: false,
+    // node组件的真实dom
     nodeRef: React.createRef(),
     nodeRefs: {},
     contentKey: 0,
+    // 原生Selection对象
     nativeSelection: {}, // Native selection object stored to check if `onNativeSelectionChange` has triggered yet
   }
 
   /**
    * A ref for the contenteditable DOM node.
-   *
+   * contenteditable的真实dom
    * @type {Object}
    */
-
   ref = React.createRef()
 
   /**
    * Set both `this.ref` and `editor.el`
-   *
+   * 将真实dom绑定到<Editor>实例上
    * @type {DOMElement}
    */
-
   setRef = (el) => {
+    // <Editor>实例
+    const { editor } = this.props;
     this.ref.current = el;
-    this.props.editor.el = el;
+    // 将真实dom绑定到<Editor>实例上
+    editor.el = el;
   }
 
   /**
    * Create a set of bound event handlers.
-   *
+   * 将所有插件的执行方法生成对象并传入到组件中
+   * {
+   *    onDragEnter: (event) => this.onEvent(handler, event),
+   *    // ...
+   * }
    * @type {Object}
    */
-
   handlers = EVENT_HANDLERS.reduce((obj, handler) => {
     obj[handler] = (event) => this.onEvent(handler, event);
     return obj;
@@ -142,19 +139,18 @@ class Content extends React.Component {
 
   /**
    * When the editor first mounts in the DOM we need to:
-   *
+   * 当editor第一次mount时需要添加选区改变事件监听和 更新选区
    *   - Add native DOM event listeners.
    *   - Update the selection, in case it starts focused.
    */
-
   componentDidMount() {
+    const { onEvent } = this.props;
     const window = getWindow(this.ref.current);
-
+    // 添加选区改变事件监听
     window.document.addEventListener(
       'selectionchange',
       this.onNativeSelectionChange,
     );
-
     // COMPAT: Restrict scope of `beforeinput` to clients that support the
     // Input Events Level 2 spec, since they are preventable events.
     if (HAS_INPUT_EVENTS_LEVEL_2) {
@@ -163,55 +159,56 @@ class Content extends React.Component {
         this.handlers.onBeforeInput,
       );
     }
-
+    // 更新Selection
     this.updateSelection();
-
-    this.props.onEvent('onComponentDidMount');
+    // 通过onEvent触发onComponentDidMount插件
+    onEvent('onComponentDidMount');
   }
 
   /**
    * When unmounting, remove DOM event listeners.
+   * 卸载时移除监听
    */
-
   componentWillUnmount() {
+    const { onEvent } = this.props;
     const window = getWindow(this.ref.current);
-
     if (window) {
       window.document.removeEventListener(
         'selectionchange',
         this.onNativeSelectionChange,
       );
     }
-
     if (HAS_INPUT_EVENTS_LEVEL_2) {
       this.ref.current.removeEventListener(
         'beforeinput',
         this.handlers.onBeforeInput,
       );
     }
-
-    this.props.onEvent('onComponentWillUnmount');
+    onEvent('onComponentWillUnmount');
   }
 
   /**
    * On update, update the selection.
+   * 组件更新时更新选区
    */
-
   componentDidUpdate() {
+    const { onEvent } = this.props;
     debug.update('componentDidUpdate');
-
+    // 更新选区
     this.updateSelection();
-
-    this.props.onEvent('onComponentDidUpdate');
+    onEvent('onComponentDidUpdate');
   }
 
   /**
    * Update the native DOM selection to reflect the internal model.
+   * 更新native selection
    */
-
   updateSelection = () => {
+    // <Editor>
     const { editor } = this.props;
+    // editor.value
     const { value } = editor;
+    // 取出selecion模型实例
     const { selection } = value;
     const { isBackward } = selection;
     const window = getWindow(this.ref.current);
@@ -228,6 +225,8 @@ class Content extends React.Component {
       return;
     }
 
+    // rangeCount选区数量
+    // 开始节点
     const { rangeCount, anchorNode } = native;
     let updated = false;
 
@@ -383,11 +382,11 @@ class Content extends React.Component {
    * Check if an event `target` is fired from within the contenteditable
    * element. This should be false for edits happening in non-contenteditable
    * children, such as void nodes and other nested Slate editors.
-   *
+   * 用来校验target是不是在contenteditable的元素中，如果是发生在不是contenteditable的元素中
+   * 则返回false
    * @param {Element} target
    * @return {Boolean}
    */
-
   isInEditor = (target) => {
     let el;
 
@@ -422,22 +421,24 @@ class Content extends React.Component {
 
   /**
    * On `event` with `handler`.
-   *
+   * 保证执行slate插件的方法，传入Node的插件属性都会经过该方法的包装
    * @param {String} handler
    * @param {Event} event
    */
-
   onEvent(handler, event) {
+    const { onEvent } = this.props;
+
     debug('onEvent', handler);
 
+    /**
+     * 此处控制中文输入法
+     */
     if (handler === 'onCompositionStart') {
       this.tmp.isComposing = true;
     }
-
     if (handler === 'onCompositionEnd') {
-      window.requestAnimationFrame(() => (this.tmp.isComposing = false));
+      window.requestAnimationFrame(() => { this.tmp.isComposing = false; });
     }
-
     if (handler === 'onBeforeInput') {
       // 输入结束后计算光标位置,解决光标错位问题
       if (!IS_CHROME) {
@@ -451,6 +452,7 @@ class Content extends React.Component {
 
     // Ignore `onBlur`, `onFocus` and `onSelect` events generated
     // programmatically while updating selection.
+    // 忽略updateSelection/redo/undo导致的触发onSelect/onBlur/onFocus插件执行
     if (
       (this.tmp.isUpdatingSelection || isUndoRedo)
       && (handler === 'onSelect' || handler === 'onBlur' || handler === 'onFocus')
@@ -520,7 +522,7 @@ class Content extends React.Component {
       }
     }
 
-    this.props.onEvent(handler, event);
+    onEvent(handler, event);
   }
 
   /**
@@ -528,43 +530,49 @@ class Content extends React.Component {
    * needed to account for React's `onSelect` being non-standard and not firing
    * until after a selection has been released. This causes issues in situations
    * where another change happens while a selection is being made.
-   *
+   * 原生的选区改变事件回调，节流处理
    * @param {Event} event
    */
-
   onNativeSelectionChange = throttle((event) => {
-    if (this.props.readOnly) return;
+    const { readOnly, onEvent } = this.props;
+    if (readOnly) return;
 
+    // 获取当前节点对应的window对象
     const window = getWindow(event.target);
+
+    // 活动的节点
     const { activeElement } = window.document;
 
+    // 获取当前原生的Selection情况
     const native = window.getSelection();
 
     debug.update('onNativeSelectionChange', {
       anchorOffset: native.anchorOffset,
     });
 
+    // 活动的节点不是当前节点
     if (activeElement !== this.ref.current) return;
 
+    // nativeSelection用于保存原生Selection对象
     this.tmp.nativeSelection = {
-      anchorNode: native.anchorNode,
-      anchorOffset: native.anchorOffset,
-      focusNode: native.focusNode,
-      focusOffset: native.focusOffset,
-      isCollapsed: native.isCollapsed,
-      rangeCount: native.rangeCount,
+      anchorNode: native.anchorNode, // 选区起点所在的节点
+      anchorOffset: native.anchorOffset, // 选区起点所在的节点的偏移量
+      focusNode: native.focusNode, // 选区终点所在的节点
+      focusOffset: native.focusOffset, // 选区终点所在节点的偏移量
+      isCollapsed: native.isCollapsed, // 起始点和终点是否在同一个位置
+      rangeCount: native.rangeCount, // 连续选区的个数
       type: native.type,
     };
 
-    this.props.onEvent('onSelect', event);
+    // 通过onEvent方法来触发onSelect插件的执行
+    onEvent('onSelect', event);
   }, 100)
 
   /**
    * Render the editor content.
-   *
+   * 渲染Node组件
    * @return {Element}
    */
-
   render() {
     const { props, handlers } = this;
     const {
@@ -576,6 +584,8 @@ class Content extends React.Component {
       role,
       tagName,
       spellCheck,
+      onEvent,
+      autoCorrect,
     } = props;
     const { value } = editor;
     const Container = tagName;
@@ -601,15 +611,19 @@ class Content extends React.Component {
     debug('render', { props });
     debug.update('render', this.tmp.contentKey, document.text);
 
-    this.props.onEvent('onRender');
+    // 执行onRender插件
+    onEvent('onRender');
 
     const data = {
       [DATA_ATTRS.EDITOR]: true,
+      // key应该是在svj -> svi时加上的
       [DATA_ATTRS.KEY]: document.key,
     };
 
+    // eslint-disable-next-line react/forbid-foreign-prop-types
     const domProps = omit(this.props, Object.keys(Content.propTypes));
 
+    // Container 自定制的节点
     return (
       <Container
         {...domProps}
@@ -621,7 +635,7 @@ class Content extends React.Component {
         suppressContentEditableWarning
         id={id}
         className={className}
-        autoCorrect={props.autoCorrect ? 'on' : 'off'}
+        autoCorrect={autoCorrect ? 'on' : 'off'}
         spellCheck={spellCheck}
         style={style}
         role={readOnly ? null : role || 'textbox'}
@@ -629,7 +643,6 @@ class Content extends React.Component {
         // COMPAT: The Grammarly Chrome extension works by changing the DOM out
         // from under `contenteditable` elements, which leads to weird behaviors
         // so we have to disable it like this. (2017/04/24)
-
         // just the existence of the flag is disabling the extension irrespective of its value
         data-gramm={domProps['data-gramm'] ? undefined : false}
       >
@@ -651,8 +664,6 @@ class Content extends React.Component {
 
 /**
  * Export.
- *
  * @type {Component}
  */
-
 export default Content;

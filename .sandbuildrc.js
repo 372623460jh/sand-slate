@@ -8,7 +8,6 @@ const slateHotkeys = require('./packages/slate-hotkeys/package.json');
 const slateHtmlSerializer = require('./packages/slate-html-serializer/package.json');
 const slateHyperscript = require('./packages/slate-hyperscript/package.json');
 const slatePlainSerializer = require('./packages/slate-plain-serializer/package.json');
-const slatePropTypes = require('./packages/slate-prop-types/package.json');
 const slateReactPlaceholder = require('./packages/slate-react-placeholder/package.json');
 
 module.exports = {
@@ -140,27 +139,6 @@ module.exports = {
       pathName: 'slate-plain-serializer',
       pkgName: 'slate-plain-serializer',
       pkg: slatePlainSerializer,
-      cssExtract: false,
-      umdGlobals: {
-        'immutable': 'Immutable',
-        '@jianghe/slate': 'Slate',
-      },
-      namedExports: {
-        'immutable': [
-          'List',
-          'Map',
-          'Record',
-          'OrderedSet',
-          'Set',
-          'Stack',
-          'is',
-        ],
-      },
-    },
-    {
-      pathName: 'slate-prop-types',
-      pkgName: 'slate-prop-types',
-      pkg: slatePropTypes,
       cssExtract: false,
       umdGlobals: {
         'immutable': 'Immutable',

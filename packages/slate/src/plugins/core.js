@@ -11,20 +11,17 @@ import WithIntent from '../commands/with-intent';
 
 /**
  * A plugin that defines the core Slate logic.
- *
  * @param {Object} options
  * @return {Object}
  */
-
 function CorePlugin(options = {}) {
   const { plugins = [] } = options;
 
   /**
    * The core Slate commands.
-   *
+   * 内置基础指令
    * @type {Object}
    */
-
   const commands = Commands({
     ...AtRange,
     ...ByPath,
@@ -36,10 +33,9 @@ function CorePlugin(options = {}) {
 
   /**
    * The core Slate queries.
-   *
+   * 核心queries
    * @type {Object}
    */
-
   const queries = Queries({
     isAtomic: () => false,
     isVoid: () => false,
@@ -47,10 +43,9 @@ function CorePlugin(options = {}) {
 
   /**
    * The core Slate schema.
-   *
+   * 核心schema
    * @type {Object}
    */
-
   const schema = Schema({
     rules: [
       // Only allow block nodes in documents.
@@ -187,17 +182,13 @@ function CorePlugin(options = {}) {
 
   /**
    * Return the plugins.
-   *
    * @type {Array}
    */
-
   return [schema, ...plugins, commands, queries];
 }
 
 /**
  * Export.
- *
  * @type {Object}
  */
-
 export default CorePlugin;

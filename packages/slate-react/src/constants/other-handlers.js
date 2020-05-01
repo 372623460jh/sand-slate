@@ -1,9 +1,7 @@
 /**
  * Other handlers used by Slate plugins.
- *
  * @type {Array}
  */
-
 const OTHER_HANDLERS = [
   'decorateNode',
   'renderAnnotation',
@@ -17,8 +15,6 @@ const OTHER_HANDLERS = [
 
 /**
  * Export.
- *
  * @type {Array}
  */
-
 export default OTHER_HANDLERS;

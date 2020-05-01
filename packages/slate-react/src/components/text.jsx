@@ -1,6 +1,7 @@
+/* eslint-disable react/require-default-props */
 import ImmutableTypes from 'react-immutable-proptypes';
 import React from 'react';
-import SlateTypes from '@jianghe/slate-prop-types';
+import { SlateTypes } from '@jianghe/slate';
 import Types from 'prop-types';
 
 import Leaf from './leaf';
@@ -8,10 +9,9 @@ import DATA_ATTRS from '../constants/data-attributes';
 
 /**
  * Text node.
- *
+ * object===text时渲染的组件
  * @type {Component}
  */
-
 const Text = React.forwardRef((props, ref) => {
   const {
     annotations, block, decorations, node, parent, editor, style,
@@ -29,38 +29,38 @@ const Text = React.forwardRef((props, ref) => {
         [DATA_ATTRS.KEY]: key,
       }}
     >
-      {leaves.map((leaf, index) => {
-        const { text } = leaf;
-        const offset = at;
-        at += text.length;
-
-        return (
-          <Leaf
-            key={`${node.key}-${index}`}
-            block={block}
-            editor={editor}
-            index={index}
-            annotations={leaf.annotations}
-            decorations={leaf.decorations}
-            marks={leaf.marks}
-            node={node}
-            offset={offset}
-            parent={parent}
-            leaves={leaves}
-            text={text}
-          />
-        );
-      })}
+      {
+        leaves.map((leaf, index) => {
+          const { text } = leaf;
+          const offset = at;
+          at += text.length;
+          return (
+            <Leaf
+              // eslint-disable-next-line react/no-array-index-key
+              key={`${node.key}-${index}`}
+              block={block}
+              editor={editor}
+              index={index}
+              annotations={leaf.annotations}
+              decorations={leaf.decorations}
+              marks={leaf.marks}
+              node={node}
+              offset={offset}
+              parent={parent}
+              leaves={leaves}
+              text={text}
+            />
+          );
+        })
+      }
     </span>
   );
 });
 
 /**
  * Prop types.
- *
  * @type {Object}
  */
-
 Text.propTypes = {
   annotations: ImmutableTypes.map.isRequired,
   block: SlateTypes.block,
@@ -73,10 +73,8 @@ Text.propTypes = {
 
 /**
  * A memoized version of `Text` that updates less frequently.
- *
  * @type {Component}
  */
-
 const MemoizedText = React.memo(Text, (prev, next) => (
   // PERF: There are cases where it will have
   // changed, but it's properties will be exactly the same (eg. copy-paste)
@@ -95,8 +93,6 @@ const MemoizedText = React.memo(Text, (prev, next) => (
 
 /**
  * Export.
- *
  * @type {Component}
  */
-
 export default MemoizedText;

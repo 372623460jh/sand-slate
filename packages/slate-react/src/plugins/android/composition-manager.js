@@ -6,21 +6,17 @@ import diffText from './diff-text';
 /**
  * @type {Debug}
  */
-
 const debug = Debug('@jianghe/slate:composition-manager');
 
 /**
  * Unicode String for a ZERO_WIDTH_SPACE
- *
  * @type {String}
  */
-
 const ZERO_WIDTH_SPACE = String.fromCharCode(65279);
 
 /**
  * https://github.com/facebook/draft-js/commit/cda13cb8ff9c896cdb9ff832d1edeaa470d3b871
  */
-
 const flushControlled = ReactDOM.unstable_flushControlled;
 
 function renderSync(editor, fn) {
@@ -42,7 +38,6 @@ function renderSync(editor, fn) {
  * @param {Number} offset
  * @param {Boolean} isLastNode
  */
-
 function fixTextAndOffset(prevText, prevOffset = 0, isLastNode = false) {
   let nextOffset = prevOffset;
   let nextText = prevText;
@@ -79,24 +74,19 @@ function fixTextAndOffset(prevText, prevOffset = 0, isLastNode = false) {
  *
  * @param {} element
  */
-
 function CompositionManager(editor) {
   /**
    * A MutationObserver that flushes to the method `flush`
-   *
    * @type {MutationObserver}
    */
-
   const observer = new window.MutationObserver(flush);
 
   let win = null;
 
   /**
    * Object that keeps track of the most recent state
-   *
    * @type {Range}
    */
-
   const last = {
     rootEl: null, // root element that MutationObserver is attached to
     diff: null, // last text node diff between Slate and DOM
@@ -107,7 +97,6 @@ function CompositionManager(editor) {
   /**
    * Connect the MutationObserver to a specific editor root element
    */
-
   function connect() {
     debug('connect', { rootEl });
 

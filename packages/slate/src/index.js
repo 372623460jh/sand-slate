@@ -10,9 +10,7 @@ import Change from './models/change';
 import Data from './models/data';
 import Decoration from './models/decoration';
 import Document from './models/document';
-import Editor from './controllers/editor';
 import Inline from './models/inline';
-import KeyUtils from './utils/key-utils';
 import Leaf from './models/leaf';
 import Mark from './models/mark';
 import Node from './models/node';
@@ -24,6 +22,10 @@ import Selection from './models/selection';
 import Text from './models/text';
 import TextUtils from './utils/text-utils';
 import Value from './models/value';
+import Editor from './controllers/editor';
+import KeyUtils from './utils/key-utils';
+// slate model 类型校验
+import SlateTypes from './utils/slate-prop-types';
 import { resetMemoization, useMemoization } from './utils/memoize';
 
 /**
@@ -55,6 +57,7 @@ export {
   TextUtils,
   useMemoization,
   Value,
+  SlateTypes,
 };
 
 export default {
@@ -80,4 +83,5 @@ export default {
   TextUtils,
   useMemoization,
   Value,
+  SlateTypes,
 };

@@ -1,9 +1,8 @@
 /**
  * DOM data attribute strings that refer to Slate concepts.
- *
+ * 自定义属性枚举
  * @type {String}
  */
-
 export default {
   EDITOR: 'data-slate-editor',
   FRAGMENT: 'data-slate-fragment',

@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import Types from 'prop-types';
-import SlateTypes from '@jianghe/slate-prop-types';
+import { SlateTypes } from '@jianghe/slate';
 import ImmutableTypes from 'react-immutable-proptypes';
 
 import OffsetKey from '../utils/offset-key';
@@ -8,10 +9,9 @@ import DATA_ATTRS from '../constants/data-attributes';
 
 /**
  * Leaf strings with text in them.
- *
+ * 正常字符
  * @type {Component}
  */
-
 const TextString = ({ text = '', isTrailing = false }) => (
   <span
     {...{
@@ -25,10 +25,9 @@ const TextString = ({ text = '', isTrailing = false }) => (
 
 /**
  * Leaf strings without text, render as zero-width strings.
- *
+ * 0宽字符
  * @type {Component}
  */
-
 const ZeroWidthString = ({ length = 0, isLineBreak = false }) => (
   <span
     {...{
@@ -43,10 +42,9 @@ const ZeroWidthString = ({ length = 0, isLineBreak = false }) => (
 
 /**
  * Individual leaves in a text node with unique formatting.
- *
+ * slate的最小单位组件，字符
  * @type {Component}
  */
-
 const Leaf = (props) => {
   const {
     marks,
@@ -79,11 +77,13 @@ const Leaf = (props) => {
     && parent.text === ''
     && parent.nodes.last() === node
   ) {
+    // 父节点是block，并且该节点时父节点的最后一个节点，插入一个零宽字符和</br>
     // COMPAT: If this is the last text node in an empty block, render a zero-
     // width space that will convert into a line break when copying and pasting
     // to support expected plain text.
     children = <ZeroWidthString isLineBreak />;
   } else if (text === '') {
+    // 文本为空插入一个0框字符，这样可以让光标插入
     // COMPAT: If the text is empty, it's because it's on the edge of an inline
     // node, so we render a zero-width space so that the selection can be
     // inserted next to it still.
@@ -95,7 +95,6 @@ const Leaf = (props) => {
     const lastChar = text.charAt(text.length - 1);
     const isLastText = node === lastText;
     const isLastLeaf = index === leaves.size - 1;
-
     if (isLastText && isLastLeaf && lastChar === '\n') {
       children = <TextString isTrailing text={text} />;
     } else {
@@ -117,6 +116,7 @@ const Leaf = (props) => {
   // in certain misbehaving browsers they aren't weirdly cloned/destroyed by
   // contenteditable behaviors. (2019/05/08)
   for (const mark of marks) {
+    // 执行rendermark插件
     const ret = editor.run('renderMark', {
       ...renderProps,
       mark,
@@ -125,7 +125,6 @@ const Leaf = (props) => {
         [DATA_ATTRS.OBJECT]: 'mark',
       },
     });
-
     if (ret) {
       children = ret;
     }
@@ -140,7 +139,6 @@ const Leaf = (props) => {
         [DATA_ATTRS.OBJECT]: 'decoration',
       },
     });
-
     if (ret) {
       children = ret;
     }
@@ -155,7 +153,6 @@ const Leaf = (props) => {
         [DATA_ATTRS.OBJECT]: 'annotation',
       },
     });
-
     if (ret) {
       children = ret;
     }
@@ -171,10 +168,8 @@ const Leaf = (props) => {
 
 /**
  * Prop types.
- *
  * @type {Object}
  */
-
 Leaf.propTypes = {
   annotations: ImmutableTypes.list.isRequired,
   block: SlateTypes.block.isRequired,
@@ -191,10 +186,8 @@ Leaf.propTypes = {
 
 /**
  * A memoized version of `Leaf` that updates less frequently.
- *
  * @type {Component}
  */
-
 const MemoizedLeaf = React.memo(Leaf, (prev, next) => (
   next.block === prev.block
     && next.index === prev.index
@@ -207,8 +200,6 @@ const MemoizedLeaf = React.memo(Leaf, (prev, next) => (
 
 /**
  * Export.
- *
  * @type {Component}
  */
-
 export default MemoizedLeaf;

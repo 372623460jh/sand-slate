@@ -1,46 +1,58 @@
-import {
-  Block,
-  Change,
-  Data,
-  Document,
-  Inline,
-  Leaf,
-  Mark,
-  Node,
-  Range,
-  Selection,
-  Value,
-  Text,
-} from '@jianghe/slate';
+/**
+ * slate 模型类型校验方法
+ */
+import Block from '../models/block';
+import Change from '../models/change';
+import Data from '../models/data';
+import Document from '../models/document';
+import Inline from '../models/inline';
+import Leaf from '../models/leaf';
+import Mark from '../models/mark';
+import Node from '../models/node';
+import Range from '../models/range';
+import Selection from '../models/selection';
+import Text from '../models/text';
+import Value from '../models/value';
 
 /**
  * Create a prop type checker for Slate objects with `name` and `validate`.
- *
  * @param {String} name
  * @param {Function} validate
  * @return {Function}
  */
-
 function create(name, validate) {
+  /**
+   * 校验方法
+   * @param {*} isRequired 是否必填
+   * @param {*} props
+   * @param {*} propName 属性名
+   * @param {*} componentName
+   * @param {*} location
+   */
   function check(isRequired, props, propName, componentName, location) {
+    // props中对应属性值
     const value = props[propName];
 
     if (value == null && !isRequired) {
+      // 值为空但非必填
       return null;
     }
 
     if (value == null && isRequired) {
+      // 必填但是值为空
       return new Error(
-        `The ${location} \`${propName}\` is marked as required in \`${componentName}\`, but it was not supplied.`,
+        `The ${location} \`${propName}\` is marked as required in \`${componentName}\`, but it was not supplied.（${componentName}中${propName}必填但目前值为空）`,
       );
     }
 
     if (validate(value)) {
+      // 校验通过
       return null;
     }
 
+    // 校验不通过
     return new Error(
-      `Invalid ${location} \`${propName}\` supplied to \`${componentName}\`, expected a Slate \`${name}\` but received: ${value}`,
+      `Invalid ${location} \`${propName}\` supplied to \`${componentName}\`, expected a Slate \`${name}\` but received: ${value}（${componentName}中${propName}类型校验不通过）`,
     );
   }
 
@@ -48,19 +60,16 @@ function create(name, validate) {
     return check(false, ...args);
   }
 
-  propType.isRequired = function (...args) {
-    return check(true, ...args);
-  };
+  // 处理isRequired情况
+  propType.isRequired = (...args) => check(true, ...args);
 
   return propType;
 }
 
 /**
  * Prop type checkers.
- *
  * @type {Object}
  */
-
 const Types = {
   block: create('Block', (v) => Block.isBlock(v)),
   blocks: create('List<Block>', (v) => Block.isBlockList(v)),
@@ -82,11 +91,5 @@ const Types = {
   text: create('Text', (v) => Text.isText(v)),
   texts: create('List<Text>', (v) => Text.isTextList(v)),
 };
-
-/**
- * Export.
- *
- * @type {Object}
- */
 
 export default Types;

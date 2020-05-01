@@ -12,12 +12,17 @@ import getEventTransfer from './utils/get-event-transfer';
 import setEventTransfer from './utils/set-event-transfer';
 import ReactPlugin from './plugins/react';
 
+if (process.env.NODE_ENV === 'development') {
+  // 开发环境输出日志
+  localStorage.debug = '@jianghe/slate:*';
+} else {
+  delete localStorage.debug;
+}
+
 /**
  * Export.
- *
  * @type {Object}
  */
-
 export {
   Editor,
   cloneFragment,

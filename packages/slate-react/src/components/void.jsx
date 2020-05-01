@@ -1,32 +1,27 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/require-default-props */
 import Debug from 'debug';
 import React from 'react';
-import SlateTypes from '@jianghe/slate-prop-types';
+import { SlateTypes } from '@jianghe/slate';
 import Types from 'prop-types';
-
 import Text from './text';
 import DATA_ATTRS from '../constants/data-attributes';
 
 /**
  * Debug.
- *
  * @type {Function}
  */
-
 const debug = Debug('@jianghe/slate:void');
 
 /**
  * Void.
- *
  * @type {Component}
  */
-
 class Void extends React.Component {
   /**
    * Property types.
-   *
    * @type {Object}
    */
-
   static propTypes = {
     block: SlateTypes.block,
     children: Types.any.isRequired,
@@ -38,11 +33,9 @@ class Void extends React.Component {
 
   /**
    * Debug.
-   *
    * @param {String} message
    * @param {Mixed} ...args
    */
-
   debug = (message, ...args) => {
     const { node } = this.props;
     const { key, type } = node;
@@ -51,11 +44,43 @@ class Void extends React.Component {
   }
 
   /**
-   * Render.
-   *
+   * Render the void node's text node, which will catch the cursor when it the
+   * void node is navigated to with the arrow keys.
+   * Having this text node there means the browser continues to manage the
+   * selection natively, so it keeps track of the right offset when moving
+   * across the block.
    * @return {Element}
    */
+  renderText = () => {
+    const {
+      annotations,
+      block,
+      decorations,
+      node,
+      readOnly,
+      editor,
+      textRef,
+    } = this.props;
+    const child = node.getFirstText();
+    return (
+      <Text
+        ref={textRef}
+        annotations={annotations}
+        block={node.object === 'block' ? node : block}
+        decorations={decorations}
+        editor={editor}
+        key={child.key}
+        node={child}
+        parent={node}
+        readOnly={readOnly}
+      />
+    );
+  }
 
+  /**
+   * Render.
+   * @return {Element}
+   */
   render() {
     const { props } = this;
     const { children, node, readOnly } = props;
@@ -98,49 +123,10 @@ class Void extends React.Component {
       </Tag>
     );
   }
-
-  /**
-   * Render the void node's text node, which will catch the cursor when it the
-   * void node is navigated to with the arrow keys.
-   *
-   * Having this text node there means the browser continues to manage the
-   * selection natively, so it keeps track of the right offset when moving
-   * across the block.
-   *
-   * @return {Element}
-   */
-
-  renderText = () => {
-    const {
-      annotations,
-      block,
-      decorations,
-      node,
-      readOnly,
-      editor,
-      textRef,
-    } = this.props;
-    const child = node.getFirstText();
-    return (
-      <Text
-        ref={textRef}
-        annotations={annotations}
-        block={node.object === 'block' ? node : block}
-        decorations={decorations}
-        editor={editor}
-        key={child.key}
-        node={child}
-        parent={node}
-        readOnly={readOnly}
-      />
-    );
-  }
 }
 
 /**
  * Export.
- *
  * @type {Component}
  */
-
 export default Void;

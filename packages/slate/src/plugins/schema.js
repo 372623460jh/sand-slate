@@ -177,11 +177,9 @@ function SchemaPlugin(schema) {
 
 /**
  * Normalize an invalid value with `error` with default remedies.
- *
  * @param {Editor} editor
  * @param {SlateError} error
  */
-
 function defaultNormalize(editor, error) {
   const {
     code, node, child, next, previous, key, mark,
@@ -250,12 +248,10 @@ function defaultNormalize(editor, error) {
 
 /**
  * Check that an `object` matches one of a set of `rules`.
- *
  * @param {Mixed} object
  * @param {Object|Array} rules
  * @return {Boolean}
  */
-
 function testRules(object, rules) {
   const error = validateRules(object, rules);
   return !error;
@@ -263,13 +259,11 @@ function testRules(object, rules) {
 
 /**
  * Validate that a `object` matches a `rule` object or array.
- *
  * @param {Mixed} object
  * @param {Object|Array} rule
  * @param {Array|Void} rules
  * @return {Error|Void}
  */
-
 function validateRules(object, rule, rules, options = {}) {
   const { every = false, match = null } = options;
 
@@ -620,12 +614,10 @@ function validateNext(node, child, next, index, rules) {
 
 /**
  * Create an interim failure object with `code` and `attrs`.
- *
  * @param {String} code
  * @param {Object} attrs
  * @return {Object}
  */
-
 function fail(code, attrs) {
   return { code, ...attrs };
 }

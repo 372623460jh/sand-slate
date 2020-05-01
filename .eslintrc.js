@@ -28,6 +28,13 @@ module.exports = {
     'react/static-property-placement': [0], // 禁止propType放到class内部报错
     'react/state-in-constructor': [0], // 允许state不在constructor中定义
     'no-param-reassign': [0], // 允许对函数入参进行操作
+    'react/sort-comp': [0], // 忽略组件内方法排序
+    'react/jsx-props-no-spreading': [0], // jsx属性可以直接解构赋值
+    'no-restricted-syntax': [0], // 可以使用for of
+    'no-continue': [0], // 可以使用continue
+    'no-use-before-define': [0], // 可以在定义前使用
+    'guard-for-in': [0], // 可以使用for in
+    "react/forbid-prop-types": [0], // propType中允许使用object，any等
   },
   settings: {
     // 忽略别名导致的找不到模块报错

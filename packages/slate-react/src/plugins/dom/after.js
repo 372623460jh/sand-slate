@@ -15,27 +15,24 @@ import setEventTransfer from '../../utils/set-event-transfer';
  * @type {Function}
  */
 
-const debug = Debug('slate:after');
+const debug = Debug('@jianghe/slate:after');
 
 /**
  * A plugin that adds the "after" browser-specific logic to the editor.
- *
  * @param {Object} options
  * @return {Object}
  */
-
+// eslint-disable-next-line no-unused-vars
 function AfterPlugin(options = {}) {
   let isDraggingInternally = null;
   let isMouseDown = false;
 
   /**
    * On before input.
-   *
    * @param {Event} event
    * @param {Editor} editor
    * @param {Function} next
    */
-
   function onBeforeInput(event, editor, next) {
     const { value } = editor;
     const isSynthetic = !!event.nativeEvent;

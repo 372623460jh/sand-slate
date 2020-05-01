@@ -33,10 +33,8 @@ function fixSelectionInZeroWidthBlock(window) {
 
 /**
  * Android Plugin
- *
  * @param {Editor} options.editor
  */
-
 function AndroidPlugin({ editor }) {
   const observer = new CompositionManager(editor);
 
@@ -96,13 +94,10 @@ function AndroidPlugin({ editor }) {
 
   /**
    * handle `onRender`
-   *
    * @param {Event} event
    */
-
   function onRender() {
     observer.disconnect();
-
     // We don't want the `diff` from a previous render to apply to a
     // potentially different value (e.g. when we switch examples)
     observer.clearDiff();

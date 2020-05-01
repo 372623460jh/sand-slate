@@ -1,40 +1,35 @@
+/* eslint-disable react/require-default-props */
 import Debug from 'debug';
 import ImmutableTypes from 'react-immutable-proptypes';
 import React from 'react';
-import SlateTypes from '@jianghe/slate-prop-types';
+import { SlateTypes, PathUtils } from '@jianghe/slate';
 import warning from 'tiny-warning';
 import Types from 'prop-types';
-import { PathUtils } from '@jianghe/slate';
-
+// 目前void组件暂时无用
 import Void from './void';
 import Text from './text';
 import DATA_ATTRS from '../constants/data-attributes';
 
 /**
  * Debug.
- *
  * @type {Function}
  */
-
 const debug = Debug('@jianghe/slate:node');
 
 /**
  * Node.
- *
  * @type {Component}
  */
-
 class Node extends React.Component {
   /**
    * Property types.
-   *
    * @type {Object}
    */
-
   static propTypes = {
     annotations: ImmutableTypes.map.isRequired,
     block: SlateTypes.block,
     decorations: ImmutableTypes.list.isRequired,
+    // <Editor>实例
     editor: Types.object.isRequired,
     node: SlateTypes.node.isRequired,
     parent: SlateTypes.node,
@@ -44,29 +39,23 @@ class Node extends React.Component {
 
   /**
    * Temporary values.
-   *
    * @type {Object}
    */
-
   tmp = {
     nodeRefs: {},
   }
 
   /**
    * A ref for the contenteditable DOM node.
-   *
    * @type {Object}
    */
-
   ref = React.createRef()
 
   /**
    * Debug.
-   *
    * @param {String} message
    * @param {Mixed} ...args
    */
-
   debug = (message, ...args) => {
     const { node } = this.props;
     const { key, type } = node;
@@ -75,12 +64,10 @@ class Node extends React.Component {
 
   /**
    * Should the node update?
-   *
    * @param {Object} nextProps
    * @param {Object} value
    * @return {Boolean}
    */
-
   shouldComponentUpdate(nextProps) {
     const { props } = this;
     const { editor } = props;
@@ -154,10 +141,8 @@ class Node extends React.Component {
 
   /**
    * Render.
-   *
    * @return {Element}
    */
-
   render() {
     this.debug('render', this);
     const {
@@ -171,8 +156,11 @@ class Node extends React.Component {
       selection,
     } = this.props;
 
+    console.log('1111', editor, this.props);
+
     const newDecorations = node.getDecorations(editor);
     const children = node.nodes.toArray().map((child, i) => {
+      // 根据object判断节点类型判断使用哪个组件
       const Component = child.object === 'text' ? Text : Node;
       const sel = selection && getRelativeRange(node, i, selection);
 
@@ -234,6 +222,7 @@ class Node extends React.Component {
       render = 'renderInline';
     }
 
+    // 执行对应的render插件
     const element = editor.run(render, {
       attributes,
       children,
@@ -245,6 +234,7 @@ class Node extends React.Component {
       readOnly,
     });
 
+    // editor.isVoid调用的是Query中的插件isVoid，目前恒返回false
     return editor.isVoid(node) ? (
       <Void
         {...this.props}
@@ -266,12 +256,10 @@ class Node extends React.Component {
 
 /**
  * Return a `range` relative to a child at `index`.
- *
  * @param {Range} range
  * @param {Number} index
  * @return {Range}
  */
-
 function getRelativeRange(node, index, range) {
   if (range.isUnset) {
     return null;
@@ -324,8 +312,6 @@ function getRelativeRange(node, index, range) {
 
 /**
  * Export.
- *
  * @type {Component}
  */
-
 export default Node;

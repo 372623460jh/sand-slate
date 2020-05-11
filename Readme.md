@@ -1,4 +1,4 @@
-## fork slate 0.47.9
+## fork slate 0.47.9 
 
 <p align="center">
   <a href="#"><img src="./docs/images/banner.png" /></a>

@@ -1,7 +1,7 @@
 {
   "name": "@jianghe/slate-hotkeys",
   "description": "A set of function to detect common keypresses in a platform-agnostic way",
-  "version": "0.2.10-3",
+  "version": "0.2.10",
   "license": "MIT",
   "main": "esm/slate-hotkeys.js",
   "cjs": "cjs/slate-hotkeys.js",
@@ -23,7 +23,7 @@
     "esm/"
   ],
   "dependencies": {
-    "@jianghe/slate-dev-environment": "^0.2.3-3",
+    "@jianghe/slate-dev-environment": "^0.2.3",
     "is-hotkey": "0.1.4"
   },
   "scripts": {

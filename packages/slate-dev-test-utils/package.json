@@ -1,7 +1,7 @@
 {
   "name": "@jianghe/slate-dev-test-utils",
   "description": "INTERNAL: A set of utils for Slate's core tests.",
-  "version": "0.0.2-3",
+  "version": "0.0.2",
   "license": "MIT",
   "main": "esm/slate-dev-test-utils.js",
   "esm": "esm/slate-dev-test-utils.js",

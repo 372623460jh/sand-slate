@@ -14,7 +14,8 @@ import ReactPlugin from './plugins/react';
 
 if (process.env.NODE_ENV === 'development') {
   // 开发环境输出日志
-  localStorage.debug = '@jianghe/slate:*';
+  // localStorage.debug = '@jianghe/slate:*';
+  delete localStorage.debug;
 } else {
   delete localStorage.debug;
 }

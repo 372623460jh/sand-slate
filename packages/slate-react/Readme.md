@@ -5,4 +5,4 @@ This package contains the React-specific logic for Slate. It's separated further
 * [**Plugins**](./src/plugins) — containing the React-specific plugins for Slate editors.
 * [**Utils**](./src/utils) — containing a few private convenience modules.
 
-Feel free to poke around in each of them to learn more!
+Feel free to poke around in each of them to learn more

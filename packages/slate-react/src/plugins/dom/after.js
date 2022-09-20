@@ -26,6 +26,37 @@ const debug = Debug('@jianghe/slate:after');
 function AfterPlugin(options = {}) {
   let isDraggingInternally = null;
   let isMouseDown = false;
+  let initRange = null;
+
+  /**
+   * 混合事件结束时插入文本
+   * @param {Event} event
+   * @param {Editor} editor
+   * @param {Function} next
+   */
+  function onCompositionEnd(event, editor, next) {
+    const { value } = editor;
+    if (!initRange) {
+      return next();
+    }
+    event.preventDefault();
+    const { selection } = value;
+
+    let text = '\u200b';
+    text = event.data == null
+      ? event.dataTransfer.getData('text/plain') || '\u200b'
+      : event.data || '\u200b';
+    if (text == null) {
+      next();
+    }
+
+    editor.insertTextAtRange(initRange, text, selection.marks);
+    if (selection.marks && value.document !== editor.value.document) {
+      editor.select({ marks: null });
+    }
+
+    initRange = null;
+  }
 
   /**
    * On before input.
@@ -46,17 +77,27 @@ function AfterPlugin(options = {}) {
       return next();
     }
 
-    // Otherwise, we can use the information in the `beforeinput` event to
-    // figure out the exact change that will occur, and prevent it.
-    const [targetRange] = event.getTargetRanges();
-    if (!targetRange) return next();
+    // 获取系统光标区间
+    const domRange = window.getSelection();
+    if (!domRange) {
+      return next();
+    }
 
     debug('onBeforeInput', { event });
 
     event.preventDefault();
 
     const { document, selection } = value;
-    const range = editor.findRange(targetRange);
+    const range = editor.findRange(domRange);
+    if (!initRange) {
+      initRange = range;
+    }
+
+    const isCompositionChange = event.inputType === 'insertCompositionText' || event.inputType === 'deleteCompositionText'; 8;
+    if (isCompositionChange) {
+      // insertCompositionText 不处理
+      return next();
+    }
 
     switch (event.inputType) {
       case 'deleteByDrag':
@@ -108,7 +149,8 @@ function AfterPlugin(options = {}) {
 
       case 'insertFromYank':
       case 'insertReplacementText':
-      case 'insertFromComposition':
+      // 中文输入合成事件类型，最新的w3c标准中已经移除
+      // case 'insertFromComposition':
       case 'insertText': {
         // COMPAT: `data` should have the text for the `insertText` input type
         // and `dataTransfer` should have the text for the
@@ -681,6 +723,7 @@ function AfterPlugin(options = {}) {
     onMouseDown,
     onMouseUp,
     onPaste,
+    onCompositionEnd,
     onSelect,
   };
 }

@@ -20,14 +20,14 @@
   },
   "scripts": {
     "init": "npm run clean && npm i && npm run bootstrap",
-    "clean": "rm -rf ./node_modules ./packages/*/{dist,esm,cjs,./node_modules} && lerna clean --yes ",
-    "bootstrap": "lerna bootstrap --npm-client npm --hoist && npm run build",
+    "clean": "rm -rf ./node_modules ./packages/*/{dist,esm,cjs,./node_modules} && npx lerna clean --yes ",
+    "bootstrap": "npx lerna bootstrap --npm-client npm --hoist && npm run build",
     "build": "sand-build build -e dev -l",
     "build:watch": "sand-build build -e dev -l -w",
     "build:production": "sand-build build -e prod -l",
     "server": "sand-build start -e dev",
     "start": "npm-run-all --parallel --print-label build:watch server",
-    "publish": "npm run build:production && lerna publish",
+    "publish": "npm run build:production && npx lerna publish",
     "lint": "eslint ./packages ./examples --ext .jsx,.js,.ts,.tsx",
     "lint:fix": "npm run lint -- --fix",
     "lint:style": "stylelint \"packages/**/*.less\" \"examples/**/*.less\" --syntax less",
@@ -35,9 +35,7 @@
     "test": "",
     "ci": "npm run lint:fix && npm run lint:style:fix && npm run test && npm run lint && npm run lint:style"
   },
-  "pre-commit": [
-    "ci"
-  ],
+  "pre-commit": [],
   "ci": {},
   "devDependencies": {
     "@jianghe/sand-build": "^1.0.1-4",

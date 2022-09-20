@@ -156,8 +156,6 @@ class Node extends React.Component {
       selection,
     } = this.props;
 
-    console.log('1111', editor, this.props);
-
     const newDecorations = node.getDecorations(editor);
     const children = node.nodes.toArray().map((child, i) => {
       // 根据object判断节点类型判断使用哪个组件

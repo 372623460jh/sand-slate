@@ -26,7 +26,8 @@ const debug = Debug('@jianghe/slate:after');
 function AfterPlugin(options = {}) {
   let isDraggingInternally = null;
   let isMouseDown = false;
-  let initRange = null;
+  // 合成事件计数器
+  let insertCompositionTextTimes = 0;
 
   /**
    * 混合事件结束时插入文本
@@ -35,11 +36,10 @@ function AfterPlugin(options = {}) {
    * @param {Function} next
    */
   function onCompositionEnd(event, editor, next) {
-    const { value } = editor;
-    if (!initRange) {
-      return next();
-    }
     event.preventDefault();
+    // 合成事件计数器重置
+    insertCompositionTextTimes = 0;
+    const { value } = editor;
     const { selection } = value;
 
     let text = '\u200b';
@@ -50,12 +50,11 @@ function AfterPlugin(options = {}) {
       next();
     }
 
-    editor.insertTextAtRange(initRange, text, selection.marks);
+    // 直接插入合成事件结束后的文本
+    editor.insertText(text, selection.marks);
     if (selection.marks && value.document !== editor.value.document) {
       editor.select({ marks: null });
     }
-
-    initRange = null;
   }
 
   /**
@@ -89,13 +88,19 @@ function AfterPlugin(options = {}) {
 
     const { document, selection } = value;
     const range = editor.findRange(domRange);
-    if (!initRange) {
-      initRange = range;
-    }
 
+    /**
+     * 中文合成事件输入过程，
+     * 第一次输入用 insertTextAtRange 替换选取内容
+     * 后续的输入忽略
+     */
     const isCompositionChange = event.inputType === 'insertCompositionText' || event.inputType === 'deleteCompositionText'; 8;
     if (isCompositionChange) {
-      // insertCompositionText 不处理
+      if (insertCompositionTextTimes === 0) {
+        // 第一次合成事件输入时讲选取替换成空
+        editor.insertTextAtRange(range, '\u200b', selection.marks);
+      }
+      insertCompositionTextTimes++;
       return next();
     }
 
@@ -151,6 +156,8 @@ function AfterPlugin(options = {}) {
       case 'insertReplacementText':
       // 中文输入合成事件类型，最新的w3c标准中已经移除
       // case 'insertFromComposition':
+      // 中文输入合成事件输入过程
+      // case 'insertCompositionText':
       case 'insertText': {
         // COMPAT: `data` should have the text for the `insertText` input type
         // and `dataTransfer` should have the text for the

@@ -1,7 +1,7 @@
 {
   "name": "@jianghe/slate",
   "description": "A completely customizable framework for building rich text editors.",
-  "version": "0.47.9",
+  "version": "0.47.10",
   "license": "MIT",
   "main": "esm/slate.js",
   "esm": "esm/slate.js",
@@ -36,8 +36,8 @@
     "immutable": ">=3.8.1 || >4.0.0-rc"
   },
   "devDependencies": {
-    "@jianghe/slate-dev-test-utils": "^0.0.2",
-    "@jianghe/slate-hyperscript": "^0.13.9"
+    "@jianghe/slate-dev-test-utils": "^0.0.3",
+    "@jianghe/slate-hyperscript": "^0.13.10"
   },
   "keywords": [
     "canvas",

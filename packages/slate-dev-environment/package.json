@@ -1,7 +1,7 @@
 {
   "name": "@jianghe/slate-dev-environment",
   "description": "INTERNAL: A set of environment-related constants for Slate's core.",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "license": "MIT",
   "main": "esm/slate-dev-environment.js",
   "esm": "esm/slate-dev-environment.js",

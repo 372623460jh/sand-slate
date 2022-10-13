@@ -1,7 +1,7 @@
 {
   "name": "@jianghe/slate-react",
   "description": "A set of React components for building completely customizable rich-text editors.",
-  "version": "0.22.10",
+  "version": "0.22.11",
   "license": "MIT",
   "main": "esm/slate-react.js",
   "esm": "esm/slate-react.js",
@@ -23,11 +23,11 @@
     "esm/"
   ],
   "dependencies": {
-    "@jianghe/slate-base64-serializer": "^0.2.112",
-    "@jianghe/slate-dev-environment": "^0.2.3",
-    "@jianghe/slate-hotkeys": "^0.2.10",
-    "@jianghe/slate-plain-serializer": "^0.7.11",
-    "@jianghe/slate-react-placeholder": "^0.2.9",
+    "@jianghe/slate-base64-serializer": "^0.2.113",
+    "@jianghe/slate-dev-environment": "^0.2.4",
+    "@jianghe/slate-hotkeys": "^0.2.11",
+    "@jianghe/slate-plain-serializer": "^0.7.12",
+    "@jianghe/slate-react-placeholder": "^0.2.10",
     "debug": "^3.1.0",
     "get-window": "^1.1.1",
     "is-window": "^1.0.2",
@@ -46,8 +46,8 @@
     "react-dom": ">=16.6.0"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.9",
-    "@jianghe/slate-hyperscript": "^0.13.9",
+    "@jianghe/slate": "^0.47.10",
+    "@jianghe/slate-hyperscript": "^0.13.10",
     "immutable": "^3.8.1",
     "mocha": "^2.5.3",
     "react-test-renderer": "^16.6.3"

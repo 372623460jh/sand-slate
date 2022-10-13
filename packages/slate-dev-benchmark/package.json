@@ -1,7 +1,7 @@
 {
   "name": "@jianghe/slate-dev-benchmark",
   "description": "INTERNAL: A development-only benchmark tool for Slate's core.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "license": "MIT",
   "main": "esm/slate-dev-benchmark.js",
   "esm": "esm/slate-dev-benchmark.js",

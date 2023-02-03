@@ -20,12 +20,12 @@ function SlateReactPlaceholder(options = {}) {
 
   invariant(
     typeof placeholder === 'string',
-    'You must pass `SlateReactPlaceholder` an `options.placeholder` string.',
+    'You must pass `SlateReactPlaceholder` an `options.placeholder` string.'
   );
 
   invariant(
     typeof when === 'string' || typeof when === 'function',
-    'You must pass `SlateReactPlaceholder` an `options.when` query.',
+    'You must pass `SlateReactPlaceholder` an `options.when` query.'
   );
 
   /**
@@ -87,7 +87,11 @@ function SlateReactPlaceholder(options = {}) {
 
       return (
         <span>
-          <span contentEditable={false} style={placeHolderStyle}>
+          <span
+            contentEditable={false}
+            className="sand-slate-placeholder"
+            style={placeHolderStyle}
+          >
             {placeholder}
           </span>
           {children}

@@ -15,7 +15,7 @@ import WithIntent from '../commands/with-intent';
  * @return {Object}
  */
 function CorePlugin(options = {}) {
-  const { plugins = [] } = options;
+  const { plugins = [], extraCommands = {} } = options;
 
   /**
    * The core Slate commands.
@@ -29,6 +29,7 @@ function CorePlugin(options = {}) {
     ...OnSelection,
     ...OnValue,
     ...WithIntent,
+    ...extraCommands,
   });
 
   /**

@@ -41,6 +41,7 @@ class Editor extends React.Component {
     options: PropTypes.object,
     placeholder: PropTypes.any,
     plugins: PropTypes.array,
+    extraCommands: PropTypes.object,
     readOnly: PropTypes.bool,
     role: PropTypes.string,
     schema: PropTypes.object,
@@ -70,6 +71,7 @@ class Editor extends React.Component {
     options: {},
     placeholder: '',
     plugins: [],
+    extraCommands: {},
     readOnly: false,
     schema: {},
     spellCheck: true,
@@ -149,7 +151,7 @@ class Editor extends React.Component {
 
     // Re-resolve the controller if needed based on memoized props.
     const {
-      commands, placeholder, plugins, queries, schema,
+      commands, placeholder, plugins, queries, schema, extraCommands,
     } = this.props;
 
     /**
@@ -160,6 +162,7 @@ class Editor extends React.Component {
      */
     this.resolveController(
       plugins,
+      extraCommands,
       schema,
       commands,
       queries,
@@ -291,7 +294,7 @@ class Editor extends React.Component {
    */
   resolveController = memoizeOne(
     // eslint-disable-next-line no-unused-vars
-    (plugins = [], schema, commands, queries, placeholder, TheReactPlugin) => {
+    (plugins = [], extraCommands = {}, schema, commands, queries, placeholder, TheReactPlugin) => {
       // If we've resolved a few times already, and it's exactly in line with
       // the updates, then warn the user that they may be doing something wrong.
       warning(
@@ -329,6 +332,7 @@ class Editor extends React.Component {
       this.controller = new Controller(
         {
           plugins: [react],
+          extraCommands,
           onChange,
         },
         {

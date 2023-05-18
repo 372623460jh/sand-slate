@@ -41,6 +41,7 @@ class Editor {
     const {
       onChange = () => {},
       plugins = [], // 插件列表
+      extraCommands = {}, // 额外扩展的指令
       readOnly = false,
       value = Value.create(), // 初始化Value空的svi
     } = attrs;
@@ -64,7 +65,7 @@ class Editor {
     };
 
     // 丰富化插件
-    const core = CorePlugin({ plugins });
+    const core = CorePlugin({ plugins, extraCommands });
 
     // 注册插件到this.middleware
     registerPlugin(this, core);

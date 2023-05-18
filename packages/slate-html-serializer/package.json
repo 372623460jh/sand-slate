@@ -1,7 +1,7 @@
 {
   "name": "@jianghe/slate-html-serializer",
   "description": "An HTML serializer for Slate editors.",
-  "version": "0.8.13",
+  "version": "0.8.14",
   "license": "MIT",
   "main": "esm/slate-html-serializer.js",
   "esm": "esm/slate-html-serializer.js",
@@ -32,8 +32,8 @@
     "react-dom": ">=0.14.0"
   },
   "devDependencies": {
-    "@jianghe/slate": "^0.47.11",
-    "@jianghe/slate-hyperscript": "^0.13.11",
+    "@jianghe/slate": "^0.47.12",
+    "@jianghe/slate-hyperscript": "^0.13.12",
     "mocha": "^2.5.3"
   },
   "keywords": [
